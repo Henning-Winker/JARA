@@ -22,13 +22,13 @@ library("fitdistrplus")
 # Setup working directories and output folder labels 
 #-----------------------------------------------------------------
 # Set Working directory file, where assessments are stored 
-File = "C:/Work/Research/Github/JARA/Assessments"
+File = "C:/Work/Research/Github/JARA/"
 # Set working directory for JABBA R source code
 JARA.file = "C:/Work/Research/GitHub/JARA"
 # JABBA version
 version = "v1beta"
 # select number of data_set in assessments 
-SP = 1
+SP = 3
 # Set Assessment file: assement folder within File that includes .csv input files
 assessment = c("Afr_penguin","Cape_gannet","Mountain_zebra","Red_steenbras","Roman","SMA_NA")[SP]
 # add specifier for assessment (File names of outputs)
@@ -47,7 +47,7 @@ abundance = c("census","census","census","relative","relative","relative")[SP]
 
 #><> Enter new GT for new data_sest
 # Afr Penguin, Mountan Zebra, Red Steenbras, Red Roman 
-GT = c(9,12,20,16,11,25)[SP]
+GT = c(9,20,12,16,11,25)[SP]
 
 
 #----------------------------------------------------
@@ -58,7 +58,7 @@ K = c(TRUE,TRUE,TRUE,FALSE,FALSE,FALSE)[SP] # Only relevant if 3GT > number of y
 # specify Ks manual here (expert opinion see Mountain Zebra)
 
 K.manual = NULL
-if(SP==2) K.manual = c(170,1200,40,140,1000,100,300,140,150) # Only used for MZ
+if(SP==3) K.manual = c(170,1200,40,140,1000,100,300,140,150) # Only used for MZ
 
 #--------------------------------------------------
 # Read csv files
@@ -129,8 +129,8 @@ if(sigma.proc == TRUE){
 
 # MCMC settings
 ni <- 30000 # Number of iterations
-nt <- 5 # Steps saved
-nb <- 5000 # Burn-in
+nt <- 3 # Steps saved
+nb <- 3000 # Burn-in
 nc <- 2 # number of chains
 nsaved = (ni-nb)/nt*nc
 

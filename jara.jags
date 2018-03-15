@@ -1,0 +1,78 @@
+
+    model {
+    # Priors and constraints
+    for(i in 1:nI)
+    {
+    mean.r[i] ~ dnorm(0, 0.001) 
+    logN.est[1,i] ~ dnorm(log(Ninit[i]), 1)   # Prior for initial population size with CV =100%
+    }
+
+
+    
+    
+      # Process variance
+      isigma2 <- isigma2.est 
+      sigma2 <- pow(isigma2,-1)
+      sigma <- sqrt(sigma2)
+      fakesigma.fixed <- sigma.fixed # Prevent unused variable error msg    
+      
+      # Obsevation variance
+      # Observation error
+      itau2~ dgamma(0.001,0.001)
+      tau2 <- 1/itau2
+      
+      
+      for(i in 1:nI)
+      {
+      for(t in 1:T)
+      {
+      var.obs[t,i] <- SE2[t,i]+tau2
+      ivar.obs[t,i] <- 1/var.obs[t,i]
+      # note total observation error (TOE)     
+      TOE[t,i] <- sqrt(var.obs[t,i])
+      
+      }}
+        
+     # Process variance prior
+     isigma2.est ~ dgamma(igamma[1],igamma[2])
+    pen.sigma <- ifelse(sigma>1,log(sigma)-log(1),0) 
+    penSig  ~ dnorm(pen.sigma,pow(0.2,-2))
+    
+
+    # Likelihood
+    # State process
+    for (t in 1:(T-1)){
+    for (i in 1:nI){
+    r[t,i] ~ dnorm(mean.r[i], isigma2)
+    logN.est[t+1,i] <- ifelse(logN.est[t,i]>log(Ks[i]),log(Ks[i]),logN.est[t,i])+r[t,i] # Ks conditioned predictions
+    devK[t,i]  <- ifelse(logN.est[t,i]>log(Ks[i]),logN.est[t,i]-log(Ks[i]),0) # penalty if N > K 
+    }}
+
+    
+    for(t in 1:EY){
+    for (i in 1:nI){
+    penK[t,i] ~ dnorm(devK[t,i],1/0.2^2)
+    }}
+
+   
+    lambda[1] <- 1
+   # Observation process
+    for (t in 1:T) {
+    for(i in 1:nI){
+    y[t,i] ~ dnorm(logN.est[t,i], ivar.obs[t,i])
+    }}
+    
+    # Population sizes on real scale
+    for (t in 1:T) {
+    for(i in 1:nI){
+    N.est[t,i] <- exp(logN.est[t,i])
+    }
+    Ntot[t] <- sum(N.est[t,])
+    logNtot[t] <- log(Ntot[t])
+    }
+    for(t in 2:T)
+    {
+    lambda[t] <- Ntot[t]/Ntot[t-1]
+    }
+   } 
+   

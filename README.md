@@ -5,13 +5,14 @@ JARA (*Just Another Redlist Assessment*) builds on a Bayesian state-space framew
 
 The  current framework can deal with both census and relative abundance indices. JARA fits all available time series data simultaneously. If the time series is longer than than three generation times (GT) the %decline is automatically estimated from the last assessment year minus 3 x GT. If the time series is shorter than 3 x GT, JARA projects forward.
 
-Current examples include:
-+ African Penguin (Census)
-+ Cape gannet (census)
-+ Cape mountain zebra (census)
-+ Red steenbras (seabream, relative indices)
-+ Roman (seabream, relative indices)
-+ North Atlantic Shortfin mako shark (relative indices)
+Current examples include:  
+- [African Penguin](https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output) (Census)  
+- [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output) (census)  
+- [Cape mountain zebra](https://github.com/Henning-Winker/JARA/tree/master/Mountain_zebra/output) (census)  
+- [Red steenbras](https://github.com/Henning-Winker/JARA/tree/master/Red_steenbras/output) (seabream, relative indices)  
+- [Roman](https://github.com/Henning-Winker/JARA/tree/master/Roman/output) (seabream, relative indices)  
+- [North Atlantic Shortfin mako shark](https://github.com/Henning-Winker/JARA/tree/master/SMA_NA/output) (relative indices)  
 
-All examples can be run using the development `JARA_Prime.v1beta.R file` from which the JARA model `JARA.v1.beta.R` is executed.
+All examples can be run using the development [`JARA_Prime.v1beta.R file`](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1beta.R) from which the JARA model [`JARA.v1.beta.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA.v1beta.R) is executed.
 
+*Still needs a lot of beautification!*..... 

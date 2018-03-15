@@ -87,7 +87,7 @@ jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Nin
 # Initial values for jags
 inits <- function(){list(mean.r = rnorm(n.indices),isigma2.est=runif(1,20,100), itau2=runif(1,80,200), logN.est =matrix(log(rbind(Ninit,matrix(rep(NA,(nT-1)*n.indices),(nT-1),n.indices))),nT,n.indices))  }
 
-
+qs = 1:n.indices
 
 # Parameters monitored
 parameters <- c("mean.r","sigma","r","logNtot", "N.est","Ntot","lambda")
@@ -166,8 +166,8 @@ if(sigma.est==TRUE){
 cat("  
      # Process variance prior
      isigma2.est ~ dgamma(igamma[1],igamma[2])
-    pen.sigma <- ifelse(sigma>0.2,log(sigma)-log(0.2),0) 
-    penSig  ~ dnorm(pen.sigma,1000)
+    pen.sigma <- ifelse(sigma>1,log(sigma)-log(1),0) 
+    penSig  ~ dnorm(pen.sigma,pow(0.2,-2))
     
 
     # Likelihood
@@ -220,7 +220,7 @@ if(abundance=="relative"){
   
   #find first time-series with first CPUE
   q1.y = c(1:length(year))[is.na(apply(I_y,1,mean,na.rm=TRUE))==FALSE][1] #first year with CPUE
-  q1.I =  1#which.max(I_y[q1.y,])
+  q1.I =  which.max(I_y[q1.y,])
   qs = c(q1.I,c(1:(ncol(I_y)))[-q1.I])
   
   qI_y = as.matrix(I_y[,qs])
@@ -509,3 +509,4 @@ legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
 text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.02),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=1)
 
 dev.off()
+
