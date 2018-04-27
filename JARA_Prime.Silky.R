@@ -23,9 +23,9 @@ library("fitdistrplus")
 #-----------------------------------------------------------------
 # Set Working directory file, where assessments are stored 
 File = "C:/Work/Research/Github/JARA/"
-# Set working directory for JABBA R source code
+# Set working directory for JARA R source code
 JARA.file = "C:/Work/Research/GitHub/JARA"
-# JABBA version
+# JARA version
 version = "v1.2beta"
 # select number of data_set in assessments 
 SP = 1
