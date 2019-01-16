@@ -6,7 +6,7 @@ JARA (*Just Another Redlist Assessment*) builds on a Bayesian state-space framew
 The  current framework can deal with both census and relative abundance indices. JARA fits all available time series data simultaneously. If the time series is longer than than three generation times (GT) the %decline is automatically estimated from the last assessment year minus 3 x GT. If the time series is shorter than 3 x GT, JARA projects forward.
 
 Current examples include:  
-- [African Penguin](https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output) (Census)  
+- [African Penguin]https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output1) (Census)  
 - [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output) (census)  
 - [Cape mountain zebra](https://github.com/Henning-Winker/JARA/tree/master/Mountain_zebra/output) (census)  
 - [Red steenbras](https://github.com/Henning-Winker/JARA/tree/master/Red_steenbras/output) (seabream, relative indices)  
