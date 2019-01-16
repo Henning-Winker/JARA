@@ -1,0 +1,35 @@
+$assessment
+[1] StripedMarlin.IOTC
+Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin SMA_Natl StripedMarlin.IOTC
+
+$abundance
+[1] relative
+Levels: census relative
+
+$generation.time
+[1] 5.2
+
+$K.penalty
+[1] FALSE
+
+$sigma.obs.est
+[1] TRUE
+
+$sigma.obs.add
+[1] 0.1
+
+$sigma.proc.fixed
+[1] FALSE
+
+$prjr.type
+[1] "all"
+
+$proj.stoch
+[1] FALSE
+
+$start.year
+[1] 1976
+
+$end.year
+[1] 2017
+
