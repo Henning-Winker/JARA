@@ -6,13 +6,14 @@ JARA (*Just Another Redlist Assessment*) builds on a Bayesian state-space framew
 The  current framework can deal with both census and relative abundance indices. JARA fits all available time series data simultaneously. If the time series is longer than than three generation times (GT) the %decline is automatically estimated from the last assessment year minus 3 x GT. If the time series is shorter than 3 x GT, JARA projects forward.
 
 Current examples include:  
-- [African Penguin]https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output1) (Census)  
-- [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output) (census)  
-- [Cape mountain zebra](https://github.com/Henning-Winker/JARA/tree/master/Mountain_zebra/output) (census)  
-- [Red steenbras](https://github.com/Henning-Winker/JARA/tree/master/Red_steenbras/output) (seabream, relative indices)  
-- [Roman](https://github.com/Henning-Winker/JARA/tree/master/Roman/output) (seabream, relative indices)  
-- [North Atlantic Shortfin mako shark](https://github.com/Henning-Winker/JARA/tree/master/SMA_NA/output) (relative indices)  
+- [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output1) (census)  
+- [African Penguin](https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output1) (Census)  
+- [Chinstrap penguin](https://github.com/Henning-Winker/JARA/tree/master/Chin_penguin/output1) (Census)  
+- [North Atlantic Shortfin mako shark](https://github.com/Henning-Winker/JARA/tree/master/SMA_NAtl/output1) (relative indices)  
+- [South Atlantic blue shark](https://github.com/Henning-Winker/JARA/tree/master/BSH_SAtl/output1) (relative indices)  
+- [Indian Ocean striped marlin](https://github.com/Henning-Winker/JARA/tree/master/StripedMarlin.IOTC/output1) (relative indices)  
 
-All examples can be run using the development [`JARA_Prime.v1beta.R file`](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1beta.R) from which the JARA model [`JARA.v1.beta.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA.v1beta.R) is executed.
+
+All examples can be run using the development [`JARA_Prime.v1.3beta.R file`](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1.3beta.R) from which the JARA model [`JARA.v1.3beta.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA.v1.3beta.R) is executed.
 
 *Still needs a lot of beautification!*..... 
