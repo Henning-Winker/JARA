@@ -23,7 +23,7 @@ if(exists("SE.I")==FALSE) SE.I = FALSE
 if(exists("K")==FALSE) K=FALSE   
 if(exists("sigma.est")==FALSE) sigma.est=TRUE   
 if(exists("fixed.obsE")==FALSE) fixed.obsE=0.1   
-if(exists("proj.eval")==FALSE) proj.eval="all"   
+if(exists("prjr.type")==FALSE) prjr.type="all"   
 if(exists("proj.stoch")==FALSE) proj.stoch=FALSE   
 if(exists("proc.pen")==FALSE){
   if(abundance=="census"){
@@ -52,8 +52,8 @@ if(sigma.proc.fixed==FALSE){
 }else{
   sigma.proc = 0.1 #IF Fixed: typicallly 0.05-0.15 (see Ono et al. 2012)
 }
-if(is.null(K.manual)==FALSE){
-if(K.manual==FALSE) K.manual=NULL 
+if(is.null(K.manual)[1]==FALSE){
+if(K.manual[1]==FALSE) K.manual=NULL 
 }
 # JABBA color palette
 jabba.colors = as.character(c('#e6194b', "#3cb44b", "#ffe119",
@@ -114,8 +114,20 @@ if(SE.I==FALSE){
 # Carrying capacity settings
 if(Klim==FALSE) Ks = 5
 if(Klim==TRUE & is.null(K.manual)==TRUE) Ks = 1.25
-if(Klim==TRUE & is.null(K.manual)==FALSE) Ks = K.manual
-if(abundance=="census" & is.null(K.manual)==TRUE) Ks = rep(Ks,n.indices)
+if(Klim==TRUE & is.null(K.manual)==FALSE){
+  if(is.numeric(K.manual)==FALSE){
+    cat("ERROR: K.manual value(s) must be numeric")
+   }
+  Ks = K.manual  
+} 
+
+
+if(abundance=="census"){
+  if(is.null(K.manual)==TRUE | length(Ks)==1){ Ks = rep(Ks,n.indices)} 
+  
+  if(n.indices!=length(Ks))  cat("ERROR: K.manual value(s) must match the number of subpopulations") 
+  }
+
 #Start Year
 styr = years[1]
 # prediction years 
@@ -289,7 +301,7 @@ if(proj.stoch==FALSE){
     for (i in 1:nI){
     for(t in EY:(T-1)){
     rdev[t,i] ~ dnorm(0, isigma2)T(proc.pen[2],proc.pen[3])
-    r[t,i] <- ifelse(logN.est[t,i]>max(logN.est[1:(EY-1),i])+log(Ks[i]),0,r.proj[i]+ rdev[t,i]-0.5*sigma2) 
+    r[t,i] <- ifelse(logN.est[t,i]>max(logN.est[1:(EY-1),i])+log(Ks[i]),-0.01,r.proj[i]+ rdev[t,i]-0.5*sigma2) 
     }}
     ",append=TRUE)  
     }
@@ -825,7 +837,12 @@ abundance.est=data.frame(yr=year,Type=abundance,estimation=ifelse(year %in% year
 if(abundance=="census"){
   r.i = posteriors$mean.r
   colnames(r.i) = paste0("r.",names(dat[,-1]))
-  abund.i = data.frame(rbind(fitted,matrix(NA,nrow=pyears,ncol=n.indices)))
+  abund.i = mat.or.vec(nT,n.indices)  
+  for(i in 1:n.indices){
+  for (t in 1:nT){
+        abund.i[t,i] <- median(posteriors$N.est[,t,i])}}
+  
+  
   colnames(abund.i) = names(dat[,-1])
   abundance.est = data.frame(abundance.est,abund.i)
   }

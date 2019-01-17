@@ -1,5 +1,5 @@
 $assessment
-[1] Afr_penguin
+[1] Mountain_zebra
 Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin Mountain_zebra SMA_Natl StripedMarlin.IOTC
 
 $abundance
@@ -7,7 +7,7 @@ $abundance
 Levels: census relative
 
 $generation.time
-[1] 9.9
+[1] 15
 
 $K.penalty
 [1] FALSE
@@ -29,8 +29,8 @@ $proj.stoch
 [1] FALSE
 
 $start.year
-[1] 1979
+[1] 1985
 
 $end.year
-[1] 2017
+[1] 2015
 

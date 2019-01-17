@@ -1,7 +1,8 @@
-assessment,run,abundance,generation.time,project.r,start.year,end.year,index.se,sigma.obs.est ,sigma.obs.add,sigma.proc.fixed,stochastic.projection,Klim,K.manual
-Chin_penguin,1,census,9.9,all,NA,NA,FALSE,TRUE,0.1,FALSE,FALSE,FALSE,FALSE
-Afr_penguin,1,census,9.9,all,NA,NA,FALSE,TRUE,0.1,FALSE,FALSE,FALSE,FALSE
-Cape_gannet,1,census,20.2,all,NA,NA,FALSE,TRUE,0.1,FALSE,FALSE,FALSE,FALSE
-SMA_Natl,1,relative,20,all,NA,NA,TRUE,TRUE,0.1,FALSE,FALSE,FALSE,FALSE
-BSH_SAtl,1,relative,10,all,NA,NA,TRUE,TRUE,0.01,FALSE,FALSE,FALSE,FALSE
-StripedMarlin.IOTC,1,relative,5.2,all,NA,NA,TRUE,TRUE,0.1,FALSE,FALSE,FALSE,FALSE
+assessment,run,abundance,generation.time,start.year,end.year,index.se,sigma.obs.est ,sigma.obs.add,sigma.proc.fixed,project.r,stochastic.projection,Klim,K.manual
+Chin_penguin,1,census,9.9,NA,NA,FALSE,TRUE,0.1,FALSE,all,FALSE,FALSE,FALSE
+Afr_penguin,1,census,9.9,NA,NA,FALSE,TRUE,0.1,FALSE,all,FALSE,FALSE,FALSE
+Cape_gannet,1,census,20.2,NA,NA,FALSE,TRUE,0.1,FALSE,all,FALSE,FALSE,FALSE
+SMA_Natl,1,relative,20,NA,NA,TRUE,TRUE,0.1,FALSE,all,FALSE,FALSE,FALSE
+BSH_SAtl,1,relative,10,NA,NA,TRUE,TRUE,0.01,FALSE,all,FALSE,FALSE,FALSE
+StripedMarlin.IOTC,1,relative,5.2,NA,NA,TRUE,TRUE,0.1,FALSE,all,FALSE,FALSE,FALSE
+Mountain_zebra,1,census,15,NA,NA,FALSE,TRUE,0.1,FALSE,all,FALSE,TRUE,TRUE
