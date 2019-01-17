@@ -9,7 +9,7 @@ Current examples include:
 - [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output1) (census)  
 - [African Penguin](https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output1) (Census)  
 - [Chinstrap penguin](https://github.com/Henning-Winker/JARA/tree/master/Chin_penguin/output1) (Census)  
-- [Mountain_Zebra](https://github.com/Henning-Winker/JARA/tree/master/Mountain_zebra/output1) (Census, Carrying Capacity option) 
+- [Mountain Zebra](https://github.com/Henning-Winker/JARA/tree/master/Mountain_Zebra/output1) (Census, Carrying Capacity option) 
 - [North Atlantic Shortfin mako shark](https://github.com/Henning-Winker/JARA/tree/master/SMA_NAtl/output1) (relative indices)  
 - [South Atlantic blue shark](https://github.com/Henning-Winker/JARA/tree/master/BSH_SAtl/output1) (relative indices)  
 - [Indian Ocean striped marlin](https://github.com/Henning-Winker/JARA/tree/master/StripedMarlin.IOTC/output1) (relative indices)  
