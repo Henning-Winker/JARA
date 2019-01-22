@@ -1,6 +1,6 @@
 $assessment
 [1] BSH_SAtl
-Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin SMA_Natl StripedMarlin.IOTC
+7 Levels: Afr_penguin BSH_SAtl Cape_gannet ... StripedMarlin.IOTC
 
 $abundance
 [1] relative
@@ -22,7 +22,8 @@ $sigma.proc.fixed
 [1] FALSE
 
 $prjr.type
-[1] "all"
+[1] all
+Levels: all
 
 $proj.stoch
 [1] FALSE
