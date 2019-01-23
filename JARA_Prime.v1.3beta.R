@@ -34,7 +34,7 @@ sp.assess = read.csv(paste0(File,"/jara.assessments.csv"))
 print(data.frame(Assessment.list=sp.assess[,1]))
 
 # Select assessment species
-for(sp in 1:2){
+for(sp in 2:2){
 spsel= sp.assess[sp,]
 
 #-----------------------------------------------------------------
@@ -77,7 +77,7 @@ if(SE.I ==TRUE){
 #><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
 if(abundance=="census"){
 # MCMC settings
-ni <- 1100 # Number of iterations
+ni <- 6000 # Number of iterations
 nt <- 1 # Steps saved
 nb <- 1000 # Burn-in
 } else {

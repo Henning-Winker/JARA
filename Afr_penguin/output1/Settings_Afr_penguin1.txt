@@ -1,6 +1,6 @@
 $assessment
 [1] Afr_penguin
-7 Levels: Afr_penguin BSH_SAtl Cape_gannet ... StripedMarlin.IOTC
+7 Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin Mountain_zebra ... StripedMarlin.IOTC
 
 $abundance
 [1] census

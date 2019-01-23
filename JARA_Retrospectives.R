@@ -38,8 +38,8 @@ sp = 3
 spsel= sp.assess[sp,]
 
 # RETROSPECTIVES LOOP
-nback = c(0,2,4,6,8,10)
-#nback = 0:10 # For Marlin
+#nback = c(0,2,4,6,8,10)
+nback = 0:13
 for(step in 1:length(nback)){
 
 #-----------------------------------------------------------------
@@ -105,7 +105,7 @@ source(paste0(JARA.file,"/JARA.",version,".R"))
 dat = read.csv(paste0(File,"/",assessment,"/",assessment,".csv"))#[,-3]
 jara.retro = list()
 runs = NULL
-for(step in 1:length(nback)){
+for(step in 1:(length(nback))){
 end.year = max(dat[,1])
 if(nback[step]>0) end.year = end.year-nback[step] 
 run = end.year
@@ -189,7 +189,7 @@ xlim=c(0.5,length(runs)+0.5)
   lines(ts$yr,ts$total,col=cols[j-1],lwd=2,lty=1)
   }
   lines(yr,trend$total,lwd=2)
-  legend(ifelse(trend$total[1]<trend$total[length(yr)],"topleft","topright"),paste(runs),col=c(1,cols),bty="n",cex=0.8,lwd=c(2))
+  legend(ifelse(trend$total[1]<trend$total[length(yr)],"topleft","topright"),paste(runs),col=c(1,cols),bty="n",cex=0.7,lwd=c(2))
   dev.off()
   
   

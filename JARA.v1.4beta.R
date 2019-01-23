@@ -22,7 +22,8 @@ if(is.na(start.year)) start.year = dat[1,1]
 if(is.na(end.year)) end.year = dat[nrow(dat),1]   
 if(exists("SE.I")==FALSE) SE.I = FALSE   
 if(exists("K")==FALSE) K=FALSE   
-if(exists("A1")==FALSE) A1=FALSE   
+if(exists("A1")==FALSE) A1=FALSE 
+if(exists("plot.width")==FALSE) plot.width=5   
 if(exists("sigma.est")==FALSE) sigma.est=TRUE   
 if(exists("fixed.obsE")==FALSE) fixed.obsE=0.1   
 if(exists("prjr.type")==FALSE) prjr.type="all"   
@@ -133,8 +134,8 @@ if(abundance=="census"){
 #Start Year
 styr = years[1]
 # prediction years 
-pyears = ifelse(GT3>(n.years+2),GT3-n.years+2,1) # +2 required for avergaging start + end with y = -1 and +1 
-if(GT3==n.years |GT3==n.years+1) pyears = 2
+pyears = max(GT3+2-n.years,1) # Fixed
+
 
 # set up year vectors
 year <- years[1]:(years[length(years)] + pyears)
@@ -644,7 +645,7 @@ Nhigh[t] = quantile(posteriors$Ntot[,t],0.975)
 
 #Abundance FITS
 Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
-png(file = paste0(output.dir,"/Fits_",assessment,".png"), width = 4.5, height = 4, 
+png(file = paste0(output.dir,"/Fits_",assessment,".png"), width = plot.width, height = 4, 
     res = 200, units = "in")
 par(Par)
 
@@ -666,6 +667,7 @@ for(i in 1:n.indices)
 lines(years,fitted[,i], type = "l",col=col_line[i], lwd=1)
 points(years,dat[,i+1], bg = col_line[i],pch=21) 
 }
+posl = c(max(fitted[1,]),max(fitted[length(years),]))
 } else {  
 plot(0, 0, ylim = c(m1, m2), xlim =  c(min(years-1),max(years+1)), ylab = "Abudance Index", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
 cs = sample(seq(80,90,1))
@@ -681,13 +683,15 @@ for(i in 1:n.indices)
 points(year,I_y[,qs[i]]/q.adj[i], bg = col_line[i],col=col_line[i],pch=21,type="b") 
 }
 lines(years,fitted, type = "l",col=1, lwd=2)
+posl = c(max(fitted[1]),max(fitted[length(years)]))
 }
-legend('topleft', legend = c("Fit",paste(indices[qs])), lty = c(1, rep(-1,n.indices)), lwd = c(2, rep(-1,n.indices)),pch=c(-1,rep(21,n.indices)), pt.bg = c(1,col_line), bty = "n", cex = 1)
+ 
+legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(runs), legend = c("Fit",paste(indices[qs])), lty = c(1, rep(-1,n.indices)), lwd = c(2, rep(-1,n.indices)),pch=c(-1,rep(21,n.indices)), pt.bg = c(1,col_line), bty = "n", cex = 0.9,y.intersp = 0.8)
 axis(1,at=seq(min(years),max(years)+5,5),tick=seq(min(year),max(year),5))
 dev.off()
 
 Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
-png(file = paste0(output.dir,"/PopTrend_",assessment,".png"), width = 4.5, height = 4, 
+png(file = paste0(output.dir,"/PopTrend_",assessment,".png"), width = plot.width, height = 4, 
     res = 200, units = "in")
 par(Par)
 
@@ -712,7 +716,7 @@ dev.off()
 
 #### IUCN plot
 Par = list(mfrow=c(1,1),mar = c(0.5, 1, 1, 1), mgp =c(2.5,1,0),mai = c(0.5, 0.3, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.8)
-png(file = paste0(output.dir,"/IUCNplot_",assessment,".png"), width = 4.5, height = 4, 
+png(file = paste0(output.dir,"/IUCNplot_",assessment,".png"), width = plot.width, height = 4, 
     res = 200, units = "in")
 par(Par)
 change = (apply(posteriors$Ntot[,(mp.assess[2]-1):(mp.assess[2]+1)],1,median)/apply(posteriors$Ntot[,(mp.assess[1]-1):(mp.assess[1]+1)],1,median)-1)*100
@@ -819,7 +823,7 @@ dev.off()
 # Observed Population Trajectory without Projections
 #---------------------------------------------------
 Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
-png(file = paste0(output.dir,"/PopObsYrs_",assessment,".png"), width = 4.5, height = 4, 
+png(file = paste0(output.dir,"/PopObsYrs_",assessment,".png"), width = plot.width, height = 4, 
     res = 200, units = "in")
 par(Par)
 
@@ -853,7 +857,7 @@ if(abundance=="census"){
   }
 categories = c("CR","EN","VU","LC")  
 percentages = c(CR,EN,VU,LC)
-status= ifelse(which(categories==max(categories))==4 & max(categories)<50,"NT",categories[which(percentages==max(percentages))])
+status= ifelse(which(percentages==max(percentages))==4 & max(percentages)<50,"NT",categories[which(percentages==max(percentages))])
 jara = list(settings=Settings,data=jags.data,parameters=pars,trends=trends,abundance=abundance.est,perc.risk=data.frame(CR=CR,EN=EN,VU=VU,LC=LC) ,status=status)
 save(jara,file=paste0(output.dir,"/jara.",assessment,".rdata"))
 

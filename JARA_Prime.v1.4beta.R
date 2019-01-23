@@ -56,7 +56,7 @@ proj.stoch = spsel$stochastic.projection # c(FALSE, TRUE), FALSE is default
 start.year = spsel$start.year # numeric, NA takes all years
 end.year = spsel$end.year # numeric, NA takes all years
 A1 = spsel$A1
-
+plot.width = 5 # default is 5 inches
 #--------------------------------------------------
 # Read csv files
 #--------------------------------------------------

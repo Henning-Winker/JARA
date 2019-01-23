@@ -146,6 +146,8 @@ if(prjr.type=="all" | prjr.type=="mean"){
 prjr = 1:n.years
 } else if(prjr.type=="GT1" & GT1 >=n.years) {
 prjr = (n.years-GT1+1):n.years  
+} else if(prjr.type=="GT1" & GT1 < n.years){
+prjr = 1:n.years  
 } else {
 prjr.st = round(as.numeric(prjr.type),0)  
 prjr = (n.years-prjr.st+1):n.years
@@ -156,6 +158,8 @@ I_y= rbind(I_y,matrix(NA,pyears,(n.indices))) # now always
 # No Zero allowed in log modell
 I_y[I_y==0]=1
 se2= rbind(se2,matrix(0.1,pyears,(n.indices))) # now always
+
+
 
 
 #><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
