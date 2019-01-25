@@ -34,7 +34,7 @@ sp.assess = read.csv(paste0(File,"/jara.assessments.csv"))
 print(data.frame(Assessment.list=sp.assess[,1]))
 
 # Select assessment species
-sp = 3
+sp = 12
 spsel= sp.assess[sp,]
 
 # RETROSPECTIVES LOOP

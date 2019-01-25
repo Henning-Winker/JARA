@@ -1,0 +1,36 @@
+$assessment
+[1] St_Joseph
+10 Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin Mountain_zebra ... Yellowspot_skate
+
+$abundance
+[1] relative
+Levels: census relative
+
+$generation.time
+[1] 10.9
+
+$K.penalty
+[1] FALSE
+
+$sigma.obs.est
+[1] TRUE
+
+$sigma.obs.add
+[1] 0.1
+
+$sigma.proc.fixed
+[1] FALSE
+
+$prjr.type
+[1] all
+Levels: all
+
+$proj.stoch
+[1] FALSE
+
+$start.year
+[1] 1991
+
+$end.year
+[1] 2017
+

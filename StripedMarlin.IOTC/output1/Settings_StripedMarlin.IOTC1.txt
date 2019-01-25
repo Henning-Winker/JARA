@@ -1,6 +1,6 @@
 $assessment
 [1] StripedMarlin.IOTC
-7 Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin Mountain_zebra ... StripedMarlin.IOTC
+10 Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin Mountain_zebra ... Yellowspot_skate
 
 $abundance
 [1] relative
