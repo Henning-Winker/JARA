@@ -1,6 +1,6 @@
 $assessment
 [1] Whitespotted_houndshark
-13 Levels: Afr_penguin Bluemarlin_Atl Bluemarlin_ICCAT BSH_SAtl ... Yellowspot_skate
+13 Levels: Afr_penguin Bluemarlin_Atl Bluemarlin_ICCAT BSH_SAtl Cape_gannet ... Yellowspot_skate
 
 $abundance
 [1] relative

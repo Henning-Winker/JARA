@@ -1,6 +1,6 @@
 $assessment
 [1] Yellowspot_skate
-10 Levels: Afr_penguin BSH_SAtl Cape_gannet Chin_penguin Mountain_zebra ... Yellowspot_skate
+13 Levels: Afr_penguin Bluemarlin_Atl Bluemarlin_ICCAT BSH_SAtl Cape_gannet ... Yellowspot_skate
 
 $abundance
 [1] relative
