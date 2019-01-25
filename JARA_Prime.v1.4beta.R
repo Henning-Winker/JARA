@@ -34,7 +34,7 @@ sp.assess = read.csv(paste0(File,"/jara.assessments.csv"))
 print(data.frame(Assessment.list=sp.assess[,1]))
 
 # Select assessment species
-for(sp in 1:14){
+for(sp in 1:13){
 spsel= sp.assess[sp,]
 
 #-----------------------------------------------------------------

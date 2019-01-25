@@ -111,8 +111,28 @@ if(SE.I==FALSE){
 } else{
   conv.se = as.numeric(as.matrix(se[,-1]))
   #conv.se = sqrt(conv.se^2+fixed.obsE^2) 
-  se2 = matrix(ifelse(is.na(conv.se),rep(0.3,length(conv.se)),conv.se)^2,n.years,n.indices)+fixed.obsE^2#/2
+  se2 = matrix(ifelse(is.na(conv.se),rep(0.01,length(conv.se)),conv.se)^2,n.years,n.indices)+fixed.obsE^2#/2
 }
+
+#------------------------------------------------------
+# All input da5a plot + CIs
+#------------------------------------------------------
+
+Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.5, 0.5, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
+png(file = paste0(output.dir,"/AbundanceData_",assessment,".png"), width = plot.width, height = 4, 
+    res = 200, units = "in")
+par(Par)
+options(warn=-1)
+Ylim = c(0, max(exp(log(dat[,-1])+1.96*sqrt(se2))  ,na.rm =T))
+plot(dat[,1],dat[,1],type="n",ylab=ifelse(abundance=="census","Counts","Abunance Index"),xlab="Year",ylim=Ylim)
+for(j in 1:ncol(I_y)){
+  plotCI(x = dat[,1]+runif(1,-0.2,0.2),y = dat[,j+1],type="b",ui=ifelse(is.na(dat[,j+1]),NA,exp(log(dat[,j+1])+1.96*sqrt(se2[,j]))) ,li=ifelse(is.na(dat[,j+1]),NA,exp(log(dat[,j+1])-1.96*sqrt(se2[,j]))),gap=0.1,pch=21,cex=1.2,col=grey(0.4,0.7),pt.bg=jabba.colors[j],add=T)
+}
+posl = c(max(dat[1:3,-1],na.rm=T),max(dat[(length(years)):length(years),-1],na.rm=T))
+legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(names(dat)[2:(n.indices+1)]), lty = c(1, rep(n.indices)), lwd = c(2, rep(-1,n.indices)),pch=c(-1,rep(21,n.indices)), pt.bg = c(1,jabba.colors[1:n.indices]), bty = "n", cex = 0.9,y.intersp = 0.8)
+dev.off()
+options(warn=0)
+
 
 # Carrying capacity settings
 if(Klim==FALSE) Ks = 5
@@ -644,7 +664,7 @@ Nhigh[t] = quantile(posteriors$Ntot[,t],0.975)
 }
 
 #Abundance FITS
-Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
+Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.5, 0.5, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
 png(file = paste0(output.dir,"/Fits_",assessment,".png"), width = plot.width, height = 4, 
     res = 200, units = "in")
 par(Par)
@@ -655,7 +675,7 @@ m2 <- max(c(fitted, upper*1.1), na.rm = TRUE)
 
 
 if(abundance=="census"){
-plot(0, 0, ylim = c(m1, m2), xlim = c(min(years-1),max(years+1)), ylab = "Population size", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
+plot(0, 0, ylim = c(m1, m2), xlim = c(min(years-1),max(years+1)), ylab = "Population Numbers", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
 cs = sample(seq(80,90,1))
 cols=paste0("gray",cs)
 col_line <- jabba.colors
@@ -690,7 +710,7 @@ legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(runs), legend = c("Fit
 axis(1,at=seq(min(years),max(years)+5,5),tick=seq(min(year),max(year),5))
 dev.off()
 
-Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
+Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.5, 0.5, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
 png(file = paste0(output.dir,"/PopTrend_",assessment,".png"), width = plot.width, height = 4, 
     res = 200, units = "in")
 par(Par)
@@ -699,7 +719,7 @@ par(Par)
 m1 <- 0
 m2 <- max(Nhigh, na.rm = TRUE)
 
-plot(0, 0, ylim = c(m1, m2), xlim = c(min(year-1),max(year+1)), ylab = "Total population size", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxt="n",xaxs="i",yaxs="i")
+plot(0, 0, ylim = c(m1, m2), xlim = c(min(year-1),max(year+1)), ylab = paste("Population",ifelse(abundance=="census","size","trend")), xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxt="n",xaxs="i",yaxs="i")
 axis(1,at=seq(min(year),max(year)+5,5),tick=seq(min(year),max(year),5))
 
 polygon(x = c(year,rev(year)), y = c(Nlow,rev(Nhigh)), col = gray(0.6,0.3), border = "gray90")
@@ -707,11 +727,13 @@ polygon(x = c(year,rev(year)), y = c(Nlow,rev(Nhigh)), col = gray(0.6,0.3), bord
 polygon(x = c(1:end.yr,end.yr:1), y = c(Nlow[1:end.yr],Nhigh[end.yr:1]), col = gray(0.7,0.3),border = "gray90")
 lines(year[end.yr:nT],Nfit[end.yr:nT], type = "l",col=2, lwd=2,lty=5)
 lines(years,Nfit[1:end.yr], type = "l",col=1,lwd=2)
-
-
-lines(rep(year[max(mp.assess[1],1)],2),c(0,m2),lty=2)
-lines(rep(year[mp.assess[2]],2),c(0,m2),lty=2)
-
+lines(rep(year[max(mp.assess[1],1)],2),c(0,m2*.93),lty=2,col=2)
+lines(rep(year[max(mp.assess[2],1)]-GT,2),c(0,m2*.93),lty=2,col=4)
+lines(rep(year[max(mp.assess[2],1)]-2*GT,2),c(0,m2*.93),lty=2,col=3)
+lines(rep(year[mp.assess[2]],2),c(0,m2)*.93,lty=2)
+text(year[max(mp.assess[1],1)],m2*.96,"-3xGT")
+text(year[max(mp.assess[2],1)]-2*GT,m2*.96,"-2xGT")
+text(year[max(mp.assess[2],1)]-GT,m2*.96,"-1xGT")
 dev.off()
 
 #### IUCN plot
@@ -746,15 +768,15 @@ polygon(c(x5,rev(x5)),c(rep(maxy,2),rep(0,2)),col="red",border="red")
 
 polygon(c(x1,rev(x1)),c(y1,rep(0,length(y1))),col="grey")
 axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
-mtext(paste("Density"), side=2, outer=T, at=0.55,line=-1.2,cex=0.9)
-mtext(paste("Change (%)"), side=1, outer=T, at=0.5,line=-1.5,cex=0.9)
+mtext(paste("Density"), side=2, outer=T, at=0.55,line=-1.2,cex=0.8)
+mtext(paste("Change (%)"), side=1, outer=T, at=0.5,line=-1.5,cex=0.8)
 legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
                  paste0("VU (",VU,"%)"),paste0("LC (",LC,"%)")),col=1,pt.bg=c("red","orange","yellow","green"),pt.cex=1.4,pch=22,bg="white",cex=0.9)
 text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.02),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=1)
 dev.off()
 # End IUCN Plot
 
-Par = list(mfrow=c(1,2),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
+Par = list(mfrow=c(1,2),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.5, 0.5, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
 png(file = paste0(output.dir,"/AnnualRates_",assessment,".png"), width = 8, height = 4, 
     res = 200, units = "in")
 par(Par)
@@ -817,24 +839,6 @@ abline(v=0,lty=2)
 axis(2,labels = FALSE)
 
 legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(rs,2,median),3)>0,"+",""),round(apply(rs,2,median),3)),pch=15,col=c(jcol),bty="n")
-dev.off()
-
-#---------------------------------------------------
-# Observed Population Trajectory without Projections
-#---------------------------------------------------
-Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
-png(file = paste0(output.dir,"/PopObsYrs_",assessment,".png"), width = plot.width, height = 4, 
-    res = 200, units = "in")
-par(Par)
-
-# Total N
-m1 <- 0
-m2 <- max(Nhigh[1:n.years], na.rm = TRUE)
-plot(0, 0, ylim = c(m1, m2), xlim = c(min(years-1),max(years+1)), ylab = "Total population size", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxt="n",xaxs="i",yaxs="i")
-axis(1,at=seq(min(year),max(year)+10,5),tick=seq(min(year),max(year),5))
-polygon(x = c(years,rev(years)), y = c(Nlow[1:n.years],rev(Nhigh[1:n.years])), col = gray(0.5,0.5), border = "gray90")
-#add trend
-lines(years,Nfit[1:end.yr], type = "l",col=1,lwd=2)
 dev.off()
 
 #><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
