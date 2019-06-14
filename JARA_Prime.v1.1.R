@@ -42,7 +42,7 @@ print(data.frame(Assessment.list=sp.assess[,1]))
 #specs = c(3,4) # select specific species from list
 specs = 1:nrow(sp.assess) # select all species
 
-specs = 7
+# Loop over selected species
 for(sp in specs){
 spsel= sp.assess[sp,]
 
