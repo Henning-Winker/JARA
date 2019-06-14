@@ -1,11 +1,16 @@
 
 
 ##############################################################################
-# JARA: Just Another Redlist tool
-# Bayesian state-space approach for trend analysis 
-# Developed by: Henning Winker (henning.winker@gmail.com)
+# JARA: Just Another Redlisting Assessment
+# Bayesian state-space redlisting tool 
+# Model File: Run from Prime File (Settings)
+# Beta Development Version
+# Developed by: Henning Winker* & Richard Sherley**
+# * Department of Agriculture, Forestry and Fisheries (DAFF), ZAF \
+# Email: henning.winker@gmail.com
+# **University of Exeter, UK (richard.sherley@gmail.com)
+# Email: richard.sherley@gmail.com
 ##############################################################################
-
 
 cat(paste0("\n","><>><>><>><>><>><>><>><>><>><><>><>><>><>><>><>"))
 cat(paste0("\n","><> Set up model ",assessment," ",abundance," <><"))
@@ -77,13 +82,13 @@ cat(paste0("\n","><>><>><>><>><>><>><>><>","\n","\n"))
 output.dir = paste0(File,"/",assessment,"/output",run)
 dir.create(output.dir,showWarnings = FALSE)
 # For only using data corresponding to 3 x generation  
-# Set GT3.dat =TRUE and GT3.dat =FALSE otherwise 
+# Set GL3.dat =TRUE and GL3.dat =FALSE otherwise 
 
-GT1 = round(GT,0) # rounded for r.recent
-GT3 = round(3*GT,0) # 3 x GT rounded for year steps
+GL1 = round(GL,0) # rounded for r.recent
+GL3 = round(3*GL,0) # 3 x GL rounded for year steps
 
-GT3.dat = FALSE
-if(GT3.dat==TRUE) dat = dat[(nrow(dat)-GT3):nrow(dat),]
+GL3.dat = FALSE
+if(GL3.dat==TRUE) dat = dat[(nrow(dat)-GL3):nrow(dat),]
 
 cat(paste0("\n","><> Prepare input data <><","\n","\n"))
 indices = names(dat)[2:ncol(dat)]
@@ -157,7 +162,7 @@ if(abundance=="census"){
 #Start Year
 styr = years[1]
 # prediction years 
-pyears = max(GT3+2-n.years,1) # Fixed
+pyears = max(GL3+2-n.years,1) # Fixed
 
 
 # set up year vectors
@@ -165,14 +170,14 @@ year <- years[1]:(years[length(years)] + pyears)
 yr = years[1]:(years[length(years)])
 
 nT = length(year)
-mp.assess = c(nT-GT3,nT-1)     #start and end midpoints for population trend assessment
+mp.assess = c(nT-GL3,nT-1)     #start and end midpoints for population trend assessment
 
 #define the r type used for projections
 if(prjr.type=="all" | prjr.type=="mean"){
 prjr = 1:n.years
-} else if(prjr.type=="GT1" & GT1 >=n.years) {
-prjr = (n.years-GT1+1):n.years  
-} else if(prjr.type=="GT1" & GT1 < n.years){
+} else if(prjr.type=="GL1" & GL1 >=n.years) {
+prjr = (n.years-GL1+1):n.years  
+} else if(prjr.type=="GL1" & GL1 < n.years){
 prjr = 1:n.years  
 } else {
 prjr.st = round(as.numeric(prjr.type),0)  
@@ -574,7 +579,7 @@ end.yr=n.years
 # remove scientific numbers
 options(scipen=999)
 
-if(n.years<GT1){
+if(n.years<GL1){
 WARN = paste0("\n","WARNING!!!","\n","-----------------------------------------------------\n",
 "\n","The projections are based on less than one Generation Time!",
 "\n","\n","The results are unreliable and MUST be interpreted with caution","\n","\n")
@@ -588,7 +593,7 @@ WARN = paste0("\n","WARNING!!!","\n","------------------------------------------
 Settings = NULL
 Settings$assessment = assessment
 Settings$abundance = abundance
-Settings$generation.time=GT
+Settings$generation.length=GL
 Settings$K.penalty=K
 index.se=SE.I
 Settings$sigma.obs.est=sigma.est
@@ -602,7 +607,8 @@ capture.output( Settings, file=paste0(output.dir,"/Settings_",assessment,run,".t
 #-------------------------------------------------------------------
 # Capture results
 posteriors=jara.mod$BUGSoutput$sims.list
-par.dat= data.frame(posteriors[parameters[c(1:2)]])
+if(abundance=="census"){sel.par=c(1:2)} else {sel.par=c(1:2,6)}
+par.dat= data.frame(posteriors[parameters[sel.par]])
 geweke = geweke.diag(data.frame(par.dat))
 pvalues <- 2*pnorm(-abs(geweke$z))
 pvalues
@@ -611,6 +617,10 @@ heidle = heidel.diag(data.frame(par.dat))
 # Capture Results
 results = round(t(cbind(apply(par.dat,2,quantile,c(0.025,0.5,0.975)))),3)
 pars = data.frame(Median = results[,2],LCI=results[,1],UCI=results[,3],Geweke.p=round(pvalues,3),Heidelberger.p=round(heidle[,3],3))
+if(abundance=="relative"){par.names = c("mu.r","sigma.proc",paste0("q.",indices[qs]))} else {
+  par.names = c(paste0("r.",indices[qs]),"sigma.proc")  
+}
+row.names(pars) = par.names
 write.csv(pars,paste0(output.dir,"/Parameters_",assessment,".csv"))
 
 
@@ -710,7 +720,7 @@ lines(years,fitted, type = "l",col=1, lwd=2)
 posl = c(max(fitted[1]),max(fitted[length(years)]))
 }
  
-legend(ifelse(posl[2]>m2-posl[2],"bottomright","topright"),paste(runs), legend = c("Fit",paste(indices[qs])), lty = c(1, rep(-1,n.indices)), lwd = c(2, rep(-1,n.indices)),pch=c(-1,rep(21,n.indices)), pt.bg = c(1,col_line), bty = "n", cex = 0.9,y.intersp = 0.8)
+legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(names(dat)[2:(n.indices+1)]), lty = c(1, rep(n.indices)), lwd = c(rep(-1,n.indices)),pch=c(rep(21,n.indices)), pt.bg = c(jabba.colors[1:n.indices]), bty = "n", cex = 0.9,y.intersp = 0.8)
 axis(1,at=seq(min(years)-1,max(years)+5,ceiling(n.years/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
 dev.off()
 
@@ -756,7 +766,7 @@ legend("bottomright",paste(runs), legend = c("Loess",paste(indices[qs])), lty = 
 dev.off()
 
 
-#log CPUE FITS
+#log Index FITS
 Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=0.8)
 png(file = paste0(output.dir,"/logFits_",assessment,".png"), width = 7, height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0), 
     res = 200, units = "in")
@@ -767,16 +777,16 @@ for(i in 1:n.indices){
   Yr = years
   Yr = min(Yr):max(Yr)
   yr = Yr-min(years)+1
-  if(abundance=="census"){fit = fitted[,i]} else {fit = fitted*q.adj[i]}
+  if(abundance=="census"){fit = fitted[,i]} else {fit = fitted*q.adj[[i]]}
   
-  I.i = I_y[is.na(I_y[,i])==F,i]
-  yr.i = Yr[is.na(I_y[,i])==F]
-  se.i = sqrt(se2[is.na(I_y[,i])==F,(i)])
+  I.i = I_y[is.na(I_y[,qs[i]])==F,qs[i]]
+  yr.i = Yr[is.na(I_y[,qs[i]])==F]
+  se.i = sqrt(se2[is.na(I_y[,qs[i]])==F,(i)])
   
-  ylim = log(c(min(fit[yr[is.na(I_y[,i])==F]]*0.8,exp(log(I.i)-1.96*se.i)), max(fit[yr[is.na(I_y[,i])==F]]*1.5,exp(log(I.i)+1.96*se.i))))
+  ylim = log(c(min(fit[yr[is.na(I_y[,qs[i]])==F]]*0.8,exp(log(I.i)-1.96*se.i)), max(fit[yr[is.na(I_y[,i])==F]]*1.5,exp(log(I.i)+1.96*se.i))))
   
   # Plot Observed vs predicted CPUE
-  plot(years,log(dat[,i+1]),ylab="",xlab="",ylim=ylim,xlim=range(yr.i),type='n',xaxt="n",yaxt="n")
+  plot(years,log(dat[,qs[i]+1]),ylab="",xlab="",ylim=ylim,xlim=range(yr.i),type='n',xaxt="n",yaxt="n")
   axis(1,labels=TRUE,cex=0.8)
   axis(2,labels=TRUE,cex=0.8)
   #polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
@@ -785,7 +795,7 @@ for(i in 1:n.indices){
   lines(years,log(fit),lwd=2,col=4)
   if(SE.I ==TRUE | max(se2)>0.01){ plotCI(yr.i,log(I.i),ui=log(exp(log(I.i)+1.96*se.i)),li=log(exp(log(I.i)-1.96*se.i)),add=T,gap=0,pch=21,xaxt="n",yaxt="n")}else{
     points(yr.i,log(I.i),pch=21,xaxt="n",yaxt="n",bg="white")}
-  legend('topright',paste(indices[i]),bty="n",y.intersp = -0.2,cex=1)
+  legend('topright',paste(indices[qs[i]]),bty="n",y.intersp = -0.2,cex=1)
 }
 
 mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
@@ -815,15 +825,15 @@ polygon(x = c(year,rev(year)), y = c(Nlow,rev(Nhigh)), col = gray(0.6,0.3), bord
 polygon(x = c(1:end.yr,end.yr:1), y = c(Nlow[1:end.yr],Nhigh[end.yr:1]), col = gray(0.7,0.3),border = "gray90")
 lines(year[end.yr:nT],Nfit[end.yr:nT], type = "l",col=2, lwd=2,lty=5)
 lines(years,Nfit[1:end.yr], type = "l",col=1,lwd=2)
-if(n.years-3*GT-1>0) lines(rep(year[n.years]-3*GT,2),c(0,m2*.93),lty=2,col=2)
-lines(rep(year[n.years]-1*GT,2),c(0,m2*.93),lty=2,col=4,lwd=2)
-lines(rep(year[n.years]-2*GT,2),c(0,m2*.93),lty=2,col=3,lwd=2)
+if(n.years-3*GL-1>0) lines(rep(year[n.years]-3*GL,2),c(0,m2*.93),lty=2,col=2)
+lines(rep(year[n.years]-1*GL,2),c(0,m2*.93),lty=2,col=4,lwd=2)
+lines(rep(year[n.years]-2*GL,2),c(0,m2*.93),lty=2,col=3,lwd=2)
 lines(rep(year[n.years],2),c(0,m2)*.93,lty=2,col=1,lwd=2)
 #lines(rep(year[mp.assess[2]],2),c(0,m2)*.93,lty=5,col=1)
 #lines(rep(year[mp.assess[1]],2),c(0,m2)*.93,lty=2)
-if(n.years-3*GT-1>0) text(year[n.years]-3*GT,m2*.96,"-3xGT",lwd=2)
-text(year[n.years]-2*GT,m2*.96,"-2xGT")
-text(year[n.years]-GT,m2*.96,"-1xGT")
+if(n.years-3*GL-1>0) text(year[n.years]-3*GL,m2*.96,"-3GL",lwd=2)
+text(year[n.years]-2*GL,m2*.96,"-2GL")
+text(year[n.years]-GL,m2*.96,"-1xGL")
 text(year[n.years],m2*.96,paste0(year[n.years]))
 dev.off()
 
@@ -873,16 +883,16 @@ png(file = paste0(output.dir,"/AnnualRate_",assessment,".png"), width = plot.wid
 par(Par)
 if(abundance=="census"){
 rs =  as.matrix(apply(posteriors$r.tot[,1:(n.years-1)],1,median))
-if(n.years>GT1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GT,0)+1):(n.years-1)],1,median))
-if(n.years>2*GT1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GT*2,0)+1):(n.years-1)],1,median))
-if(n.years>3*GT1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GT*3,0)+1):(n.years-1)],1,median))
+if(n.years>GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL,0)+1):(n.years-1)],1,median))
+if(n.years>2*GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL*2,0)+1):(n.years-1)],1,median))
+if(n.years>3*GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL*3,0)+1):(n.years-1)],1,median))
 
 
 } else {
 rs =  as.matrix(apply(posteriors$r[,1:(n.years-1)],1,median)) 
-if(n.years>GT) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GT,0)+1):(n.years-1)],1,median))
-if(n.years>2*GT) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GT*2,0)+1):(n.years-1)],1,median))
-if(n.years>3*GT) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GT*3,0)+1):(n.years-1)],1,median))
+if(n.years>GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL,0)+1):(n.years-1)],1,median))
+if(n.years>2*GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL*2,0)+1):(n.years-1)],1,median))
+if(n.years>3*GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL*3,0)+1):(n.years-1)],1,median))
 }
 
 lamdas = (exp(rs)-1)*100
@@ -900,7 +910,7 @@ assign(paste0("yr",i),den$y)
 rymax=c(rymax,max(den$y))
 rxrange = c(rxrange,range(den$x))
 }
-cnam = c("All.yrs","1xGT","2xGT","3xGT")  
+cnam = c("All.yrs","1GL","2GL","3GL")  
  
 jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
 plot(0,0,type="n",ylab="Density",xlab="Annual Rate of Change(%)",xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=quantile(lamdas,c(0.001,0.999)),xaxs="i",yaxs="i") 
@@ -967,7 +977,7 @@ write.csv(abundance.est,paste0(output.dir,"/Pop.trajectory.csv"),row.names = FAL
 #><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
 rm(proc.pen)
 cat(paste0("\n","><> Complete: ",assessment," - Run ",run," - Type: ",abundance," <><"))
-if(n.years<GT1){
+if(n.years<GL1){
 cat(paste0("\n","WARNING!!!"))
 cat(paste0("\n","The projections are based on less than one Generation Time!"))
 cat(paste0("\n","The results are unreliable and MUST be interpreted with caution"))

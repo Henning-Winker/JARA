@@ -3,7 +3,12 @@
 ##############################################################################
 # JARA: Just Another Redlisting Assessment
 # Bayesian state-space redlisting tool 
-# Developed by: Henning Winker
+# Retrospective Analysis Setup
+# Developed by: Henning Winker* & Richard Sherley**
+# * Department of Agriculture, Forestry and Fisheries (DAFF), ZAF \
+# Email: henning.winker@gmail.com
+# **University of Exeter, UK (richard.sherley@gmail.com)
+# Email: richard.sherley@gmail.com
 ##############################################################################
 
 rm(list=ls())
@@ -26,7 +31,7 @@ File = "C:/Work/Research/Github/JARA/"
 # Set working directory for JABBA R source code
 JARA.file = "C:/Work/Research/GitHub/JARA"
 # JABBA version
-version = "v1.4beta"
+version = "v1.1"
 
 # Read assessment species information file
 sp.assess = read.csv(paste0(File,"/jara.assessments.csv"))
@@ -34,34 +39,34 @@ sp.assess = read.csv(paste0(File,"/jara.assessments.csv"))
 print(data.frame(Assessment.list=sp.assess[,1]))
 
 # Select assessment species
-sp = 12
+sp = 1  # Here African Penguin
 spsel= sp.assess[sp,]
 
 # RETROSPECTIVES LOOP
-#nback = c(0,2,4,6,8,10)
-nback = 0:13
+nback = 0:11 # number of years back
 for(step in 1:length(nback)){
 
 #-----------------------------------------------------------------
 # Set up JARA
 #-----------------------------------------------------------------
-assessment = spsel$assessment # assessment name
-run = spsel$run 
-abundance = spsel$abundance # c("census","relative")
-GT = spsel$generation.time # numeric generation time (years)
-Klim = spsel$Klim # c(TRUE,FALSE)
-K.manual =  spsel$K.manual # c(TRUE,FALSE), if TRUE provide vector of K for each pop
-if(spsel[,1] =="Mountain_zebra") K.manual = c(1.55,1.01,0.85,1.75,1.18,1.02,1.27,0.88,0.95)
-SE.I = spsel$index.se #  c(TRUE,FALSE), if TRUE provide assessment_se.csv file
-sigma.est = spsel$sigma.obs.est # c(TRUE,FALSE)
-fixed.obsE = spsel$sigma.obs.add # numeric, fixed component of observation error 
-sigma.proc.fixed = spsel$sigma.proc.fixed # numeric or TRUE otherwise
-prjr.type = (spsel$project.r) # c("all","GT1", years) # "all" is default
-proj.stoch = spsel$stochastic.projection # c(FALSE, TRUE), FALSE is default
-start.year = spsel$start.year # numeric, NA takes all years
-end.year = spsel$end.year # numeric, NA takes all years
-A1 = spsel$A1
-#--------------------------------------------------
+  assessment = spsel$assessment # assessment name
+  run = spsel$run 
+  abundance = spsel$abundance # c("census","relative")
+  GL = spsel$generation.length # numeric generation length (years)
+  Klim = spsel$Klim # c(TRUE,FALSE)
+  K.manual =  spsel$K.manual # c(TRUE,FALSE), if TRUE provide vector of K for each pop
+  if(spsel[,1] =="Mountain_zebra") K.manual = c(1.55,1.01,0.85,1.75,1.18,1.02,1.27,0.88,0.95)
+  SE.I = spsel$index.se #  c(TRUE,FALSE), if TRUE provide assessment_se.csv file
+  sigma.est = spsel$sigma.obs.est # c(TRUE,FALSE)
+  fixed.obsE = spsel$sigma.obs.add # numeric, fixed component of observation error 
+  sigma.proc.fixed = spsel$sigma.proc.fixed # numeric or TRUE otherwise
+  prjr.type = (spsel$project.r) # c("all","GL1", years) # "all" is default
+  proj.stoch = spsel$stochastic.projection # c(FALSE, TRUE), FALSE is default
+  start.year = spsel$start.year # numeric, NA takes all years
+  end.year = spsel$end.year # numeric, NA takes all years
+  A1 = spsel$A1
+  plot.width = 5 # default is 5 inches
+  #--------------------------------------------------
 # Read csv files
 #--------------------------------------------------
 # Load dataset
@@ -131,14 +136,16 @@ save(jara.retro,file =paste0(File,"/",assessment,"/jara.retro.",assessment,".rda
 # Produce Retro-IUCN Plot
 #------------------------------------------------------------------
 # Load rdata (to avoid rerunning)
+
+plot.width = 5
 load(paste0(File,"/",assessment,"/jara.retro.",assessment,".rdata"),verbose=T)
 par.save = par
 # Extract residual for by scenario and index 
 d = jara.retro
 names(d)
 
-Par = list(mfrow=c(1,1),mar = c(3, 3, 1.2, 0.1),oma=c(0, 0, 0, 4), mgp =c(2.,0.5,0), tck = -0.02,cex=0.7)
-png(file = paste0(File,"/",assessment,"/RetroPosteriors.",assessment,".png"), width = 4.5, height = 4, 
+Par = list(mfrow=c(1,1),mar = c(3, 3, 1.2, 0.1),oma=c(0, 0, 0, 4), mgp =c(2.,0.5,0), tck = -0.02,cex=1)
+png(file = paste0(File,"/",assessment,"/RetroPosteriors.",assessment,".png"), width = plot.width, height = 4, 
     res = 200, units = "in")
 par(Par)
 ylim=c(-100,min(max(30,quantile(unlist(d$change),0.99)),1000))
@@ -162,7 +169,7 @@ xlim=c(0.5,length(runs)+0.5)
   polygon(c(x1[y1<en],rep(min(x1),length(y1[y1<en]))),c(y1[y1<en],rev(y1[y1<en])),col="red",border="red")
   polygon(c(x1,rep(min(x1),length(x1))),c(y1,rev(y1)))
   }
-  text(1:length(runs),max(ylim)*0.95,rev(d$status[,2]))
+  text(1:length(runs),max(ylim)*0.95,rev(d$status[,2]),cex=0.8)
   legend(par('usr')[2]*1.01, quantile(par('usr')[3:4],0.6), bty='n', xpd=NA,
          c("LC","VU","EN","CR"),pch=15,col=c("green","yellow","orange","red"),pt.cex=2,cex=0.9)
   
@@ -173,8 +180,8 @@ xlim=c(0.5,length(runs)+0.5)
   
   cols=rainbow(length(runs))
   # Retro Trends 
-  Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.7, 0.7, 0.1, 0.1),mex=0.8, tck = -0.02,cex=0.7)
-  png(file = paste0(File,"/",assessment,"/RetroTrends.",assessment,".png"), width = 4.5, height = 4, 
+  Par = list(mfrow=c(1,1),mar = c(5, 5, 1, 1), mgp =c(3,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=1)
+  png(file = paste0(File,"/",assessment,"/RetroTrends.",assessment,".png"), width = 7, height = 4, 
       res = 200, units = "in")
   par(Par)
   trend = d$abundance[runs[1]==d$abundance$run,]
@@ -182,7 +189,7 @@ xlim=c(0.5,length(runs)+0.5)
   ymax = max(d$abundance$total,trend$total.ucl)
   
   plot(0, 0, ylim = c(0, ymax), xlim = c(min(yr-1),max(yr+1)), ylab = "Total population size", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxt="n",xaxs="i",yaxs="i")
-  axis(1,at=seq(min(year),max(year)+5,5),tick=seq(min(year),max(year),5))
+  axis(1,at=seq(min(yr),max(yr)+5,5),tick=seq(min(yr),max(yr),5))
   polygon(c(yr,rev(yr)),c(trend$total.lcl,rev(trend$total.ucl)),col="grey",border="grey")
   for(j in 2:length(runs)){
   ts = d$abundance[runs[j]==d$abundance$run,]

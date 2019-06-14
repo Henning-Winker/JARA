@@ -1,13 +1,13 @@
 $assessment
-[1] Mountain_zebra
+[1] Bluemarlin_Atl_CPUE
 8 Levels: Afr_penguin Bluemarlin_Atl_CPUE Bluemarlin_ICCAT Cape_gannet ... StripedMarlin_IO_CPUE
 
 $abundance
-[1] census
+[1] relative
 Levels: census relative
 
 $generation.length
-[1] 15
+[1] 7.3
 
 $K.penalty
 [1] FALSE
@@ -29,8 +29,8 @@ $proj.stoch
 [1] FALSE
 
 $start.year
-[1] 1985
+[1] 1959
 
 $end.year
-[1] 2015
+[1] 2016
 
