@@ -35,15 +35,15 @@ To evaluate model fit, JARA provides the user with three plots. The first shows 
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/SmoothhoundShark/output1/Fits_SmoothhoundShark.png" width = "500" >
 
-<i> <b> Figure 2.</b> Relative abudance abundance indices with 95% CIs for smoothhound shark <i>Mustelus mustelus</i>, depecting for abudance indices from demersal trawl surveys along the South African South Coast and one from research angling surveys conducted in the De Hoop MPA.
+<i> <b> Figure 2.</b> Five time-series of observed (color coded dots) relative indices and a joint predicted (balck solid line) trend for smoothhound shark. Shaded grey area indicates 95% credibility intervals.
 </i>.
 <br />
 
-The second shows individuals fits , as well as the 95% credible intervals (CI) derived from the observation variance  (Figure 3).
+The second shows individuals fits, as well as the 95% credible intervals (CI) derived from the observation variance  (Figure 3).
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/SmoothhoundShark/output1/logFits_SmoothhoundShark.png" width = "500" >
 
-<i> <b> Figure 2.</b> JARA fits (on log-scale) to five relative abudance indices for smoothhound shark. The solid blue line is the model predicted CPUEand the circles are observed CPUE values. Error bars denote the assumed observation variance (in 95% CIs) for the observed CPUE values.
+<i> <b> Figure 3.</b> JARA fits (on log-scale) to five relative abudance indices for smoothhound shark. The solid blue line is the model predicted CPUEand the circles are observed CPUE values. Error bars denote the assumed observation variance (in 95% CIs) for the observed CPUE values.
 </i>.
 <br />
 
