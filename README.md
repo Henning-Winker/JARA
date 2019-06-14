@@ -49,6 +49,7 @@ The second shows individuals fits, as well as the 95% credible intervals (CI) de
 <i> <b> Figure 3.</b> JARA fits (on log-scale) to six standardized Catch-Per-Unit-Effort indices for Indian Ocean striped marlin. The solid blue line is the model predicted CPUEand the circles are observed CPUE values. Error bars denote the assumed observation variance (in 95% CIs) for the observed CPUE values.
 </i>.
 <br />
+<br />
 
 The third is a residual plot, which illustrates potential data conflict when fitting multiple time series (Winker et al. 2018) and includes: (i) colour-coded lognormal residuals of observed versus predicted abundance indices i, (ii) boxplots indicating the median and quantiles of all residuals available for any given year; the area of each box indicates the strength of the discrepancy between the abundance indices (larger box means higher degree of conflicting information), and (iii) a loess smoother through all residuals which can aid to identify  systematically auto-correlated residual patterns. 
 
@@ -57,7 +58,7 @@ The third is a residual plot, which illustrates potential data conflict when fit
 <i> <b> Figure 4.</b> Residual diagnostic plot for six abudance indices for Indian Ocean striped marlin. Boxplots indicate the median and quantiles of all residuals available for any given year, and solid black lines indicate a loess smoother through all residuals.
 </i>.
 <br />
-
+<br />
 
 If absolute abundance estimates are available (e.g. census data from different breeding colonies) JARA can also produce a summed population trend for the total population, where each subpopulations' trend is modelled seperately within JARA given a common process variance (Figure 5).  
 
@@ -65,15 +66,19 @@ If absolute abundance estimates are available (e.g. census data from different b
 <img src="https://github.com/Henning-Winker/JARA/blob/master/Afr_penguin/PenguinTrends_JARA.png" width = "1000" >
 
 <i> <b> Figure 5.</b> (a) Trends in estimated numbers (coloured points) and JARA fits
-(coloured lines) with 95% credible intervals (grey polygons) of African penguin breeding pairs at its eleven colonies and (b) total estimated numbers for the 'global' population obtained by summing the 11 posteriors from each colony. The colored dashed lines denote 1 x generation length (GL), 2 x GL and 3 X GL, going backwards from the last year.
+(coloured lines) with 95% credible intervals (grey polygons) of African penguin breeding pairs at its eleven colonies and (b) total estimated numbers for the 'global' population obtained by summing the 11 posteriors from each colony. The colored dashed lines denote 1 x generation length (GL), 2 x GL and 3 X GL, going backwards from the last year.</i>
+<br />
+<br />  
   
+If the time series is longer than than three generation lengths (GL) the %decline is automatically estimated from the last assessment year minus 3 x GL. If the time series is shorter than 3 x GT, JARA projects forward to by passing the number of desired future years without observations to the state-space model to achive a time horizon of 3 x GL + 2 (Figure 6).
+
+<br />
+<i> <b> Figure 6.</b> (a) Alligned Trends in relative abundance indices (coloured points) and JARA fits
+(black line) with 95% credible intervals (grey polygons) of smoothhond shark and (b) projected abundance trends over 3 x GL. </i>
+<br />
+<br />  
   
-If the time series is longer than than three generation times (GT) the %decline is automatically estimated from the last assessment year minus 3 x GT. If the time series is shorter than 3 x GT, JARA projects forward.
-
-
-
-
-As key ouput, JARA provides a posterior distribution for the estimated population change and produces easy to interpret graphics in which the probability of decline is displayed against the thresholds specified by the IUCN Red List criterion A2 (or optionally A1). 
+To facilitate Red List assessment decision-making, JARA automatically produces two key plots for each input dataset showing: (1) the median and posterior probabilities for the percentage annual population change calculated from all the observed data, and from each of the most recent 1 GL, 2 GL, and 3 GL (depending on the length of the observed time-series), shown relative to a stable population (%C = 0) (Figure 7); and (2) how the posterior distribution for the percentage change in abundance (%C) over 3 GL aligns against the thresholds for the Red List categories (Least Concern LC, Near Threatened NT, Vulnerable VU, Endangered EN or Critically Endangered CR) under criteria A2–A4 (e.g. Figure 8) or under A1.
 
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/Afr_penguin/output1/IUCNplot_Afr_penguin.png" width = "500" >
