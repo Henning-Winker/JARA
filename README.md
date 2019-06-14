@@ -23,7 +23,7 @@ executes the JARA model [`JARA.v1.1.R`](https://github.com/Henning-Winker/JARA/b
 - [Yellowspotted skate](https://github.com/Henning-Winker/JARA/tree/master/Yellowspot_skate/output1) <i>Leucoraja wallacei</i> (South African demersal survey abudance indices)
 - [Smoothhound shark](https://github.com/Henning-Winker/JARA/tree/master/SmoothhoundShark/output1) <i>Mustelus mustelus</i> (Combining South African demersal survey indices and recreational angling survey indices from the De Hoop MPA)
 - [Indian Ocean Striped Marlin](https://github.com/Henning-Winker/JARA/tree/master/StripedMarlin_IO_CPUE/output1) (Fitting multiple fisheries Catch-Per-Unit Effort (CPUE) from the [2018 IOTC Striped Marlin Assessment](https://www.iotc.org/documents/WPB/16/16-MLS_JABBA))  
-- [2018 ICCAT Atlantic Blue Marlin stock assessment](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) (Comparing estimated [Biomass trends](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_ICCAT/output1) and fitted [CPUE indices](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_Atl_CPUE/output1) 
+- [2018 ICCAT Atlantic Blue Marlin stock assessment](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) (Comparing estimated [Biomass trends](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_ICCAT/output1) and fitted [CPUE indices](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_Atl_CPUE/output1)) 
 
 The JARA framework provides the option to simultaniously fit multiple relative abundance indices and estimate the underlying mean trend (Figure 1). 
 
