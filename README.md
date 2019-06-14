@@ -59,14 +59,17 @@ The third is a residual plot, which illustrates potential data conflict when fit
 <br />
 
 
-If absolute abundance estimates are available (e.g. census data from different breeding colonies) JARA can also produce a summed population trend for the total population, where each subpopulations' trend is modelled seperately within JARA given a common process variance.  
+If absolute abundance estimates are available (e.g. census data from different breeding colonies) JARA can also produce a summed population trend for the total population, where each subpopulations' trend is modelled seperately within JARA given a common process variance (Figure 5).  
 
 <br />
-<img src="https://github.com/Henning-Winker/JARA/blob/master/Afr_penguin/output1/Fits_Afr_penguin.png" width = "500" >
+<img src="https://github.com/Henning-Winker/JARA/blob/master/Afr_penguin/PenguinTrends_JARA.png" width = "1000" >
 
+<i> <b> Figure 5.</b> (a) Trends in estimated numbers (coloured points) and JARA fits
+(coloured lines) with 95% credible intervals (grey polygons) of African penguin breeding pairs at its eleven colonies and (b) total estimated numbers for the 'global' population obtained by summing the 11 posteriors from each colony. The colored dashed lines denote 1 x generation length (GL), 2 x GL and 3 X GL, going backwards from the last year.
+  
+  
 If the time series is longer than than three generation times (GT) the %decline is automatically estimated from the last assessment year minus 3 x GT. If the time series is shorter than 3 x GT, JARA projects forward.
 
-<img src="https://github.com/Henning-Winker/JARA/blob/master/SMA_NAtl/output1/PopTrend_SMA_Natl.png" width = "500" >
 
 
 
