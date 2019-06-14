@@ -34,6 +34,7 @@ The JARA framework provides the option to simultaniously fit multiple relative a
 <br />
 
 To evaluate model fit, JARA provides the user with three plots. The first shows the observed and predicted abundance values  for each time series together with the 95% posterior predictive credibility intervals (Figure 2). 
+<br />
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/SmoothhoundShark/output1/Fits_SmoothhoundShark.png" width = "500" >
 
@@ -43,8 +44,9 @@ To evaluate model fit, JARA provides the user with three plots. The first shows 
 <br />
 
 The second shows individuals fits, as well as the 95% credible intervals (CI) derived from the observation variance  (Figure 3).
+<br />
 
-<img src="https://github.com/Henning-Winker/JARA/blob/master/StripedMarlin_IO_CPUE/output1/logFits_StripedMarlin_IO_CPUE.png" width = "500" >
+<img src="https://github.com/Henning-Winker/JARA/blob/master/StripedMarlin_IO_CPUE/output1/logFits_StripedMarlin_IO_CPUE.png" width = "800" >
 
 <i> <b> Figure 3.</b> JARA fits (on log-scale) to six standardized Catch-Per-Unit-Effort indices for Indian Ocean striped marlin. The solid blue line is the model predicted CPUEand the circles are observed CPUE values. Error bars denote the assumed observation variance (in 95% CIs) for the observed CPUE values.
 </i>.
@@ -52,6 +54,8 @@ The second shows individuals fits, as well as the 95% credible intervals (CI) de
 <br />
 
 The third is a residual plot, which illustrates potential data conflict when fitting multiple time series (Winker et al. 2018) and includes: (i) colour-coded lognormal residuals of observed versus predicted abundance indices i, (ii) boxplots indicating the median and quantiles of all residuals available for any given year; the area of each box indicates the strength of the discrepancy between the abundance indices (larger box means higher degree of conflicting information), and (iii) a loess smoother through all residuals which can aid to identify  systematically auto-correlated residual patterns. 
+<br />
+<br />
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/StripedMarlin_IO_CPUE/output1/Residuals_StripedMarlin_IO_CPUE.png" width = "500" >
 
@@ -61,8 +65,8 @@ The third is a residual plot, which illustrates potential data conflict when fit
 <br />
 
 If absolute abundance estimates are available (e.g. census data from different breeding colonies) JARA can also produce a summed population trend for the total population, where each subpopulations' trend is modelled seperately within JARA given a common process variance (Figure 5).  
-
 <br />
+
 <img src="https://github.com/Henning-Winker/JARA/blob/master/Afr_penguin/PenguinTrends_JARA.png" width = "1000" >
 
 <i> <b> Figure 5.</b> (a) Trends in estimated numbers (coloured points) and JARA fits
@@ -73,21 +77,31 @@ If absolute abundance estimates are available (e.g. census data from different b
 If the time series is longer than than three generation lengths (GL) the %decline is automatically estimated from the last assessment year minus 3 x GL. If the time series is shorter than 3 x GT, JARA projects forward to by passing the number of desired future years without observations to the state-space model to achive a time horizon of 3 x GL + 2 (Figure 6).
 
 <br />
+
+<img src="https://github.com/Henning-Winker/JARA/blob/master/SmoothhoundShark/SmoothhoundPrj_JARA.png" width = "1000" >
 <i> <b> Figure 6.</b> (a) Alligned Trends in relative abundance indices (coloured points) and JARA fits
-(black line) with 95% credible intervals (grey polygons) of smoothhond shark and (b) projected abundance trends over 3 x GL. </i>
+(black line) with 95% credible intervals (grey polygons) of smoothhound shark and (b) projected abundance trends over 3 x GL. </i>
 <br />
 <br />  
   
-To facilitate Red List assessment decision-making, JARA automatically produces two key plots for each input dataset showing: (1) the median and posterior probabilities for the percentage annual population change calculated from all the observed data, and from each of the most recent 1 GL, 2 GL, and 3 GL (depending on the length of the observed time-series), shown relative to a stable population (%C = 0) (Figure 7); and (2) how the posterior distribution for the percentage change in abundance (%C) over 3 GL aligns against the thresholds for the Red List categories (Least Concern LC, Near Threatened NT, Vulnerable VU, Endangered EN or Critically Endangered CR) under criteria A2–A4 (e.g. Figure 8) or under A1.
-
-
-<img src="https://github.com/Henning-Winker/JARA/blob/master/Afr_penguin/output1/IUCNplot_Afr_penguin.png" width = "500" >
-
-<i> <b> JARA IUCN plot </b> showing the median decline reduction over three generation lengths (dashed line) and corresponding probabilities for rates of population decline falling within the IUCN threat criteria.Red List categories. 
-</i>.
+To facilitate Red List assessment decision-making, JARA automatically produces two key plots for each input dataset showing: (1) the median and posterior probabilities for the percentage annual population change calculated from all the observed data, and from each of the most recent 1 GL, 2 GL, and 3 GL (depending on the length of the observed time-series), shown relative to a stable population (%C = 0) (Figure 7a); and (2) how the posterior distribution for the percentage change in abundance (%C) over 3 GL aligns against the thresholds for the Red List categories (Least Concern LC, Near Threatened NT, Vulnerable VU, Endangered EN or Critically Endangered CR) under criteria A2–A4 (Figure 7b) or under A1.
 <br />
 
+<img src="https://github.com/Henning-Winker/JARA/blob/master/Afr_penguin/PenguinStatus_JARA.png" width = "1000" >
 
+<i> <b> Figure 7.</b> (a) Posterior probability densities for the annual rate of change of the combined population African Penguin over three generation lengths (3 x GL), 2 x GL, the most recent 1 x GL and for all available years (All.yrs) and (b) posterior probability density of the percentage change (C%) over 3 x GL. Note that the probabilities have become more negative in more recent 1 x GL and 2 x GL and the median rate of change over 3 x GL is estiamted −54.4%.
+ </i>
+<br />
+<br />   
+
+Figure 5: Posterior probability densities for the annual rate of change of the overall population of
+655 Cape Gannets Morus capensis over the last three generations (3G), the two most recent
+656 generations (2G), the years corresponding to the most recent generation (1G) and for all available
+657 years (All.yrs). The generation length was G=18.3 years.
+
+Posterior probability density of the percentage change (C%) of the overall population
+650 of Cape Gannets Morus capensis over three generation lengths (3G). Note that all probabilities
+651 are negative and the median rate of change −43.6%.
 
 
 
