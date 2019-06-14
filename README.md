@@ -20,7 +20,7 @@ executes the JARA model [`JARA.v1.1.R`](https://github.com/Henning-Winker/JARA/b
 - [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output1) (Breeding pair counts from multiple colonies)  
 - [African Penguin](https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output1) (Breeding pair counts from multiple colonies)  
 - [Mountain Zebra](https://github.com/Henning-Winker/JARA/tree/master/Mountain_Zebra/output1) (Census data, Carrying Capacity option)
-- [Soupfin Shark](https://github.com/Henning-Winker/JARA/tree/master/SoupfinShark/output1) <i>Galeorhinus galeus</i> (South African demersal survey abudance indices)
+- [Yellowspotted skate](https://github.com/Henning-Winker/JARA/tree/master/Yellowspot_skate/output1) <i>Leucoraja wallacei</i> (South African demersal survey abudance indices)
 - [Smoothhound shark](https://github.com/Henning-Winker/JARA/tree/master/SmoothhoundShark/output1) <i>Mustelus mustelus</i> (Combining South African demersal survey indices and recreational angling survey indices from the De Hoop MPA)
 - [Indian Ocean Striped Marlin](https://github.com/Henning-Winker/JARA/tree/master/StripedMarlin_IO_CPUE/output1) (Fitting multiple fisheries Catch-Per-Unit Effort (CPUE) from the [2018 IOTC Striped Marlin Assessment](https://www.iotc.org/documents/WPB/16/16-MLS_JABBA))  
 - [2018 ICCAT Atlantic Blue Marlin stock assessment](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) (Comparing estimated [Biomass trends](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_ICCAT/output1) and fitted [CPUE indices](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_Atl_CPUE/output1) 
@@ -96,7 +96,12 @@ To facilitate Red List assessment decision-making, JARA automatically produces t
 <br />   
 
 To assist with presenting the JARA outputs in scientific reports, we also provide a plotting R script [`JARA_multiplots.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_multiplots.R) that entails examples of how to combine individual JARA figures into labeled multiplots (e.g Figures 5-7). We also include R code for reproducing the JARA output format used for production of the [IUCN Redlist Supplemetary Information](https://www.iucnredlist.org/species/pdf/2903170/attachment) for recent and on-going global shark assessments by the Shark Specialist Group of the IUCN (see e.g. Figure 8).
+<br />
 
-
+<img src="https://github.com/Henning-Winker/JARA/blob/master/Yellowspot_skate/IUCN_SoupfinShark_JARA.png" width = "800" >
+<i> <b> Figure 8.</b> JARA results for <i> Leucoraja wallacei </i> based on data from demersal trawl surveys off South Africa showing (a) the JARA fit to the observed time-series, (b) the posterior probability for the percentage annual population change calculated from all the observed data (in black), from the last 1 generation length of data (in blue) and from the last 2 generation lengths of data (in green), with the mean (solid lines) shown relative to a stable population (% change = 0, black dashed line), (c) the observed (black line) and predicted (red line) population trajectory over three generations (75 years, dashed grey lines) and (d) the median decline over three generation lengths (dashed line) and corresponding probabilities for rates of population decline falling within the IUCN threat criteria.
+ </i>
+<br />
+<br />  
 
 
