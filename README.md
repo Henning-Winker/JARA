@@ -13,7 +13,8 @@ JARA (*Just Another Redlist Assessment*) is a Bayesian state-space trend analysi
 
 The name ‘Just Another Red List Assessment’ is a reference to JAGS (Just Another Gibbs Sampler, Plummer, 2003), which is the software called from R to run the Bayesian state-space model application. The name reference, together with user-friendly R interface and modulated coding structure of JARA follows the example of the new open source fisheries stock assessment software ‘Just Another Bayesian Biomass Assessment‘ ([JABBA](https://github.com/Henning-Winker/JABBAbeta); [Winker et al. 2018](https://www.sciencedirect.com/science/article/pii/S0165783618300845))
 
-To ensure to a high degree of transparency and reproducibility, JARA is hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). The fully commented R code can be easily modified by conservation practitioners to apply JARA to their count or relative abundance data. We include a detailed [Technical Documentation](https://github.com/Henning-Winker/JARA/blob/master/JARAmodel.pdf) of JARA and a   [Tutorial](https://github.com/Henning-Winker/JABBAbeta/blob/master/Tutorial_Vignette.md) that describes how to set up the [JARA 'Prime' file](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1.1.R) fro running the following example JARA assessments:
+To ensure to a high degree of transparency and reproducibility, JARA is hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). The fully commented R code can be easily modified by conservation practitioners to apply JARA to their count or relative abundance data. We include a detailed [Technical Documentation](https://github.com/Henning-Winker/JARA/blob/master/JARAmodel.pdf) of JARA. All of the following example applications can be reproduced by running [`JARA_Prime.v1.1.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_assessments.csv.R), which first reads in the [`JARA_assessments.csv`](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1.1.R), including the model settings and then
+executes the JARA model [`JARA.v1.1.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA.v1.1.R) via the source() function.
 
 
 - [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output1) (Breeding pair counts from multiple colonies)  
@@ -94,23 +95,8 @@ To facilitate Red List assessment decision-making, JARA automatically produces t
 <br />
 <br />   
 
-Figure 5: Posterior probability densities for the annual rate of change of the overall population of
-655 Cape Gannets Morus capensis over the last three generations (3G), the two most recent
-656 generations (2G), the years corresponding to the most recent generation (1G) and for all available
-657 years (All.yrs). The generation length was G=18.3 years.
-
-Posterior probability density of the percentage change (C%) of the overall population
-650 of Cape Gannets Morus capensis over three generation lengths (3G). Note that all probabilities
-651 are negative and the median rate of change −43.6%.
+To assist with presenting the JARA outputs in scientific reports, we also provide a plotting R script [`JARA_multiplots.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_multiplots.R) that entails examples of how to combine individual JARA figures into labeled multiplots (e.g Figures 5-7). We also include R code for reproducing the JARA output format used for production of the [IUCN Redlist Supplemetary Information](https://www.iucnredlist.org/species/pdf/2903170/attachment) for recent and on-going global shark assessments by the Shark Specialist Group of the IUCN (see e.g. Figure 8).
 
 
 
-As an advanced feature, JARA provides an easy to implement means to conduct retrospective analysis by sequentially removing observations from the last year and refitting JARA. The idea is that learning from the past can aid to understand the influence of new data on our inference about a species threat status. 
 
-<img src="https://github.com/Henning-Winker/JARA/blob/master/Cape_gannet/RetroTrends.Cape_gannet.png" width = "500" >
-<img src="https://github.com/Henning-Winker/JARA/blob/master/Cape_gannet/RetroPosteriors.Cape_gannet.png" width = "500" >
-
-
-All examples can be run using the development [`JARA_Prime.v1.3beta.R file`](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1.3beta.R) from which the JARA model [`JARA.v1.3beta.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA.v1.3beta.R) is executed.
-
-*Still needs a lot of beautification!*..... 
