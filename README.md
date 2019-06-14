@@ -8,6 +8,8 @@ output: html_document
 
 JARA (*Just Another Redlist Assessment*) is a Bayesian state-space trend analysis tool that is designed to to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. 
 
+The name ‘Just Another Red List Assessment’ is a reference to JAGS (Just Another Gibbs Sampler, Plummer, 2003), which is the software called from R to run the Bayesian state-space model application. The name reference, together with user-friendly R interface and modulated coding structure of JARA follows the example of the new open source fisheries stock assessment software ‘Just Another Bayesian Biomass Assessment‘ ([JABBA](https://github.com/Henning-Winker/JABBAbeta); [Winker et al. 2018](https://www.sciencedirect.com/science/article/pii/S0165783618300845))
+
 To ensure to a high degree of transparency and reproducibility, JARA is hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). The fully commented R code can be easily modified by conservation practitioners to apply JARA to their count or relative abundance data. We include a detailed [Technical Documentation](https://github.com/Henning-Winker/JARA/blob/master/JARAmodel.pdf) of JARA and a   [Tutorial](https://github.com/Henning-Winker/JABBAbeta/blob/master/Tutorial_Vignette.md) that describes how to set up the [JARA 'Prime' file](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1.1.R) fro running the following example JARA assessments:
 
 
@@ -19,16 +21,13 @@ To ensure to a high degree of transparency and reproducibility, JARA is hosted o
 - [Indian Ocean Striped Marlin](https://github.com/Henning-Winker/JARA/tree/master/StripedMarlin_IO_CPUE/output1) (Fitting multiple fisheries Catch-Per-Unit Effort (CPUE) from the [2018 IOTC Striped Marlin Assessment](https://www.iotc.org/documents/WPB/16/16-MLS_JABBA))  
 - [2018 ICCAT Atlantic Blue Marlin stock assessment](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) (Comparing estimated [Biomass trends](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_ICCAT/output1) and fitted [CPUE indices](https://github.com/Henning-Winker/JARA/tree/master/Bluemarlin_Atl_CPUE/output1) 
 
-
-The name ‘Just Another Red List Assessment’ is a reference to JAGS (Just Another Gibbs Sampler, Plummer, 2003), which is the software called from R to run the Bayesian state-space model application. The name reference, together with user-friendly R interface and modulated coding structure of JARA follows the example of the new open source fisheries stock assessment software ‘Just Another Bayesian Biomass Assessment‘ ([JABBA](https://github.com/Henning-Winker/JABBAbeta); [Winker et al. 2018](https://www.sciencedirect.com/science/article/pii/S0165783618300845))
-
-
 The JARA framework provides the option to simultaniously fit multiple relative abundance indices and estimate the underlying mean trend (Fig. 1). 
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/SmoothhoundShark/output1/AbundanceData_SmoothhoundShark.png" width = "500" >
 
 <i> <b> Figure 1.</b> Relative abudance abundance indices with 95% CIs for smoothhound shark <i>Mustelus mustelus</i>, depecting for abudance indices from demersal trawl surveys along the South African South Coast and one from research angling surveys conducted in the De Hoop MPA.
 </i>.
+<br />
 <br />
 
 To evaluate model fit, JARA provides the user with three plots. The first shows the observed and predicted abundance values  for each time series together with the 95% posterior predictive credibility intervals (Figure 2). 
@@ -37,6 +36,7 @@ To evaluate model fit, JARA provides the user with three plots. The first shows 
 
 <i> <b> Figure 2.</b> Relative abudance abundance indices with 95% CIs for smoothhound shark <i>Mustelus mustelus</i>, depecting for abudance indices from demersal trawl surveys along the South African South Coast and one from research angling surveys conducted in the De Hoop MPA.
 </i>.
+<br />
 <br />
 
 The second shows individuals fits , as well as the 95% credible intervals (CI) derived from the observation variance  (Figure 3).
