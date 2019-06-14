@@ -5,6 +5,9 @@ date: "Cape Town/Exeter, 2019"
 output: html_document
 ---
 
+# JARA: Just Another Redlist Assessment
+
+### Henning Winker & Richard Sherley
 
 JARA (*Just Another Redlist Assessment*) is a Bayesian state-space trend analysis tool that is designed to to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. 
 
@@ -49,9 +52,9 @@ The second shows individuals fits, as well as the 95% credible intervals (CI) de
 
 The third is a residual plot, which illustrates potential data conflict when fitting multiple time series (Winker et al. 2018) and includes: (i) colour-coded lognormal residuals of observed versus predicted abundance indices i, (ii) boxplots indicating the median and quantiles of all residuals available for any given year; the area of each box indicates the strength of the discrepancy between the abundance indices (larger box means higher degree of conflicting information), and (iii) a loess smoother through all residuals which can aid to identify  systematically auto-correlated residual patterns. 
 
-<img src="https://github.com/Henning-Winker/JARA/blob/master/SmoothhoundShark/output1/Fits_SmoothhoundShark.png" width = "500" >
+<img src="https://github.com/Henning-Winker/JARA/blob/master/StripedMarlin_IO_CPUE/output1/Residuals_StripedMarlin_IO_CPUE.png" width = "500" >
 
-<i> <b> Figure 4.</b> Residual diagnostic plot for five abudance indices for smoothhound shark. Boxplots indicate the median and quantiles of all residuals available for any given year, and solid black lines indicate a loess smoother through all residuals.
+<i> <b> Figure 4.</b> Residual diagnostic plot for six abudance indices for Indian Ocean striped marlin. Boxplots indicate the median and quantiles of all residuals available for any given year, and solid black lines indicate a loess smoother through all residuals.
 </i>.
 <br />
 
