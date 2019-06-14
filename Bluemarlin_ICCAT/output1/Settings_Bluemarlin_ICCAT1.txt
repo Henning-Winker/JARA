@@ -1,12 +1,12 @@
 $assessment
 [1] Bluemarlin_ICCAT
-13 Levels: Afr_penguin Bluemarlin_Atl Bluemarlin_ICCAT BSH_SAtl Cape_gannet ... Yellowspot_skate
+8 Levels: Afr_penguin Bluemarlin_Atl_CPUE Bluemarlin_ICCAT Cape_gannet ... StripedMarlin_IO_CPUE
 
 $abundance
 [1] relative
 Levels: census relative
 
-$generation.time
+$generation.length
 [1] 7.3
 
 $K.penalty
