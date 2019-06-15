@@ -44,7 +44,7 @@ To evaluate model fit, JARA provides the user with three plots. The first shows 
 <br />
 <br />
 
-The second shows individuals fits, as well as the 95% credible intervals (CI) derived from the observation variance  (Figure 3).
+The second shows individual fits, as well as the 95% credible intervals (CI) derived from the observation variance  (Figure 3).
 <br />
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/StripedMarlin_IO_CPUE/output1/logFits_StripedMarlin_IO_CPUE.png" width = "800" >
