@@ -1,0 +1,32 @@
+Package: JARA
+Title: Just Another Redlist Assessment
+Version: 1.0.1
+Authors@R: 
+    c(person(given = "Henning",
+           family = "Winker",
+           role = c("aut", "cre"),
+           email = "henning.winker@gmail.com"),
+    person(given = "Richard",
+           family = "Sherley",
+           role = c("aut")),
+    person(given = "Nathan",
+           family = "pacoureau",
+           role = c("aut")))
+Description: Bayesian State-Space abundance trend analysis for conservation risk assessments
+Depends:
+    R (>= 3.1)
+Imports:
+      gplots,
+      coda,
+      rjags,
+      R2jags,
+      snpar,
+      reshape,
+      scales,
+      fitdistrplus
+Suggests:      
+      mvtnorm
+License: EUPL
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0

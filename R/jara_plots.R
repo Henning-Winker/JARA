@@ -1,0 +1,190 @@
+#' jrplot_fits
+#'
+#' Plots observed and fitted indices with expexted CIs (dark grey) 
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param single.plots if TRUE plot invidual fits else make multiplot
+#' @param width plot width
+#' @param height plot hight
+#' @param plot.cex graphic option
+#' @indices names of indices to plot (default = "all")
+#' @export
+jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,indices="all"){
+  
+    cat(paste0("\n","><> jrplot_fits() - fits to abudance indices <><","\n"))
+    
+    years = jara$yr
+    N = length(years)
+    if(indices[1]=="all"){
+      indices = unique(jara$fits$name)
+      n.indices = jara$settings$nI
+    } else {
+      if(length(indices[indices%in%unique(jara$fits$name)])<1) stop("non-existent index name provided")
+      indices = indices[indices%in%unique(jara$fits$name)]
+      n.indices = length(indices)
+    }
+    series = 1:jara$settings$nI
+    CPUE = jara$settings$y
+    check.yrs = abs(apply(jara$residuals,2,sum,na.rm=TRUE))
+    cpue.yrs = years[check.yrs>0]
+    
+    if(single.plots==TRUE){
+      if(is.null(width)) width = 5
+      if(is.null(height)) height = 3.5
+      for(i in 1:n.indices){
+        Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
+        if(as.png==TRUE){png(file = paste0(output.dir,"/Fits",jara$assessment,"_",jara$scenario,"_",indices[i],".png"), width = width, height = height,
+                             res = 200, units = "in")}
+        
+        if(as.png==TRUE | i==1) par(Par)
+        # set observed vs predicted CPUE
+        Yr = jara$yr
+        Yr = min(Yr):max(Yr)
+        yr = Yr-min(years)+1
+        
+        fit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$yr%in%years,c("mu","lci","uci")]
+        mufit = mean(fit[,1])
+        fit = fit/mufit
+        fit.hat = fit[,1]/mufit
+        
+        cpue.i = jara$fits[jara$fits$name%in%indices[i],]$obs
+        yr.i =  jara$fits[jara$fits$name%in%indices[i],]$year
+        se.i =  jara$fits[jara$fits$name%in%indices[i],]$obs.err
+        
+        ylim = c(min(fit*0.9,exp(log(cpue.i)-1.96*se.i)/mufit), max(fit*1.05,exp(log(cpue.i)+1.96*se.i)/mufit))
+        
+        cord.x <- c(Yr,rev(Yr))
+        cord.y <- c(fit[yr,2],rev(fit[yr,3]))
+        # Plot Observed vs predicted CPUE
+        plot(years,fit[,1],ylab="",xlab="",ylim=ylim,xlim=range(jara$yr),type='n',xaxt="n",yaxt="n")
+        axis(1,labels=TRUE,cex=0.8)
+        axis(2,labels=TRUE,cex=0.8)
+        polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
+        
+        lines(Yr,fit[yr,1],lwd=2,col=1)
+        if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")}else{
+          points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")}
+        legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
+        mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
+        mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
+        if(as.png==TRUE) dev.off()
+      }} else {
+        
+        if(is.null(width)) width = 7
+        if(is.null(height)) height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0)
+        Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=0.8)
+        if(as.png==TRUE){png(file = paste0(output.dir,"/Fits_",jara$assessment,"_",jara$scenario,".png"), width = 7, height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0),
+                             res = 200, units = "in")}
+        par(Par)
+        
+        for(i in 1:n.indices){
+          # set observed vs predicted CPUE
+          Yr = jara$yr
+          Yr = min(Yr):max(Yr)
+          yr = Yr-min(years)+1
+          
+          fit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$yr%in%years,c("mu","lci","uci")]
+          mufit = mean(fit[,1])
+          fit = fit/mufit
+          fit.hat = fit[,1]/mufit
+          
+          cpue.i = jara$fits[jara$fits$name%in%indices[i],]$obs
+          yr.i =  jara$fits[jara$fits$name%in%indices[i],]$year
+          se.i =  jara$fits[jara$fits$name%in%indices[i],]$obs.err
+          
+          ylim = c(min(fit*0.9,exp(log(cpue.i)-1.96*se.i)/mufit), max(fit*1.05,exp(log(cpue.i)+1.96*se.i)/mufit))
+          
+          cord.x <- c(Yr,rev(Yr))
+          cord.y <- c(fit[yr,2],rev(fit[yr,3]))
+          # Plot Observed vs predicted CPUE
+          plot(years,fit[,1],ylab="",xlab="",ylim=ylim,xlim=range(jara$yr),type='n',xaxt="n",yaxt="n")
+          axis(1,labels=TRUE,cex=0.8)
+          axis(2,labels=TRUE,cex=0.8)
+          polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
+          
+          lines(Yr,fit[yr,1],lwd=2,col=1)
+          if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.01){ gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")}else{
+            points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")}
+          legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
+        }
+        mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
+        mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
+        if(as.png==TRUE){dev.off()}
+      }
+  } # End of CPUE plot function
+
+
+
+#' jrplot_iucn
+#'
+#' IUCN posterior plot for A1 or A2   
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param criteria A1 or A2 for decline
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @return IUCN classification 
+#' @export
+jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=TRUE,Plot=TRUE){
+  
+  cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
+  change= jara$posteriors$pop.change
+  den = density(change,adjust=2)
+  x1 = den$x
+  y1 = den$y
+  A1 = ifelse(criteria=="A1",TRUE,FALSE)
+  mu.change = round(median(change),1)
+  sign=""
+  if(mu.change>0) sign="+"
+  CR = round(sum(ifelse(change< ifelse(A1,-90,-80),1,0))/length(change)*100,1)
+  EN = round(sum(ifelse(change> ifelse(A1,-90,-80) & change< ifelse(A1,-70,-50),1,0))/length(change)*100,1)
+  VU = round(sum(ifelse(change> ifelse(A1,-70,-50) & change< ifelse(A1,-50,-30),1,0))/length(change)*100,1)
+  LC = round(sum(ifelse(change> -30,1,0))/length(change)*100,1)
+  Decline = round(sum(ifelse(change< 0,1,0))/length(change)*100,1)
+  if(iucn.cols==T){
+  cols = c("#60C659","lightgreen","#F9E814","#FC7F3F","#D81E05")[c(1,3:5)] # green to red
+  } else {
+  cols=c("green","lightgreen","yellow","orange","red")[c(1,3:5)]  
+  }
+  
+  if(Plot==TRUE){
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(as.png==TRUE){png(file = paste0(output.dir,"/IUCNplot_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+  plot(x1,y1,type="n",xlim=c(-100,min(max(30,quantile(change,.99)),1000)),ylim=c(0,max(y1*1.05)),ylab="",xlab="",cex.main=0.9,frame=T,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
+  maxy = max(y1*1.08)
+  x2 = c(ifelse(A1,-50,-30),1500); y2 = c(0,5)
+  polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col=cols[1],border=cols[1])
+  x3 = c(ifelse(A1,-70,-50),x2[1])
+  polygon(c(x3,rev(x3)),c(rep(maxy,2),rev(rep(0,2))),col=cols[2],border=cols[2])
+  x4 = c(ifelse(A1,-90,-80),x3[1])
+  polygon(c(x4,rev(x4)),c(rep(maxy,2),rep(0,2)),col=cols[3],border=cols[3])
+  x5 = c(-100,x4[1])
+  polygon(c(x5,rev(x5)),c(rep(maxy,2),rep(0,2)),col=cols[4],border=cols[4])
+
+  polygon(c(x1,rev(x1)),c(y1,rep(0,length(y1))),col="grey")
+  axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
+mtext(paste("Density"), side=2, outer=T, at=0.55,line=-1.2,cex=1)
+mtext(paste("Change (%)"), side=1, outer=T, at=0.5,line=-1.5,cex=1)
+legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
+                 paste0("VU (",VU,"%)"),paste0("LC (",LC,"%)")),col=1,pt.bg=c("red","orange","yellow","green"),pt.cex=1.4,pch=22,bg="white",cex=1.1)
+text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.03),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=1.2)
+
+if(as.png==TRUE) dev.off()
+} # End IUCN Plot = TRUE
+categories = c("Pr.Decl","change3GL","CR","EN","VU","LC")  
+percentages = c(CR,EN,VU,LC)
+status= ifelse(which(percentages==max(percentages))==4 & max(percentages)<50,"NT",categories[3:6][which(percentages==max(percentages))])
+perc.risk = data.frame(perc.risk=c(Decline,mu.change,percentages))
+rownames(perc.risk)=categories
+out = list()
+out$perc.risk = perc.risk
+out$status = status
+
+return(out)
+}
