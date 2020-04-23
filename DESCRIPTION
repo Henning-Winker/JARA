@@ -13,7 +13,6 @@ Authors@R:
            family = "pacoureau",
            role = c("aut")))
 Description: Bayesian State-Space abundance trend analysis for conservation risk assessments
-Description: Bayesian State-Space Surplus Production Model to Catch and Abundance data
 Depends:
     R (>= 3.1)
 Imports:
