@@ -188,6 +188,7 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         cord.x <- c(Yr,rev(Yr))
         cord.y <- c(fit[yr,2],rev(fit[yr,3]))
         # Plot Observed vs predicted CPUE
+        options(warn=-1)
         plot(years,fit[,1],ylab="",xlab="",ylim=ylim,xlim=range(jara$yr),type='n',xaxt="n",yaxt="n")
         axis(1,labels=TRUE,cex=0.8)
         axis(2,labels=TRUE,cex=0.8)
@@ -243,6 +244,7 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
         if(as.png==TRUE){dev.off()}
       }
+    options(warn=0)
   } # End of CPUE plot function
 
 
