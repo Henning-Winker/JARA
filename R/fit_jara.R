@@ -18,10 +18,10 @@
 #' @export
 fit_jara = function(jarainput,
                      # MCMC settings
-                     ni = 11000, # Number of iterations
+                     ni = 7500, # Number of iterations
                      nt = 2, # Steps saved
-                     nb = 1000, # Burn-in
-                     nc = 2, # number of chains
+                     nb = 1500, # Burn-in
+                     nc = 3, # number of chains
                      save.jara = FALSE,
                      save.all = FALSE,
                      save.csvs = FALSE,
@@ -37,8 +37,15 @@ fit_jara = function(jarainput,
   nb <- 1000 # Burn-in
   }
   
+  
+  
+  
   # mcmc saved
   nsaved = (ni-nb)/nt*nc
+  
+  cat(paste0("\n","><> Running  JARA as ",settings$model.type," model for ",settings$assessment," ",settings$scenario," <><","\n"))
+  
+  
   # jara model data
   jd = jarainput$jagsdata
   n.indices = ncol(jd$y)
@@ -87,16 +94,15 @@ fit_jara = function(jarainput,
                   "\n","\n","The results are unreliable and MUST be interpreted with caution","\n","\n")
   } else {WARN=""}
   
-  
+  Chains = paste0("\n",paste0("><> Run  ",settings$assessment," completed  with ",nc," mcmc chains of ",ni, "iterations, with a burn-in of ",nb,", a thinning rate of ",nt," and a total of ",nsaved," iterations saved <><","\n"))
   RunTime =paste0("\n",paste0("><> Run  ",settings$assessment," completed in ",as.integer(save.time[3]/60)," min and ",round((save.time[3]/60-as.integer(save.time[3]/60))*100)," sec <><","\n"))
+  cat(Chains)
   cat(RunTime)
   
   
   #-----------------------------------------------------------
   # <><<><<><<><<><<><<>< Outputs ><>><>><>><>><>><>><>><>><>
   #-----------------------------------------------------------
-  cat(paste0("\n","><> Produce results output of ",settings$model.type," model for ",settings$assessment," ",settings$scenario," <><","\n"))
-  
   posteriors=jara.mod$BUGSoutput$sims.list
   if(abundance=="census"){sel.par=c(1:2)} else {sel.par=c(1:2,6)}
   par.dat= data.frame(posteriors[parameters[sel.par]])

@@ -24,7 +24,7 @@
 build_jara <- function(
               I = NULL, #abundance indices/counts,  require data.frame(year, I.1,I.2,...,I.N)
               se = NULL,
-              assessment = "species.X",
+              assessment = "Unnamed",
               scenario = "s1",
               model.type = c("relative","census")[1],
               GL=NULL, # Generation length
@@ -209,7 +209,7 @@ build_jara <- function(
                   
                 }
                 
-                cat("\n","><> Summarizing jarainput list <><","\n","\n")  
+                cat("\n","><> Compile JARA input <><","\n","\n")  
                 #--------------------------
                 # Capture Settings
                 #--------------------------

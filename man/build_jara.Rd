@@ -7,7 +7,7 @@
 build_jara(
   I = NULL,
   se = NULL,
-  assessment = "species.X",
+  assessment = "Unnamed",
   scenario = "s1",
   model.type = c("relative", "census")[1],
   GL = NULL,

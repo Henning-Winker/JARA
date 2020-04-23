@@ -144,7 +144,6 @@ jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
 jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,indices="all"){
   
     cat(paste0("\n","><> jrplot_fits() - fits to abudance indices <><","\n"))
-    
     years = jara$yr
     N = length(years)
     if(indices[1]=="all"){
@@ -187,21 +186,26 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         
         cord.x <- c(Yr,rev(Yr))
         cord.y <- c(fit[yr,2],rev(fit[yr,3]))
+        
         # Plot Observed vs predicted CPUE
-        options(warn=-1)
         plot(years,fit[,1],ylab="",xlab="",ylim=ylim,xlim=range(jara$yr),type='n',xaxt="n",yaxt="n")
         axis(1,labels=TRUE,cex=0.8)
         axis(2,labels=TRUE,cex=0.8)
         polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
         
         lines(Yr,fit[yr,1],lwd=2,col=1)
-        if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")}else{
+        if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ 
+          suppressWarnings({ 
+            gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")
+          })
+        }else{
           points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")}
         legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
         mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
         if(as.png==TRUE) dev.off()
-      }} else {
+      }
+      } else {
         
         if(is.null(width)) width = 7
         if(is.null(height)) height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0)
@@ -236,15 +240,22 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
           polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
           
           lines(Yr,fit[yr,1],lwd=2,col=1)
-          if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.01){ gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")}else{
-            points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")}
+          if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.01){ 
+            suppressWarnings({ 
+            gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")
+            })
+            }else{
+            points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")
+          }
+          
+          
           legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
         }
         mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
         if(as.png==TRUE){dev.off()}
       }
-    options(warn=0)
+      
   } # End of CPUE plot function
 
 

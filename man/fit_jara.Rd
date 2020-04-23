@@ -6,10 +6,10 @@
 \usage{
 fit_jara(
   jarainput,
-  ni = 11000,
+  ni = 7500,
   nt = 2,
-  nb = 1000,
-  nc = 2,
+  nb = 1500,
+  nc = 3,
   save.jara = FALSE,
   save.all = FALSE,
   save.csvs = FALSE,
