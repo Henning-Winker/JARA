@@ -1,6 +1,6 @@
-#' Function to write JARA model in JAGS
+#' jara2jags()
 #'
-#' Writes JAGS code for JABBA into a temporary directory
+#' Writes JAGS code for JARA into a temporary directory
 #' @param jarainput JARA input object from build_jara()
 #' @export
 jara2jags = function(jarainput){

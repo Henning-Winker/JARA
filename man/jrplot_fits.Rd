@@ -2,7 +2,7 @@
 % Please edit documentation in R/jara_plots.R
 \name{jrplot_fits}
 \alias{jrplot_fits}
-\title{Plot of  fitted abundance indices}
+\title{jrplot_fits}
 \usage{
 jrplot_fits(
   jara,
@@ -26,6 +26,10 @@ jrplot_fits(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{indices}{names of indices to plot (default = "all")}
+
+\item{plot.cex}{graphic option}
 }
 \description{
 Plots observed and fitted indices with expexted CIs (dark grey)

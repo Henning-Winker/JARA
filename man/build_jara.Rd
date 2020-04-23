@@ -10,7 +10,7 @@ build_jara(
   assessment = "species.X",
   scenario = "s1",
   model.type = c("relative", "census")[1],
-  GL = nrow(I)/3,
+  GL = NULL,
   start.year = NA,
   end.year = NA,
   sigma.obs.est = TRUE,
@@ -34,7 +34,7 @@ build_jara(
 
 \item{model.type}{abundance data type c("relative","census")}
 
-\item{GL}{Generation length}
+\item{GL}{Generation length (default n.years/3)}
 
 \item{start.year}{subsetting option for start year}
 
