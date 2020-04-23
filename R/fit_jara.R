@@ -41,7 +41,7 @@ fit_jara = function(jarainput,
   # mcmc saved
   nsaved = (ni-nb)/nt*nc
   
-  cat(paste0("\n","><> Running  JARA as ",jrinput$settings$model.type," model for ",jrinput$settings$assessment," ",jrinput$settings$scenario," <><","\n"))
+  cat(paste0("\n","><> Running  JARA as ",jarainput$settings$model.type," model for ",jarainput$settings$assessment," ",jarainput$settings$scenario," <><","\n"))
   
   
   # jara model data
