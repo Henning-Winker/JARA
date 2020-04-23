@@ -14,12 +14,8 @@ Authors@R:
            role = c("aut")))
 Description: Bayesian State-Space abundance trend analysis for conservation risk assessments
 Depends:
-    R (>= 3.5)
+    R (>= 3.1)
 Imports:
-     graphics, 
-     grDevices, 
-     stats, 
-     utils,
      gplots,
      rjags,
      R2jags,
