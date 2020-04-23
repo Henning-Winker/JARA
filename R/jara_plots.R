@@ -195,11 +195,15 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         
         lines(Yr,fit[yr,1],lwd=2,col=1)
         if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ 
-          suppressWarnings({ 
-            gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")
-          })
-        }else{
-          points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")}
+          iv = c(-0.25,0.25)
+          for(t in 1:length(yr.i)){
+            lines(rep(yr.i[t],2),c(exp(log(cpue.i[t])-1.96*se.i[t])/mufit,exp(log(cpue.i[t])+1.96*se.i[t])/mufit))  
+            lines(yr.i[t]+iv,rep(exp(log(cpue.i[t])-1.96*se.i[t])/mufit,2))  
+            lines(yr.i[t]+iv,rep(exp(log(cpue.i[t])+1.96*se.i[t])/mufit,2))
+          }  
+        }
+        points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")
+        
         legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
         mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
@@ -238,18 +242,18 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
           axis(1,labels=TRUE,cex=0.8)
           axis(2,labels=TRUE,cex=0.8)
           polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
-          
           lines(Yr,fit[yr,1],lwd=2,col=1)
-          if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.01){ 
-            suppressWarnings({ 
-            gplots::plotCI(yr.i,cpue.i/mufit,ui=exp(log(cpue.i)+1.96*se.i)/mufit,li=exp(log(cpue.i)-1.96*se.i)/mufit,add=T,gap=0,pch=21,xaxt="n",yaxt="n")
-            })
-            }else{
-            points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")
+          if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ 
+            iv = c(-0.25,0.25)
+            for(t in 1:length(yr.i)){
+            lines(rep(yr.i[t],2),c(exp(log(cpue.i[t])-1.96*se.i[t])/mufit,exp(log(cpue.i[t])+1.96*se.i[t])/mufit))  
+            lines(yr.i[t]+iv,rep(exp(log(cpue.i[t])-1.96*se.i[t])/mufit,2))  
+            lines(yr.i[t]+iv,rep(exp(log(cpue.i[t])+1.96*se.i[t])/mufit,2))
+            }  
           }
+            points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")
           
-          
-          legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
+        legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
         }
         mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
