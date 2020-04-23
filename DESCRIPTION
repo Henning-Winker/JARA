@@ -16,15 +16,20 @@ Description: Bayesian State-Space abundance trend analysis for conservation risk
 Depends:
     R (>= 3.5)
 Imports:
-      gplots,
-      coda,
-      R2jags,
-      snpar,
-      reshape,
-      scales,
-      fitdistrplus
+     graphics, 
+     grDevices, 
+     stats, 
+     utils,
+     gplots,
+     coda,
+     rjags,
+     R2jags,
+     snpar,
+     reshape,
+     scales     
 Suggests:      
       mvtnorm
+      fitdistrplus
 License: EUPL
 Encoding: UTF-8
 LazyData: true
