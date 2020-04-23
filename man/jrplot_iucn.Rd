@@ -28,9 +28,15 @@ jrplot_iucn(
 
 \item{height}{plot hight}
 
-\item{criteria}{A1 or A2 for decline}
+\item{plot.cex}{cex graphic option}
+
+\item{criteria}{option to choose between IUCN A1 or A2 thresholds (A2 is default)}
+
+\item{iucn.cols}{to use iucn color recommendation or a brighter version if FALSE}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
+
+\item{Plot}{if FALSE then only threat status stats are returned}
 }
 \value{
 IUCN classification

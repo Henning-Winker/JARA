@@ -30,11 +30,19 @@ MCMC settings}
 
 \item{nc}{number of mcmc chains}
 
-\item{save.jara}{= FALSE}
+\item{save.jara}{saves jara list as .rdata to output.dir}
 
-\item{save.all}{= FALSE}
+\item{save.all}{saves the all posteriors as .rdata to output.dir (big file)}
+
+\item{save.csvs}{writes results into csv to output.dir}
+
+\item{save.jarafile}{saves jara model and convergence stats as .txt file (default = TRUE)}
 
 \item{output.dir}{path to save plot. default is getwd()}
+
+\item{quickmcmc}{option "test run" jara with short (fast) mcmc chains}
+
+\item{saves}{the all posteriors as .rdata to output.dir (big file)}
 }
 \value{
 A result list containing estimates of JARA model input, settings and results

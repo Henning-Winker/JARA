@@ -8,13 +8,17 @@
 #' @param height plot hight
 #' @param criteria A1 or A2 for decline
 #' @param add if TRUE par is not called to enable manual multiplots
+#' @param plot.cex cex graphic option
+#' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
+#' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
+#' @param Plot if FALSE then only threat status stats are returned 
 #' @return IUCN classification 
 #' @export
 jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE,Plot=TRUE){
   
   cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
   change= jara$posteriors$pop.change
-  den = density(change,adjust=2)
+  den = stats::density(change,adjust=2)
   x1 = den$x
   y1 = den$y
   A1 = ifelse(criteria=="A1",TRUE,FALSE)
@@ -79,6 +83,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
 #' @param as.png save as png file of TRUE
 #' @param width plot width
 #' @param height plot hight
+#' @param plot.cex cex graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
 jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){

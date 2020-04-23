@@ -2,7 +2,7 @@
 % Please edit documentation in R/jara2jags.R
 \name{jara2jags}
 \alias{jara2jags}
-\title{Function to write JARA model in JAGS}
+\title{jara2jags()}
 \usage{
 jara2jags(jarainput)
 }
@@ -10,5 +10,5 @@ jara2jags(jarainput)
 \item{jarainput}{JARA input object from build_jara()}
 }
 \description{
-Writes JAGS code for JABBA into a temporary directory
+Writes JAGS code for JARA into a temporary directory
 }

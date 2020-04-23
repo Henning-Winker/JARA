@@ -6,13 +6,14 @@
 #' @param assessment = "species.X",
 #' @param scenario = "s1",
 #' @param model.type abundance data type c("relative","census")
-#' @param GL Generation length
+#' @param GL Generation length (default n.years/3)
 #' @param start.year subsetting option for start year
 #' @param end.year subsetting option for end year
 # Variance settings
 #' @param sigma.obs.est Estimates additional variance 
 #' @param fixed.obsE minimum plausible process error (fixed)
 #' @param sigma.proc.fixed option to fix the process error (default FALSE)
+#' @param proc.pen advanced user setting to penalize extreme process error deviations
 # Porjection settings
 #' @param Klim penalty to restrict extrem values during projections c(TRUE, FALSE)
 #' @param K.manual option to specify a carrying capacity for each census time series
@@ -26,7 +27,7 @@ build_jara <- function(
               assessment = "species.X",
               scenario = "s1",
               model.type = c("relative","census")[1],
-              GL=nrow(I)/3, # Generation length
+              GL=NULL, # Generation length
               start.year = NA,
               end.year = NA, 
               sigma.obs.est = TRUE, 
@@ -43,6 +44,8 @@ build_jara <- function(
   # Prepare input data
   #-------------------------
   
+                if(is.null(GL)){GL = floor((nrow(I)-3)/3)} else {GL=GL[1]}
+                
                 GL1 = round(GL,0) # rounded for r.recent
                 GL3 = round(3*GL,0) # 3 x GL rounded for year steps
                 

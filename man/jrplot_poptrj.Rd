@@ -25,6 +25,8 @@ jrplot_poptrj(
 
 \item{height}{plot hight}
 
+\item{plot.cex}{cex graphic option}
+
 \item{add}{if TRUE par is not called to enable manual multiplots}
 }
 \description{

@@ -7,9 +7,13 @@
 #' @param nt thinning interval of saved iterations
 #' @param nb burn-in
 #' @param nc number of mcmc chains
-#' @param save.jara = FALSE
-#' @param save.all = FALSE
+#' @param save.jara saves jara list as .rdata to output.dir
+#' @param save.all saves the all posteriors as .rdata to output.dir (big file)
+#' @param saves the all posteriors as .rdata to output.dir (big file)
+#' @param save.csvs writes results into csv to output.dir
 #' @param output.dir path to save plot. default is getwd()
+#' @param save.jarafile saves jara model and convergence stats as .txt file (default = TRUE)
+#' @param quickmcmc option "test run" jara with short (fast) mcmc chains 
 #' @return A result list containing estimates of JARA model input, settings and results
 #' @export
 fit_jara = function(jarainput,

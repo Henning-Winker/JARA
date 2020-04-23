@@ -46,6 +46,8 @@ build_jara(
 
 \item{sigma.proc.fixed}{option to fix the process error (default FALSE)}
 
+\item{proc.pen}{advanced user setting to penalize extreme process error deviations}
+
 \item{Klim}{penalty to restrict extrem values during projections c(TRUE, FALSE)}
 
 \item{K.manual}{option to specify a carrying capacity for each census time series}
