@@ -21,14 +21,14 @@ Imports:
      stats, 
      utils,
      gplots,
-     coda,
      rjags,
      R2jags,
+     coda,
      snpar,
      reshape,
      scales     
 Suggests:      
-      mvtnorm
+      mvtnorm,
       fitdistrplus
 License: EUPL
 Encoding: UTF-8
