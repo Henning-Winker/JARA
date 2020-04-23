@@ -35,6 +35,7 @@ fit_jara = function(jarainput,
   ni <- 6000 # Number of iterations
   nt <- 1 # Steps saved
   nb <- 1000 # Burn-in
+  nc <- 2
   }
   
   
@@ -92,9 +93,15 @@ fit_jara = function(jarainput,
                   "\n","\n","The results are unreliable and MUST be interpreted with caution","\n","\n")
   } else {WARN=""}
   
-  Chains = paste0("\n",paste0("><> Run  ",settings$assessment," completed  with ",nc," mcmc chains of ",ni, "iterations, with a burn-in of ",nb,", a thinning rate of ",nt," and a total of ",nsaved," iterations saved <><","\n"))
+  Chains1 = paste0("\n",paste0("><> Ran  ",settings$assessment,"  with ",nc," mcmc chains"),"\n")
+  Chains2 =  paste0("\n",paste0("><> Each with ",ni, " iterations, a burn-in of ",nb,", a thinning rate of ",nt),"\n")
+  Chains3 = paste0("\n",paste0("><> A total of ",nsaved," MCMC iterations were saved","\n"))
+  
+  
   RunTime =paste0("\n",paste0("><> Run  ",settings$assessment," completed in ",as.integer(save.time[3]/60)," min and ",round((save.time[3]/60-as.integer(save.time[3]/60))*100)," sec <><","\n"))
-  cat(Chains)
+  cat(Chains1)
+  cat(Chains2)
+  cat(Chains3)
   cat(RunTime)
   
   
