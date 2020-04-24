@@ -1,3 +1,16 @@
+
+
+#' jrplot_pars()
+#'
+#' Set the par() to options suitable for JARA multi plots   
+#' @param mfrow determines plot frame set up
+#' @param plot.cex cex graphic option
+#' @export
+jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.35,0.15,0,.15),labs=TRUE){
+if(labs)  mai=c(0.45,0.45,0.15,.15)
+  par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi = c(0.2,0.25,0.2,0) + 0.1, tck = -0.02,cex=0.8))
+}
+
 #' jrplot_iucn
 #'
 #' IUCN posterior plot for A1 or A2   
@@ -42,8 +55,8 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
                          res = 200, units = "in")}
     if(add==FALSE) par(Par)
     
-    plot(x1,y1,type="n",xlim=c(-100,min(max(30,quantile(change,.99)),1000)),ylim=c(0,max(y1*1.05)),ylab="",xlab="",cex.main=0.9,frame=T,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
-    maxy = max(y1*1.08)
+    plot(x1,y1,type="n",xlim=c(-100,min(max(30,quantile(change,.99)),1000)),ylim=c(0,max(y1*1.1)),ylab="",xlab="",cex.main=0.9,frame=T,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
+    maxy = max(y1*1.11)
     x2 = c(ifelse(A1,-50,-30),1500); y2 = c(0,5)
     polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col=cols[1],border=cols[1])
     x3 = c(ifelse(A1,-70,-50),x2[1])
@@ -55,8 +68,8 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     
     polygon(c(x1,rev(x1)),c(y1,rep(0,length(y1))),col="grey")
     axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
-    mtext(paste("Density"), side=2, outer=T, at=0.55,line=-1.2,cex=1)
-    mtext(paste("Change (%)"), side=1, outer=T, at=0.5,line=-1.5,cex=1)
+    mtext(paste("Density"), side=2, outer=F,line=1.9,cex=1)
+    mtext(paste("Change (%)"), side=1, outer=F,line=1.9,cex=1)
     legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
                      paste0("VU (",VU,"%)"),paste0("LC (",LC,"%)")),col=1,pt.bg=c("red","orange","yellow","green"),pt.cex=1.4,pch=22,bg="white",cex=1.1)
     text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.03),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=1.2)
@@ -207,7 +220,7 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")
         
         legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
-        mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
+        mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=0.7,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
         if(as.png==TRUE) dev.off()
       }
@@ -257,10 +270,127 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
           
         legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
         }
-        mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
+        mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=0.75,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
         if(as.png==TRUE){dev.off()}
       }
       
   } # End of CPUE plot function
 
+#' log(index) fits
+#'
+#' Plot of fitted CPUE indices on log-scale (r4ss-style)
+#'
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param single.plots if TRUE plot invidual fits else make multiplot
+#' @param width plot width
+#' @param height plot hight
+#' @param indices names of indices to plot (default = "all")
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @export
+
+jrplot_logfits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,indices="all",add=FALSE){
+    cat(paste0("\n","><> jrplot_logfits()  <><","\n"))
+    
+  years = jara$yr
+  N = length(years)
+  if(indices[1]=="all"){
+    indices = unique(jara$fits$name)
+    n.indices = jara$settings$nI
+  } else {
+    if(length(indices[indices%in%unique(jara$fits$name)])<1) stop("non-existent index name provided")
+    indices = indices[indices%in%unique(jara$fits$name)]
+    n.indices = length(indices)
+  }
+  series = 1:jara$settings$nI
+  CPUE = jara$settings$y
+  check.yrs = abs(apply(jara$residuals,2,sum,na.rm=TRUE))
+  cpue.yrs = years[check.yrs>0]
+  
+    if(single.plots==TRUE){
+      if(is.null(width)) width = 5
+      if(is.null(height)) height = 3.5
+      for(i in 1:n.indices){
+        Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
+        if(as.png==TRUE){png(file = paste0(output.dir,"/logFits",jara$assessment,"_",jara$scenario,"_",indices[i],".png"), width = width, height = height,
+                             res = 200, units = "in")}
+        if(add==FALSE){
+        if(as.png==TRUE | i==1) par(Par)
+        }
+        Yr = jara$yr
+        Yr = min(Yr):max(Yr)
+        yr = Yr-min(years)+1
+        cpue.i = jara$fits[jara$fits$name%in%indices[i],]$obs
+        hat.i = jara$fits[jara$fits$name%in%indices[i],]$hat
+        yr.i =  jara$fits[jara$fits$name%in%indices[i],]$year
+        se.i =  jara$fits[jara$fits$name%in%indices[i],]$obs.err
+        
+        
+        ylim = (c(min((log(cpue.i)-1.96*se.i)), max((log(cpue.i)+1.96*se.i))))
+        
+        # Plot Observed vs predicted CPUE
+        plot(yr.i,log(cpue.i),ylab="",xlab="",ylim=ylim,xlim=range(yr.i),type='n',xaxt="n",yaxt="n")
+        axis(1,labels=TRUE,cex=0.8)
+        axis(2,labels=TRUE,cex=0.8)
+        
+        lines(yr.i,log(hat.i),lwd=2,col=4)
+        if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ 
+          iv = c(-0.25,0.25)
+          for(t in 1:length(yr.i)){
+            lines(rep(yr.i[t],2),c((log(cpue.i[t])-1.96*se.i[t]),(log(cpue.i[t])+1.96*se.i[t])))  
+            lines(yr.i[t]+iv,rep((log(cpue.i[t])-1.96*se.i[t]),2))  
+            lines(yr.i[t]+iv,rep((log(cpue.i[t])+1.96*se.i[t]),2))
+          }}  
+          points(yr.i,log(cpue.i),pch=21,xaxt="n",yaxt="n",bg="white")
+          
+        legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=1)
+        mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=0.7,cex=1)
+        mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
+        if(as.png==TRUE){dev.off()}
+      }
+    } else { # single.plots = F
+      if(is.null(width)) width = 7
+      if(is.null(height)) height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0)
+      Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=0.8)
+      if(as.png==TRUE){png(file = paste0(output.dir,"/logFits_",jara$assessment,"_",jara$scenario,".png"), width = 7, height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0),
+                           res = 200, units = "in")}
+      par(Par)
+      for(i in 1:n.indices){
+        Yr = jara$yr
+        Yr = min(Yr):max(Yr)
+        yr = Yr-min(years)+1
+        cpue.i = jara$fits[jara$fits$name%in%indices[i],]$obs
+        hat.i = jara$fits[jara$fits$name%in%indices[i],]$hat
+        yr.i =  jara$fits[jara$fits$name%in%indices[i],]$year
+        se.i =  jara$fits[jara$fits$name%in%indices[i],]$obs.err
+        yr.i = Yr[is.na(CPUE[,i])==F]
+        
+        
+        ylim = (c(min((log(cpue.i)-1.96*se.i)), max((log(cpue.i)+1.96*se.i))))
+        
+        # Plot Observed vs predicted CPUE
+        plot(yr.i,log(cpue.i),ylab="",xlab="",ylim=ylim,xlim=range(yr.i),type='n',xaxt="n",yaxt="n")
+        axis(1,labels=TRUE,cex=0.8)
+        axis(2,labels=TRUE,cex=0.8)
+        
+        lines(yr.i,log(hat.i),lwd=2,col=4)
+        if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ 
+          iv = c(-0.25,0.25)
+          for(t in 1:length(yr.i)){
+            lines(rep(yr.i[t],2),c((log(cpue.i[t])-1.96*se.i[t]),(log(cpue.i[t])+1.96*se.i[t])))  
+            lines(yr.i[t]+iv,rep((log(cpue.i[t])-1.96*se.i[t]),2))  
+            lines(yr.i[t]+iv,rep((log(cpue.i[t])+1.96*se.i[t]),2))
+          }}  
+        points(yr.i,log(cpue.i),pch=21,xaxt="n",yaxt="n",bg="white")
+        
+        legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=1)
+      }
+      mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=0.75,cex=1)
+      mtext(paste("Log Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
+      if(as.png==TRUE){dev.off()}
+      
+    }
+
+} # End of logfit

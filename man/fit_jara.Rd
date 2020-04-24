@@ -6,9 +6,9 @@
 \usage{
 fit_jara(
   jarainput,
-  ni = 7500,
+  ni = 9000,
   nt = 2,
-  nb = 1500,
+  nb = 2000,
   nc = 3,
   save.jara = FALSE,
   save.all = FALSE,
