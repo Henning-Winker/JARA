@@ -11,6 +11,7 @@ if(labs)  mai=c(0.45,0.45,0.15,.15)
   par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi = c(0.2,0.25,0.2,0) + 0.1, tck = -0.02,cex=0.8))
 }
 
+
 #' jrplot_iucn
 #'
 #' IUCN posterior plot for A1 or A2   
@@ -87,6 +88,97 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   
   return(out)
 }
+
+
+#' jrplot_trjfit()
+#'
+#' Plots the estimated and predicted population trajectors on the same scale    
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param plot.cex cex graphic option
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @param indices names of indices to plot (default = "all")
+#' @export
+jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE,indices="all"){
+  
+  cat(paste0("\n","><> jrplot_trjfit() - fit to trajectories <><","\n"))
+  
+  
+  Nt = jara$trj[jara$trj$name=="global" & jara$trj$estimation=="fit",]
+  year = Nt$yr
+  end.yr = which(year==max(Nt$yr[Nt$estimation=="fit"])) 
+  nT = length(year)
+  years= year[1:end.yr]
+  n.years = length(years)
+  abundance = jara$settings$model.type
+  GL = jara$settings$GL
+  years = jara$yr
+  if(indices[1]=="all"){
+    indices = unique(jara$fits$name)
+    n.indices = jara$settings$nI
+  } else {
+    if(length(indices[indices%in%unique(jara$fits$name)])<1) stop("non-existent index name provided")
+    indices = indices[indices%in%unique(jara$fits$name)]
+    n.indices = length(indices)
+  }
+  
+  
+  
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(as.png==TRUE){png(file = paste0(output.dir,"/TrjFits_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+  
+  # Total N
+  m1 <- 0
+  m2 <- max(jara$trj[jara$trj$name!="global",]$uci, na.rm = TRUE)
+  
+  if(abundance=="census"){
+    plot(0, 0, ylim = c(m1, m2), xlim = c(min(years-1),max(years+1)), ylab = "Population Numbers", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
+    cs = sample(seq(80,90,1))
+    cols=paste0("gray",cs)
+    col_line <- jara$settings$cols
+    for(i in 1:n.indices){ 
+      Nfit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$estimation=="fit",]
+      polygon(x = c(years,rev(years)), y = c(Nfit$lci,rev(Nfit$uci)), col = gray(runif(1,0.5,0.9),0.5), border = "gray90")
+    }
+    for(i in 1:n.indices){
+      Nfit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$estimation=="fit",]
+      lines(years,Nfit$mu, type = "l",col=col_line[i], lwd=1)
+      fits= jara$fits[jara$fits$name%in%indices[i],]
+      points(fits$year,fits$obs, bg = col_line[i],pch=21) 
+    }
+    posl = c(max(Nt[Nt$yr==min(years),"uci"]),max(Nt[Nt$yr==max(years),"uci"]))
+  } else {  
+    plot(0, 0, ylim = c(m1, m2), xlim =  c(min(years-1),max(years+1)), ylab = "Abudance Index", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
+    cs = sample(seq(80,90,1))
+    cols=paste0("gray",cs)
+    col_line <- jara$settings$cols
+    q.adj = jara$pars$median[-c(1:2)]
+    
+    polygon(x = c(years,rev(years)), y = c(Nt$lci,rev(Nt$uci)), col = "gray", border = "gray90")
+    
+    
+    for(i in 1:n.indices)
+    {
+      fits= jara$fits[jara$fits$name==indices[i],]
+      points(fits$year,fits$obs/q.adj[i], bg = col_line[i],col=col_line[i],lty=2,pch=21,type="o") 
+     }
+    lines(years,Nt$mu, type = "l",col=1, lwd=2)
+  }
+  posl = c(max(Nt[Nt$yr==min(years),"uci"]),max(Nt[Nt$yr==max(years),"uci"]))
+
+
+   legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(indices), lty = c(1, rep(n.indices)), lwd = c(rep(-1,n.indices)),pch=c(rep(21,n.indices)), pt.bg = c(col_line[1:n.indices]), bty = "n", cex = 0.9,y.intersp = 0.8)
+   axis(1,at=seq(min(years)-1,max(years)+5,ceiling(n.years/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
+   if(as.png==TRUE) dev.off()
+
+} # end of jrplot_trjfit()
 
 #' jrplot_poptrj()
 #'
