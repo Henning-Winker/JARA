@@ -18,9 +18,9 @@
 #' @export
 fit_jara = function(jarainput,
                      # MCMC settings
-                     ni = 7500, # Number of iterations
+                     ni = 9000, # Number of iterations
                      nt = 2, # Steps saved
-                     nb = 1500, # Burn-in
+                     nb = 2000, # Burn-in
                      nc = 3, # number of chains
                      save.jara = FALSE,
                      save.all = FALSE,
@@ -32,7 +32,7 @@ fit_jara = function(jarainput,
   #write jara model
   jara2jags(jarainput)
   if(quickmcmc==TRUE){
-  ni <- 6000 # Number of iterations
+  ni <- 7000 # Number of iterations
   nt <- 1 # Steps saved
   nb <- 1000 # Burn-in
   nc <- 2

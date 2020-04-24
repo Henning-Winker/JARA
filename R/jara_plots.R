@@ -140,8 +140,9 @@ jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
 #' @param height plot hight
 #' @param plot.cex graphic option
 #' @param indices names of indices to plot (default = "all")
+#' @param add if TRUE par is not called to enable manual multiplots
 #' @export
-jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,indices="all"){
+jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,indices="all",add=FALSE){
   
     cat(paste0("\n","><> jrplot_fits() - fits to abudance indices <><","\n"))
     years = jara$yr
@@ -166,8 +167,9 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
         if(as.png==TRUE){png(file = paste0(output.dir,"/Fits",jara$assessment,"_",jara$scenario,"_",indices[i],".png"), width = width, height = height,
                              res = 200, units = "in")}
-        
+        if(add==FALSE){
         if(as.png==TRUE | i==1) par(Par)
+        }  
         # set observed vs predicted CPUE
         Yr = jara$yr
         Yr = min(Yr):max(Yr)
@@ -261,6 +263,4 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
       }
       
   } # End of CPUE plot function
-
-
 
