@@ -231,7 +231,7 @@ jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,pl
   cnam = c("All.yrs","1GL","2GL","3GL")  
   
   jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
-  plot(0,0,type="n",ylab="Density",xlab="Annual Rate of Change(%)",xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=quantile(as.matrix(lamdas),c(0.001,0.999)),xaxs="i",yaxs="i") 
+  plot(0,0,type="n",ylab="Density",xlab="r",xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=quantile(as.matrix(lamdas),c(0.001,0.999)),xaxs="i",yaxs="i") 
   for(i in 1:ncol(rs)){
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))

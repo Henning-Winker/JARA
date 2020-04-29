@@ -23,7 +23,7 @@ data("jaradata")
 # create JARA input
 mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,dat$StripedMarlin_IO_CPUE$se,model.type = "relative",assessment = "MLS",GL=5.5)
 # Check input
-jrplot(mls.input)
+jrplot_indices(mls.input)
 
 # fit JARA model
 mls.fit = fit_jara(mls.input,quickmcmc=T) # quick test run
@@ -31,21 +31,43 @@ mls.fit = fit_jara(mls.input,quickmcmc=T) # quick test run
 mls.fit = fit_jara(mls.input,quickmcmc=F)
 
 jrplot_trjfit(mls.fit)
+# Test Colour option
+jrplot_trjfit(mls.fit,cols=rainbow(6))
+# Fits
 jrplot_fits(mls.fit)
 jrplot_logfits(mls.fit)
 
 jrplot_poptrj(mls.fit)
+jrplot_r(mls.fit)
 mls.threat = jrplot_iucn(mls.fit)
 mls.threat$perc.risk
 mls.threat$status
 
+jrpar(mfrow=c(2,2))
+jrplot_trjfit(mls.fit,add=T)
+jrplot_poptrj(mls.fit,add=T)
+jrplot_changes(mls.fit,add=T)
+jrplot_iucn(mls.fit,add=T)
+
+
 # African Penguin
 # create JARA input
 ap.input = build_jara(I=dat$Afr_penguin$I,assessment="AfrPenguin",model.type = "census",GL=9.9)
+# Check input indices
+jrplot_indices(ap.input)
 # fit JARA model
 ap.fit = fit_jara(ap.input,quickmcmc=T)
 
-jrplot_trjfit(ap.fit)
+jrpar(mfrow=c(2,1))
+jrplot_indices(ap.input,add=T)
+jrplot_trjfit(ap.fit,add=T)
+
+jrpar(mfrow=c(2,2))
+jrplot_trjfit(ap.fit,add=T)
+jrplot_poptrj(ap.fit,add=T)
+jrplot_changes(ap.fit,add=T)
+jrplot_iucn(ap.fit,add=T)
+
 jrplot_fits(ap.fit)
 # Choose indices to look at Robben and Dassen
 jrplot_trjfit(ap.fit,indices=ap.fit$indices[1:2])
@@ -64,12 +86,14 @@ ap.threat = jrplot_iucn(ap.fit)
 ap.threat$perc.risk
 ap.threat$status
 
-# 
-jrpar(mfrow=c(2,2))
+# Show both assessments 
+jrpar(mfrow=c(2,3))
 jrplot_poptrj(ap.fit,add=T)
+jrplot_changes(ap.fit,add=T)
+legend("topleft","Afr. Penguin",cex=1.,bty="n",y.intersp = -.2,x.intersp = -0.5)
 ap.threat = jrplot_iucn(ap.fit,add=T)
-legend("topright","Afr. Penguin",cex=1.2,bty="n",y.intersp = -.2)
 jrplot_poptrj(mls.fit,add=T)
-ap.threat = jrplot_iucn(mls.fit,add=T)
-legend("topright","Striped Marlin",cex=1.2,bty="n",y.intersp = -.2)
+jrplot_changes(mls.fit,add=T)
+legend("topleft","Striped Marlin",cex=1.,bty="n",y.intersp = -.2,x.intersp = -0.5)
+mls.threat = jrplot_iucn(mls.fit,add=T)
 
