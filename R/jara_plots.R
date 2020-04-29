@@ -1,5 +1,4 @@
 
-
 #' jrplot_pars()
 #'
 #' Set the par() to options suitable for JARA multi plots   
@@ -7,10 +6,56 @@
 #' @param plot.cex cex graphic option
 #' @export
 jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.35,0.15,0,.15),labs=TRUE){
-if(labs)  mai=c(0.45,0.45,0.15,.15)
+  if(labs)  mai=c(0.45,0.45,0.15,.15)
   par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi = c(0.2,0.25,0.2,0) + 0.1, tck = -0.02,cex=0.8))
 }
 
+#' jrplot_indices
+#'
+#' Plot mean rates of change (%) over 1, 2 anf 3 Generation lengths    
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param criteria A1 or A2 for decline
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @param plot.cex cex graphic option
+#' @param cols option to choose own colour palette
+#' @export
+jrplot_indices <- function(jarainput, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE,cols=NULL){
+
+years =   jarainput$data$yr  
+abundance =jarainput$settings$model.type
+dat = jarainput$data$I
+se = sqrt(jarainput$jagsdata$SE2)[1:length(years),]
+y = jarainput$jagsdata$y[1:length(years),]
+nI = ncol(y) 
+if(is.null(cols)) cols = jarainput$settings$cols
+Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+if(as.png==TRUE){png(file = paste0(output.dir,"/AnnualRate_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+if(add==FALSE) par(Par)
+
+Ylim = c(0, max(exp(jarainput$jagsdata$y+1.96*sqrt(jarainput$jagsdata$SE2))  ,na.rm =T))
+plot(years,years,type="n",xlim=c(min(years-1),max(years+1)),ylab=ifelse(abundance=="census","Counts","Abunance Index"),xlab="Year",ylim=Ylim, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
+iv = c(-0.25,0.25)
+for(j in 1:nI){
+  ds =runif(1,-0.2,0.2)
+  for(t in 1:length(years)){
+    lines(rep(years[t]+ds,2),c(exp(y[t,j]-1.96*se[t,j]),exp(y[t,j]+1.96*se[t,j])))
+    lines(years[t]+ds+iv,rep(exp(y[t,j]-1.96*se[t,j]),2))  
+    lines(years[t]+ds+iv,rep(exp(y[t,j]+1.96*se[t,j]),2))
+    }  
+    lines(years+ds,dat[,j+1],type="b",pch=21,cex=1.2,col=grey(0.4,0.7),bg=cols[j])
+}
+
+axis(1,at=seq(min(dat[,1]),max(dat[,1])+5,ceiling(length(dat[,1])/8)),tick=seq(min(dat[,1]),max(dat[,1]),ceiling(length(dat[,1])/8)),cex.axis=0.9)
+
+posl = c(max(dat[1:3,-1],na.rm=T),max(dat[(length(years)):length(years),-1],na.rm=T))
+legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(names(dat)[2:(nI+1)]), lty = c(1, rep(nI)), lwd = c(rep(-1,nI)),pch=c(rep(21,nI)), pt.bg = c(cols[1:nI]), bty = "n", cex = 0.9,y.intersp = 0.8)
+if(as.png==TRUE) dev.off()
+} # End of index plot
 
 #' jrplot_iucn
 #'
@@ -90,6 +135,118 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
 }
 
 
+#' jrplot_changes
+#'
+#' Plot mean rates of change (%) over 1, 2 anf 3 Generation lengths    
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param plot.cex cex graphic option
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @export
+jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
+  
+  cat(paste0("\n","><> jrplot_change() - %change over  1, 2, 3 x GL <><","\n"))
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(as.png==TRUE){png(file = paste0(output.dir,"/AnnualRate_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+  rs = jara$posteriors[,-1]
+  
+  lamdas = (exp(rs)-1)*100
+  
+  lymax=rymax = lxrange = rxrange =NULL # maximum and range for plotting
+  for(i in 1:ncol(rs)){
+    den = stats::density(lamdas[,i],adjust=2)
+    assign(paste0("xl",i),den$x)
+    assign(paste0("yl",i),den$y)
+    lymax=c(lymax,max(den$y))
+    lxrange = c(lxrange,range(den$x))
+    den = stats::density(rs[,i],adjust=2)
+    assign(paste0("xr",i),den$x)
+    assign(paste0("yr",i),den$y)
+    rymax=c(rymax,max(den$y))
+    rxrange = c(rxrange,range(den$x))
+  }
+  cnam = c("All.yrs","1GL","2GL","3GL")  
+  
+  jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
+  plot(0,0,type="n",ylab="Density",xlab="Annual Rate of Change(%)",xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=quantile(as.matrix(lamdas),c(0.001,0.999)),xaxs="i",yaxs="i") 
+  for(i in 1:ncol(rs)){
+    x = get(paste0("xl",i))
+    y = get(paste0("yl",i))
+    polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
+    mu.lamda = round(median(lamdas[,i]),10)
+    lines(rep(mu.lamda,2),c(0,max(y)),col=c(1,4,3,2)[i],lwd=1,lty=1)
+    
+  }
+  axis(1,at=seq(floor(min(x)),ceiling(max(x)),1),tick=seq(min(x),max(x),5),cex.axis=0.9)
+  abline(v=0,lty=2)
+  legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(lamdas,2,median),2)>0,"+",""),round(apply(lamdas,2,median),2),"%"),pch=15,col=c(jcol),bty="n")
+  if(as.png==TRUE) dev.off()
+} # End rate of change plot  
+
+
+#' jrplot_r
+#'
+#' Plot mean rates r = log(lamda) over 1, 2 anf 3 Generation lengths    
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param plot.cex cex graphic option
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @export
+jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
+  
+  cat(paste0("\n","><> jrplot_r() - r = log(lamda) over  1, 2, 3 x GL <><","\n"))
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(as.png==TRUE){png(file = paste0(output.dir,"/rchange_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+  rs = jara$posteriors[,-1]
+  
+  lamdas = rs
+  
+  lymax=rymax = lxrange = rxrange =NULL # maximum and range for plotting
+  for(i in 1:ncol(rs)){
+    den = stats::density(lamdas[,i],adjust=2)
+    assign(paste0("xl",i),den$x)
+    assign(paste0("yl",i),den$y)
+    lymax=c(lymax,max(den$y))
+    lxrange = c(lxrange,range(den$x))
+    den = stats::density(rs[,i],adjust=2)
+    assign(paste0("xr",i),den$x)
+    assign(paste0("yr",i),den$y)
+    rymax=c(rymax,max(den$y))
+    rxrange = c(rxrange,range(den$x))
+  }
+  cnam = c("All.yrs","1GL","2GL","3GL")  
+  
+  jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
+  plot(0,0,type="n",ylab="Density",xlab="Annual Rate of Change(%)",xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=quantile(as.matrix(lamdas),c(0.001,0.999)),xaxs="i",yaxs="i") 
+  for(i in 1:ncol(rs)){
+    x = get(paste0("xl",i))
+    y = get(paste0("yl",i))
+    polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
+    mu.lamda = round(median(lamdas[,i]),10)
+    lines(rep(mu.lamda,2),c(0,max(y)),col=c(1,4,3,2)[i],lwd=1,lty=1)
+    
+  }
+  axis(1,at=seq(floor(min(x)),ceiling(max(x)),0.1),tick=seq(min(x),max(x),0.1),cex.axis=0.9)
+  abline(v=0,lty=2)
+  legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(lamdas,2,median),2)>0,"+",""),round(apply(lamdas,2,median),3)),pch=15,col=c(jcol),bty="n")
+  if(as.png==TRUE) dev.off()
+} # End rate of change plot  
+
+
 #' jrplot_trjfit()
 #'
 #' Plots the estimated and predicted population trajectors on the same scale    
@@ -101,8 +258,9 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
 #' @param plot.cex cex graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @param indices names of indices to plot (default = "all")
+#' @param cols option to choose own colour palette
 #' @export
-jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE,indices="all"){
+jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE,indices="all",cols=NULL){
   
   cat(paste0("\n","><> jrplot_trjfit() - fit to trajectories <><","\n"))
   
@@ -141,24 +299,25 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
   if(abundance=="census"){
     plot(0, 0, ylim = c(m1, m2), xlim = c(min(years-1),max(years+1)), ylab = "Population Numbers", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
     cs = sample(seq(80,90,1))
-    cols=paste0("gray",cs)
-    col_line <- jara$settings$cols
+    
+    colci=paste0("gray",cs)
+    if(is.null(cols)) cols <- jara$settings$cols
     for(i in 1:n.indices){ 
       Nfit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$estimation=="fit",]
       polygon(x = c(years,rev(years)), y = c(Nfit$lci,rev(Nfit$uci)), col = gray(runif(1,0.5,0.9),0.5), border = "gray90")
     }
     for(i in 1:n.indices){
       Nfit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$estimation=="fit",]
-      lines(years,Nfit$mu, type = "l",col=col_line[i], lwd=1)
+      lines(years,Nfit$mu, type = "l",col=cols[i], lwd=1)
       fits= jara$fits[jara$fits$name%in%indices[i],]
-      points(fits$year,fits$obs, bg = col_line[i],pch=21) 
+      points(fits$year,fits$obs, bg = cols[i],pch=21) 
     }
     posl = c(max(Nt[Nt$yr==min(years),"uci"]),max(Nt[Nt$yr==max(years),"uci"]))
   } else {  
     plot(0, 0, ylim = c(m1, m2), xlim =  c(min(years-1),max(years+1)), ylab = "Abudance Index", xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxs="i",yaxs="i",xaxt="n")
     cs = sample(seq(80,90,1))
-    cols=paste0("gray",cs)
-    col_line <- jara$settings$cols
+    colci=paste0("gray",cs)
+    if(is.null(cols)) cols <- jara$settings$cols
     q.adj = jara$pars$median[-c(1:2)]
     
     polygon(x = c(years,rev(years)), y = c(Nt$lci,rev(Nt$uci)), col = "gray", border = "gray90")
@@ -167,14 +326,14 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
     for(i in 1:n.indices)
     {
       fits= jara$fits[jara$fits$name==indices[i],]
-      points(fits$year,fits$obs/q.adj[i], bg = col_line[i],col=col_line[i],lty=2,pch=21,type="o") 
+      points(fits$year,fits$obs/q.adj[i], bg = cols[i],col=cols[i],lty=2,pch=21,type="o") 
      }
     lines(years,Nt$mu, type = "l",col=1, lwd=2)
   }
   posl = c(max(Nt[Nt$yr==min(years),"uci"]),max(Nt[Nt$yr==max(years),"uci"]))
 
 
-   legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(indices), lty = c(1, rep(n.indices)), lwd = c(rep(-1,n.indices)),pch=c(rep(21,n.indices)), pt.bg = c(col_line[1:n.indices]), bty = "n", cex = 0.9,y.intersp = 0.8)
+   legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(indices), lty = c(1, rep(n.indices)), lwd = c(rep(-1,n.indices)),pch=c(rep(21,n.indices)), pt.bg = c(cols[1:n.indices]), bty = "n", cex = 0.9,y.intersp = 0.8)
    axis(1,at=seq(min(years)-1,max(years)+5,ceiling(n.years/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
    if(as.png==TRUE) dev.off()
 
@@ -486,3 +645,9 @@ jrplot_logfits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FA
     }
 
 } # End of logfit
+
+
+
+
+
+
