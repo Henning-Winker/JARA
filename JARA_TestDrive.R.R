@@ -1,10 +1,10 @@
 
 
-library(devtools)
-load_all()
-document()
-check()
-data("jaradata")
+#library(devtools)
+#load_all()
+#document()
+#check()
+#data("jaradata")
 
 
 #======================================
