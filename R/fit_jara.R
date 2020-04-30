@@ -155,7 +155,7 @@ fit_jara = function(jarainput,
   # get individual trends
   #---------------------------
   end.yr = length(years)
-  fitted <- lower <- upper <- mat.or.vec(end.yr,(n.indices))
+  fitted <- lower <- upper <- matrix(NA,end.yr,(n.indices))
   
   if(abundance=="census"){
     for(i in 1:n.indices){

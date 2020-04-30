@@ -28,12 +28,12 @@ jrplot_indices <- function(jarainput, output.dir=getwd(),as.png=FALSE,width=5,he
 years =   jarainput$data$yr  
 abundance =jarainput$settings$model.type
 dat = jarainput$data$I
-se = sqrt(jarainput$jagsdata$SE2)[1:length(years),]
-y = jarainput$jagsdata$y[1:length(years),]
+se = as.matrix(sqrt(jarainput$jagsdata$SE2)[1:length(years),])
+y = as.matrix(jarainput$jagsdata$y[1:length(years),])
 nI = ncol(y) 
 if(is.null(cols)) cols = jarainput$settings$cols
 Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
-if(as.png==TRUE){png(file = paste0(output.dir,"/AnnualRate_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+if(as.png==TRUE){png(file = paste0(output.dir,"/AnnualRate_",jarainput$settings$assessment,"_",jarainput$settings$scenario,".png"), width = width, height = height,
                        res = 200, units = "in")}
 if(add==FALSE) par(Par)
 
