@@ -21,7 +21,7 @@ data("jaradata")
 
 # Striped Marlin (relative)
 # create JARA input
-mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE,se=dat$StripedMarlin_IO_CPUE,model.type = "relative",assessment = "MLS",GL=5.5)
+mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
 # Check input
 jrplot_indices(mls.input)
 
