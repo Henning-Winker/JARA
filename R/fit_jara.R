@@ -16,6 +16,8 @@
 #' @param quickmcmc option "test run" jara with short (fast) mcmc chains 
 #' @return A result list containing estimates of JARA model input, settings and results
 #' @export
+#' @author Henning Winker and Richard Sherley 
+
 fit_jara = function(jarainput,
                      # MCMC settings
                      ni = 9000, # Number of iterations
@@ -163,24 +165,41 @@ fit_jara = function(jarainput,
         fitted[t,i] <- median(posteriors$N.est[,t,i])
         lower[t,i] <- quantile(posteriors$N.est[,t,i], 0.025)
         upper[t,i] <- quantile(posteriors$N.est[,t,i], 0.975)}}
-  } else {
+      
+    # log-normal bias correction from Sherley et al. (in press)
+    Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT,n.indices))
+      for(i in 1:n.indices){
+        for (t in 1:nT){
+          Nbias.correct[,t,i] = exp(log(posteriors$N.est[,t,i])-0.5*var(log(posteriors$N.est[,t,i])))
+        }}
+    
+    Nfit <- Nlow <- Nhigh <- as.numeric()
+    # get total pop size
+    for (t in 1:nT){
+      Nfit[t] = mean(rowSums(Nbias.correct[,t,]))# o<
+      Nlow[t] = quantile(rowSums(Nbias.correct[,t,]),0.025)# o<
+      Nhigh[t] = quantile(rowSums(Nbias.correct[,t,]),0.975)# o<
+    }  
+    } else {
     q.adj = apply(posteriors$q,2,median)
     fitted <- lower <- upper <- as.null()
     for (t in 1:end.yr){
       fitted[t] <- median(posteriors$Y.est[,t])
       lower[t] <- quantile(posteriors$Y.est[,t], 0.025)
       upper[t] <- quantile(posteriors$Y.est[,t], 0.975)}
-  }
+      # Total population
+      Nfit <- Nlow <- Nhigh <- as.numeric()
+      # get total pop size
+      for (t in 1:nT){
+      Nfit[t] = fitted[t]
+      Nlow[t] = lower[t]
+      Nhigh[t] = upper[t]}
+    }
   
-  # Total population
-  Nfit <- Nlow <- Nhigh <- as.numeric()
-  # get total pop size
-  for (t in 1:nT){
-    Nfit[t] =  median(posteriors$Ntot[,t])
-    Nlow[t] = quantile(posteriors$Ntot[,t],0.025)
-    Nhigh[t] = quantile(posteriors$Ntot[,t],0.975)
-  }
   
+  
+  
+
   
   #------------------------------------------------------------------
   # Goodness of fit Statistics

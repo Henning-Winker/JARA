@@ -21,6 +21,7 @@
 #' @param proj.stoch allows for projections with process error c(TRUE, FALSE), FALSE is default
 #' @return List to be used as data input to JARA JAGS model
 #' @export
+#' @author Henning Winker  
 build_jara <- function(
               I = NULL, #abundance indices/counts,  require data.frame(year, I.1,I.2,...,I.N)
               se = NULL,

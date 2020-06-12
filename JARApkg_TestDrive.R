@@ -1,12 +1,8 @@
-
-#setwd("C:/Work/Research/GitHub/JARA")
-#library(devtools)
-#load_all()
-#document()
-#check()
-#data("jaradata")
-
-
+#><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
+# Example code for library(JARA)
+# Henning Winker, Richard Sherley & Nathan Pacoureau
+# Maintainer: Henning.Winker@gmail.com
+#><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
 #======================================
 # INSTALL JARA
 library(devtools)
@@ -52,7 +48,7 @@ jrplot_iucn(mls.fit,add=T)
 
 # African Penguin
 # create JARA input
-ap.input = build_jara(I=dat$Afr_penguin$I,assessment="AfrPenguin",model.type = "census",GL=9.9)
+ap.input = build_jara(I=dat$Afr_penguin$I,assessment="AfrPenguin",model.type = "census",GL=9.9,fixed.obsE = 0.15)
 # Check input indices
 jrplot_indices(ap.input)
 # fit JARA model

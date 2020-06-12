@@ -62,3 +62,6 @@ List to be used as data input to JARA JAGS model
 \description{
 Creates a data list with JABBA input and settings to be passed to fit_jara()
 }
+\author{
+Henning Winker
+}

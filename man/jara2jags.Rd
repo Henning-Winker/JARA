@@ -12,3 +12,6 @@ jara2jags(jarainput)
 \description{
 Writes JAGS code for JARA into a temporary directory
 }
+\author{
+Henning Winker
+}

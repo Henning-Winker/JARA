@@ -3,6 +3,7 @@
 #' Writes JAGS code for JARA into a temporary directory
 #' @param jarainput JARA input object from build_jara()
 #' @export
+#' @author Henning Winker
 jara2jags = function(jarainput){
 
   if(jarainput$settings$model.type=="census"){

@@ -32,3 +32,6 @@ jrplot_changes(
 \description{
 Plot mean rates of change (%) over 1, 2 anf 3 Generation lengths
 }
+\author{
+Henning Winker and Richard Sherley
+}

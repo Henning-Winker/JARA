@@ -50,3 +50,6 @@ A result list containing estimates of JARA model input, settings and results
 \description{
 Fits JARA model in JAGS and produce output object as list()
 }
+\author{
+Henning Winker and Richard Sherley
+}

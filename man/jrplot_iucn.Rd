@@ -44,3 +44,6 @@ IUCN classification
 \description{
 IUCN posterior plot for A1 or A2
 }
+\author{
+Henning Winker, Richard Sherley and Nathan Pacoureau
+}

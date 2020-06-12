@@ -72,6 +72,7 @@ if(as.png==TRUE) dev.off()
 #' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
 #' @param Plot if FALSE then only threat status stats are returned 
 #' @return IUCN classification 
+#' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
 jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE,Plot=TRUE){
   
@@ -146,6 +147,8 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
 #' @param plot.cex cex graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
+#' @author Henning Winker and Richard Sherley
+
 jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
   
   cat(paste0("\n","><> jrplot_change() - %change over  1, 2, 3 x GL <><","\n"))
