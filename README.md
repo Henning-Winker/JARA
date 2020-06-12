@@ -1,7 +1,7 @@
 ---
 title: "JARA: Just Another Redlist Assessment"
-author: "Henning Winker & Richard Sherley"
-date: "Cape Town/Exeter, 2019"
+author: "Henning Winker, Nathan Pacoureau & Richard Sherley 
+date: "Cape Town, 2020"
 output: html_document
 ---
 
@@ -9,12 +9,16 @@ output: html_document
 
 ### Henning Winker & Richard Sherley
 
-JARA (*Just Another Redlist Assessment*) is a Bayesian state-space trend analysis tool that is designed to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. 
+JARA (*Just Another Redlist Assessment*) is a Bayesian state-space trend analysis tool that is designed to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. To ensure to a high degree of transparency and reproducibility, JARA has now implemented as an R package that hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). 
+Installing JARA requires the `librabry(devtools)`, which can be install by 'install.packages('devtools')' and a R version >= 3.5. Then simply install JARA from github with the command:
 
-The name ‘Just Another Red List Assessment’ is a reference to [JAGS](https://sourceforge.net/projects/mcmc-jags/) (Just Another Gibbs Sampler, Plummer, 2003), which is the software called from R to run the Bayesian state-space model application. The name reference, together with user-friendly R interface and modulated coding structure of JARA follows the example of the new open source fisheries stock assessment software ‘Just Another Bayesian Biomass Assessment‘ ([JABBA](https://github.com/Henning-Winker/JABBAbeta); [Winker et al. 2018](https://www.sciencedirect.com/science/article/pii/S0165783618300845))
+`install_github("henning-winker/JARA")`
 
-To ensure to a high degree of transparency and reproducibility, JARA is hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). The fully commented R code can be easily modified by conservation practitioners to apply JARA to their count or relative abundance data. We provide a detailed Technical Documentation of JARA in the form of a Preprint Draft ([Winker and Sherley, 2019](https://www.biorxiv.org/content/biorxiv/early/2019/08/19/672899.full.pdf)) available on [bioRxiv](https://www.biorxiv.org/content/10.1101/672899v2.article-info). All of the following example applications can be reproduced by running [`JARA_Prime.v1.1.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1.1.R), which first reads in the [`JARA_assessments.csv`](https://github.com/Henning-Winker/JARA/blob/master/jara.assessments.csv), including the model settings, and then executes the JARA model [`JARA.v1.1.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA.v1.1.R) via the R source() function.
+`library(JARA)`
 
+The name ‘Just Another Red List Assessment’ is a reference to [JAGS](https://sourceforge.net/projects/mcmc-jags/) (Just Another Gibbs Sampler, Plummer, 2003), which is the software called from R to run the Bayesian state-space model application. The name reference, together with user-friendly R interface and modulated coding structure of JARA follows the example of the new open source fisheries stock assessment R Package ‘Just Another Bayesian Biomass Assessment‘ ([`JABBA`](https://github.com/jabbamodel/JABBA); [Winker et al. 2018](https://www.sciencedirect.com/science/article/pii/S0165783618300845))
+  
+The fully commented R JARA functions enable to easy adjustments of the input data and parameters by conservation practitioners to apply JARA to their count or relative abundance data. We provide a detailed Technical Documentation of JARA in the form of a Preprint Draft ([Winker and Sherley, 2019](https://www.biorxiv.org/content/biorxiv/early/2019/08/19/672899.full.pdf)) available on [bioRxiv](https://www.biorxiv.org/content/10.1101/672899v2.article-info). We provide an easy "test-drive" of the JARA options `JARApkg_Test.R`[blah]. Example of the following example applications can be reproduced by running [`JARA_Examples.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_Prime.v1.1.R)
 
 - [Cape gannet](https://github.com/Henning-Winker/JARA/tree/master/Cape_gannet/output1) (Breeding pair counts from multiple colonies)  
 - [African Penguin](https://github.com/Henning-Winker/JARA/tree/master/Afr_penguin/output1) (Breeding pair counts from multiple colonies)  
