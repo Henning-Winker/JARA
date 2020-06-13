@@ -20,11 +20,11 @@ The name ‘Just Another Red List Assessment’ is a reference to [JAGS](https:/
   
 The fully commented R JARA functions enable to easy adjustments of the input data and parameters by conservation practitioners to apply JARA to their count or relative abundance data. We provide a detailed Technical Documentation of JARA in the form of a Preprint Draft ([Winker and Sherley, 2019](https://www.biorxiv.org/content/biorxiv/early/2019/08/19/672899.full.pdf)) available on [bioRxiv](https://www.biorxiv.org/content/10.1101/672899v2.article-info). We provide an easy "test-drive" of the JARA options [`JARApkg_TestDrive.R`](https://github.com/Henning-Winker/JARA/blob/master/JARApkg_Testdrive.R). Worked examples of the following seven datasets compiled in  [`jaradata`](https://github.com/Henning-Winker/JARA/tree/master/data) can be reproduced by running [`JARA_7examples.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_7examples.R)
 
-- Cape gannet (Breeding pair counts from multiple colonies)  
+- [Cape gannet](https://www.tandfonline.com/doi/abs/10.2989/00306525.2019.1684396) (Breeding pair counts from multiple colonies)  
 - African Penguin (Breeding pair counts from multiple colonies)  
-- Mountain Zebra (Census data with Carrying Capacity option)
+- [Mountain Zebra](https://www.researchgate.net/publication/338510670_Population_trends_and_management_strategy_tools_for_Cape_Mountain_Zebra) (Census data with Carrying Capacity option)
 - [Yellowspotted skate](https://github.com/Henning-Winker/JARA/tree/master/YellowspottedSkate) <i>Leucoraja wallacei</i> (South African demersal survey abudance indices)
-- Smoothhound shark <i>Mustelus mustelus</i> (Combining South African demersal survey indices and recreational angling survey indices from the De Hoop MPA)
+- [Smoothhound shark](https://www.researchgate.net/publication/338491221_Assessment_of_smoothhound_shark_Mustelus_mustelus_in_South_Africa) <i>Mustelus mustelus</i> (Combining South African demersal survey indices and recreational angling survey indices from the De Hoop MPA)
 - Indian Ocean Striped Marlin (Fitting multiple fisheries Catch-Per-Unit Effort (CPUE) from the [2018 IOTC Striped Marlin Assessment](https://www.iotc.org/documents/WPB/16/16-MLS_JABBA))  
 - [2018 ICCAT Atlantic Blue Marlin stock assessment](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) (Comparing estimated Biomass trends and fitted CPUE indices) 
 
