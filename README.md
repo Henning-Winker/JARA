@@ -30,7 +30,7 @@ The fully commented R JARA functions enable to easy adjustments of the input dat
 
 The JARA framework provides the option to simultaniously fit multiple relative abundance indices and estimate the underlying mean trend (Figure 1). 
 
-<img src="https://github.com/Henning-Winker/JARA/blob/master/JARAplotting/indices2x1.png" width = "500" >
+<img src="https://github.com/Henning-Winker/JARA/blob/master/JARAplotting/indices2x1.png" width = "800" >
 
 <i> <b> Figure 1.</b> (a) Relative abudance abundance indices with 95% CIs for smoothhound shark <i>Mustelus mustelus</i>, depecting for abudance indices from demersal trawl surveys along the South African South Coast and one from research angling surveys conducted in the De Hoop MPA and (b) Standardized Catch-Per-Unit-Effort indices for Indian Striped marlin.
 </i>.
@@ -50,7 +50,7 @@ To evaluate model fit, JARA provides the user with three plots. The first shows 
 The second shows individual fits, as well as the 95% credible intervals (CI) derived from the observation variance  (Figure 3).
 <br />
 
-<img src="https://github.com/Henning-Winker/JARA/blob/master/JARAplotting/Fits_StripedMarlin_IO_CPUE.png" width = "800" >
+<img src="https://github.com/Henning-Winker/JARA/blob/master/JARAplotting/logFits_MLS_s1.png" width = "800" >
 
 <i> <b> Figure 3.</b> JARA fits  to six standardized Catch-Per-Unit-Effort indices for Indian Ocean striped marlin. The solid black line is the model predicted CPUE and the circles are observed CPUE values. Grey-shaded areas denote the 95% Credibility Intervals.
 </i>.
@@ -61,7 +61,7 @@ The third plot illustrates the fits on log scale.
 <br />
 <br />
 
-<img src="https://github.com/Henning-Winker/JARA/blob/master/JARAplotting/logFits_StripedMarlin_IO_CPUE.png" width = "800" >
+<img src="https://github.com/Henning-Winker/JARA/blob/master/JARAplotting/logFits_MLS_s1.png" width = "800" >
 
 <i> <b> Figure 4.</b> JARA fits (on log-scale) to six standardized Catch-Per-Unit-Effort indices for Indian Ocean striped marlin. The solid blue line is the model predicted CPUEand the circles are observed CPUE values. Error bars denote the assumed observation variance (in 95% CIs) for the observed CPUE values.
 </i>
