@@ -1,3 +1,19 @@
+#' jrpar()
+#'
+#' Set the par() to options suitable for ss3diags multi plots   
+#' @param mfrow determines plot frame set up
+#' @param plot.cex cex graphic option
+#' @param mai graphical par for plot margins
+#' @param labs if TRUE margins are narrow 
+#' @export
+jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.5,0.5,0.1,.1),omi = c(0.,0.,0.,0)+ 0.05,labs=FALSE){
+  if(labs==F){
+    mai=c(0.25,0.25,0.15,.15)
+    omi = c(0.3,0.35,0.2,0.2)}
+  par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi =omi, tck = -0.02,cex=plot.cex))
+}
+
+
 
 #' jrplot_pars()
 #'
@@ -329,7 +345,7 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
     for(i in 1:n.indices)
     {
       fits= jara$fits[jara$fits$name==indices[i],]
-      points(fits$year,fits$obs/q.adj[i], bg = cols[i],col=cols[i],lty=2,pch=21,type="o") 
+      points(fits$year,fits$obs/q.adj[i], bg = cols[i],col=cols[i],lty=2,pch=21,type="p") 
      }
     lines(years,Nt$mu, type = "l",col=1, lwd=2)
   }
@@ -650,7 +666,24 @@ jrplot_logfits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FA
 } # End of logfit
 
 
-
+#' wrapper jara_plots function
+#'
+#' plots all routine JARA plots to output.dir if as.png=TRUE (default)
+#'
+#' @param jara output list from fit_jabba
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @export
+jara_plots = function(jara,output.dir = getwd(),as.png=TRUE,statusplot ="kobe"){
+  
+  jrplot_fits(jara,as.png=as.png,output.dir=output.dir) 
+  jrplot_logfits(jara,as.png=as.png,output.dir=output.dir)
+  jrplot_trjfit(jara,as.png=as.png,output.dir=output.dir)
+  jrplot_poptrj(jara,as.png=as.png,output.dir=output.dir)
+  jrplot_r(jara,as.png=as.png,output.dir=output.dir)
+  jrplot_changes(jara,as.png=as.png,output.dir=output.dir)
+  jrplot_iucn(jara,as.png=as.png,output.dir=output.dir)
+}
 
 
 
