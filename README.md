@@ -7,7 +7,7 @@ output: html_document
 
 # JARA: Just Another Redlist Assessment
 
-### Henning Winker & Richard Sherley
+### Henning Winker, Nathan Pacoureau & Richard Sherley
 
 JARA (*Just Another Redlist Assessment*) is a Bayesian state-space trend analysis tool that is designed to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. To ensure to a high degree of transparency and reproducibility, JARA has now implemented as an R package that hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). 
 Installing JARA requires the `librabry(devtools)`, which can be install by 'install.packages('devtools')' and a R version >= 3.5. Then simply install JARA from github with the command:
