@@ -2,15 +2,23 @@
 % Please edit documentation in R/jara_plots.R
 \name{jrpar}
 \alias{jrpar}
-\title{jrplot_pars()}
+\title{jrpar()}
 \usage{
+jrpar(mfrow = c(1, 1), plot.cex = 1, mai = c(0.35, 0.15, 0, 0.15), labs = TRUE)
+
 jrpar(mfrow = c(1, 1), plot.cex = 1, mai = c(0.35, 0.15, 0, 0.15), labs = TRUE)
 }
 \arguments{
 \item{mfrow}{determines plot frame set up}
 
 \item{plot.cex}{cex graphic option}
+
+\item{mai}{graphical par for plot margins}
+
+\item{labs}{if TRUE margins are narrow}
 }
 \description{
+Set the par() to options suitable for ss3diags multi plots
+
 Set the par() to options suitable for JARA multi plots
 }

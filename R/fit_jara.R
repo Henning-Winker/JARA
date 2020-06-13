@@ -191,9 +191,9 @@ fit_jara = function(jarainput,
       Nfit <- Nlow <- Nhigh <- as.numeric()
       # get total pop size
       for (t in 1:nT){
-      Nfit[t] = fitted[t]
-      Nlow[t] = lower[t]
-      Nhigh[t] = upper[t]}
+      Nfit[t] = median(posteriors$Y.est[,t])
+      Nlow[t] = quantile(posteriors$Y.est[,t], 0.025)
+      Nhigh[t] = quantile(posteriors$Y.est[,t], 0.975)}
     }
   
   

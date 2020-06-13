@@ -51,7 +51,7 @@ build_jara <- function(
                 GL3 = round(3*GL,0) # 3 x GL rounded for year steps
                 
                 if(is.null(fixed.obsE)){
-                fixed.obsE = ifelse(is.null(se),0.1,0.01)
+                fixed.obsE = ifelse(is.null(se),0.15,0.01)
                 }
                 if(is.null(proc.pen)){
                   proc.pen = c(ifelse(model.type=="census",1,0.5),log(ifelse(model.type=="census",0.1,0.5)),ifelse(model.type=="census",log(5),log(2)))

@@ -1,8 +1,12 @@
-#><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
-# Example code for library(JARA)
-# Henning Winker, Richard Sherley & Nathan Pacoureau
-# Maintainer: Henning.Winker@gmail.com
-#><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
+
+#setwd("C:/Work/Research/GitHub/JARA")
+#library(devtools)
+#load_all()
+#document()
+#check()
+#data("jaradata")
+
+
 #======================================
 # INSTALL JARA
 library(devtools)
