@@ -157,15 +157,17 @@ fit_jara = function(jarainput,
   # get individual trends
   #---------------------------
   end.yr = length(years)
-  fitted <- lower <- upper <- matrix(NA,end.yr,(n.indices))
+  fitted <- lower <- upper <- lo.ppd <- hi.ppd <- matrix(NA,end.yr,(n.indices))
   
   if(abundance=="census"){
     for(i in 1:n.indices){
       for (t in 1:end.yr){
         fitted[t,i] <- median(posteriors$N.est[,t,i])
         lower[t,i] <- quantile(posteriors$N.est[,t,i], 0.025)
-        upper[t,i] <- quantile(posteriors$N.est[,t,i], 0.975)}}
-      
+        upper[t,i] <- quantile(posteriors$N.est[,t,i], 0.975)
+        lo.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.025)
+        hi.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.975)}}
+    
     # log-normal bias correction from Sherley et al. (in press)
     Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT,n.indices))
       for(i in 1:n.indices){
@@ -186,7 +188,16 @@ fit_jara = function(jarainput,
     for (t in 1:end.yr){
       fitted[t] <- median(posteriors$Y.est[,t])
       lower[t] <- quantile(posteriors$Y.est[,t], 0.025)
-      upper[t] <- quantile(posteriors$Y.est[,t], 0.975)}
+      upper[t] <- quantile(posteriors$Y.est[,t], 0.975)
+    }
+    
+    lo.ppd <- hi.ppd <- matrix(NA,end.yr,(n.indices))
+    for(i in 1:n.indices){
+      for (t in 1:end.yr){
+        lo.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.025)
+        hi.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.975)}}
+    
+    
       # Total population
       Nfit <- Nlow <- Nhigh <- as.numeric()
       # get total pop size
@@ -233,21 +244,26 @@ fit_jara = function(jarainput,
       exp.i = fitted[is.na(settings$I[,qs[i]+1])==F]*q.adj[i]
       expLCI.i = lower[is.na(settings$I[,qs[i]+1])==F]*q.adj[i]
       expUCI.i = upper[is.na(settings$I[,qs[i]+1])==F]*q.adj[i]
+      ppdLCI.i = lo.ppd[is.na(settings$I[,qs[i]+1])==F,i]
+      ppdUCI.i = hi.ppd[is.na(settings$I[,qs[i]+1])==F,i]
       } else {
       exp.i = fitted[is.na(settings$I[,qs[i]+1])==F,i]
       expLCI.i = lower[is.na(settings$I[,qs[i]+1])==F,i]
       expUCI.i = upper[is.na(settings$I[,qs[i]+1])==F,i]
+      ppdLCI.i = lo.ppd[is.na(settings$I[,qs[i]+1])==F,i]
+      ppdUCI.i = hi.ppd[is.na(settings$I[,qs[i]+1])==F,i]
       } 
       obs.i = settings$I[,qs[i]+1][is.na(settings$I[,qs[i]+1])==F]
       sigma.obs.i = (apply(posteriors$TOE[,,i],2,quantile,c(0.5)))[is.na(settings$y[,i])==F]
       
       yr.i = Yr[is.na(settings$I[,qs[i]+1])==F]
-      diags = rbind(diags,data.frame(assessment=settings$assessment,scenario=settings$scenario,name=names(settings$I)[qs[i]+1],year=yr.i,obs=obs.i,obs.err=sigma.obs.i,hat=exp.i,lci=expLCI.i,uci=expUCI.i,residual=log(obs.i)-log(exp.i)))
+      diags = rbind(diags,data.frame(assessment=settings$assessment,scenario=settings$scenario,name=names(settings$I)[qs[i]+1],year=yr.i,obs=obs.i,obs.err=sigma.obs.i,hat=exp.i,lci=expLCI.i,uci=expUCI.i,lpp=ppdLCI.i,upp=ppdUCI.i,residual=log(obs.i)-log(exp.i)))
     } 
   
   # predicted abundance trajectories
   
-  trj=data.frame(assessment=settings$assessment,scenario=settings$scenario,name="global", yr=year,Type=abundance,estimation=ifelse(year %in% years,rep("fit",length(year)) ,rep("prj",length(year))), mu=Nfit,lci=Nlow,uci=Nhigh)
+  trj=data.frame(assessment=settings$assessment,scenario=settings$scenario,name="global", yr=year,Type=abundance,estimation=ifelse(year %in% years,rep("fit",length(year)) ,rep("prj",length(year))), mu=Nfit,lci=Nlow,uci=Nhigh,lpp=NA,upp=NA)
+  
   for(i in 1:n.indices){
     Yr = year
     Yr = min(Yr):max(Yr)
@@ -256,13 +272,19 @@ fit_jara = function(jarainput,
       exp.i = apply(posteriors$Y.est,2,quantile,c(0.5,0.025,0.975))[1,]*q.adj[i]
       expLCI.i = apply(posteriors$Y.est,2,quantile,c(0.5,0.025,0.975))[2,]*q.adj[i]
       expUCI.i = apply(posteriors$Y.est,2,quantile,c(0.5,0.025,0.975))[3,]*q.adj[i]
+      ppdLCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[2,]
+      ppdUCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[3,]
+      
     } else {
       exp.i = apply(posteriors$N.est[,,i],2,quantile,c(0.5,0.025,0.975))[1,]
       expLCI.i = apply(posteriors$N.est[,,i],2,quantile,c(0.5,0.025,0.975))[2,]
       expUCI.i = apply(posteriors$N.est[,,i],2,quantile,c(0.5,0.025,0.975))[3,]
-    } 
+      ppdLCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[2,]
+      ppdUCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[3,]
       
-    trj=rbind(trj,data.frame(assessment=settings$assessment,scenario=settings$scenario,name=names(settings$I)[qs[i]+1], yr=year,Type=abundance,estimation=ifelse(year %in% years,rep("fit",length(year)) ,rep("prj",length(year))), mu=exp.i,lci=expLCI.i,uci=expUCI.i))
+      } 
+      
+    trj=rbind(trj,data.frame(assessment=settings$assessment,scenario=settings$scenario,name=names(settings$I)[qs[i]+1], yr=year,Type=abundance,estimation=ifelse(year %in% years,rep("fit",length(year)) ,rep("prj",length(year))), mu=exp.i,lci=expLCI.i,uci=expUCI.i,lpp=ppdLCI.i,upp=ppdUCI.i))
   } 
   
   if(abundance=="census"){

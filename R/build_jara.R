@@ -58,18 +58,18 @@ build_jara <- function(
                 }
                 
                 cat(paste0("\n","><> Prepare input data <><","\n","\n"))
-                dat = I
+                dat = data.frame(I)
                 indices = names(dat)[2:ncol(dat)]
                 n.indices = max(length(indices),1)
                 if(is.na(start.year)) start.year = dat[1,1]   
                 if(is.na(end.year)) end.year = dat[nrow(dat),1]   
-                dat = subset(dat,dat[,1]>=as.numeric(start.year))  
-                dat = subset(dat,dat[,1]<=as.numeric(end.year))  
+                dat = dat[dat[,1]>=as.numeric(start.year),]  
+                dat = dat[dat[,1]<=as.numeric(end.year),]  
                 if(is.null(se)==TRUE){ SE.I=FALSE} else {SE.I=TRUE}
                 
                 if(SE.I==TRUE){
-                    se = subset(se,se[,1]>=as.numeric(start.year))  
-                  se = subset(se,se[,1]<=as.numeric(end.year))  
+                  se = se[se[,1]>=as.numeric(start.year),]  
+                  se = se[se[,1]<=as.numeric(end.year),]  
                 }
                 years=dat[,1]
                 styr = min(years)
@@ -184,7 +184,7 @@ build_jara <- function(
                   # order of indices
                   qs = 1:n.indices
                   # Parameters monitored
-                  parameters <- c("mean.r","sigma","logNtot", "N.est","Ntot","r.tot","r.proj","TOE")
+                  parameters <- c("mean.r","sigma","logNtot", "N.est","Ntot","r.tot","r.proj","TOE","ppd")
                 }  
                                 
                 if(model.type=="relative"){
@@ -206,7 +206,7 @@ build_jara <- function(
                   jags.data <- list(y = log(qI_y),SE2=qse2, logY1 = log(qI_y[1,1]), T = length(year),EY = n.years,nI=n.indices,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0, Ks = Ks,prjr=prjr,proc.pen=proc.pen)
                   
                   # Parameters monitored
-                  parameters <- c("mean.r", "sigma","r", "Y.est","Ntot","q","r.proj","TOE")
+                  parameters <- c("mean.r", "sigma","r", "Y.est","Ntot","q","r.proj","TOE","ppd")
                   
                 }
                 

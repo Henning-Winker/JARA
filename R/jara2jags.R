@@ -144,6 +144,7 @@ jara2jags = function(jarainput){
     for (t in 1:T) {
     for(i in 1:nI){
     y[t,i] ~ dnorm(logN.est[t,i], ivar.obs[t,i])
+    ppd[t,i] ~ dlnorm(logN.est[t,i], ivar.obs[t,i])
     }}
     
     # Population sizes on real scale
@@ -299,10 +300,12 @@ jara2jags = function(jarainput){
       for (t in 1:EY) {
       for(i in 1:nI){
       y[t,i] ~ dnorm(logY.est[t]+logq[i], ivar.obs[t,i])
+      ppd[t,i] ~ dlnorm(logY.est[t]+logq[i], ivar.obs[t,i])
       }}
       for (t in (EY+1):T) {
       for(i in 1:nI){
       y[t,i] ~ dnorm(logY.est[t]+logq[i],pow(0.001,-2)) # does not effect projections
+      ppd[t,i] ~ dlnorm(logY.est[t]+logq[i], ivar.obs[t,i])
       }}
       
 

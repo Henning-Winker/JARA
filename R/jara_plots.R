@@ -416,6 +416,7 @@ jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
 #'
 #' Plots observed and fitted indices with expexted CIs (dark grey) 
 #' @param jara output list from fit_jara
+#' @param ppd show posterior predictive distribution
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
 #' @param single.plots if TRUE plot invidual fits else make multiplot
@@ -423,9 +424,10 @@ jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
 #' @param height plot hight
 #' @param plot.cex graphic option
 #' @param indices names of indices to plot (default = "all")
+#' @param index.label show index name in plot
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
-jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,indices="all",add=FALSE){
+jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,indices="all",index.label=TRUE,add=FALSE){
   
     cat(paste0("\n","><> jrplot_fits() - fits to abudance indices <><","\n"))
     years = jara$yr
@@ -471,12 +473,14 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         
         cord.x <- c(Yr,rev(Yr))
         cord.y <- c(fit[yr,2],rev(fit[yr,3]))
+        cord.lpp <- c(fit[yr,"lpp"],rev(fit[yr,"upp"]))
         
         # Plot Observed vs predicted CPUE
         plot(years,fit[,1],ylab="",xlab="",ylim=ylim,xlim=range(jara$yr),type='n',xaxt="n",yaxt="n")
         axis(1,labels=TRUE,cex=0.8)
         axis(2,labels=TRUE,cex=0.8)
-        polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
+        if(ppd) polygon(cord.x,cord.lpp,col=grey(0.5,0.5),border=0,lty=2)
+        polygon(cord.x,cord.y,col=grey(ifelse(ppd,0.4,0.6),0.8),border=grey(0.4,0.8),lty=2)
         
         lines(Yr,fit[yr,1],lwd=2,col=1)
         if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ 
@@ -489,7 +493,7 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
         }
         points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")
         
-        legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
+        if(index.label==TRUE)legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
         mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=0.7,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
         if(as.png==TRUE) dev.off()
@@ -509,7 +513,7 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
           Yr = min(Yr):max(Yr)
           yr = Yr-min(years)+1
           
-          fit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$yr%in%years,c("mu","lci","uci")]
+          fit = jara$trj[jara$trj$name%in%indices[i] & jara$trj$yr%in%years,c("mu","lci","uci","lpp","upp")]
           mufit = mean(fit[,1])
           fit = fit/mufit
           fit.hat = fit[,1]/mufit
@@ -522,11 +526,15 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
           
           cord.x <- c(Yr,rev(Yr))
           cord.y <- c(fit[yr,2],rev(fit[yr,3]))
+          cord.lpp <- c(fit[yr,"lpp"],rev(fit[yr,"upp"]))
+          
           # Plot Observed vs predicted CPUE
           plot(years,fit[,1],ylab="",xlab="",ylim=ylim,xlim=range(jara$yr),type='n',xaxt="n",yaxt="n")
           axis(1,labels=TRUE,cex=0.8)
           axis(2,labels=TRUE,cex=0.8)
-          polygon(cord.x,cord.y,col=grey(0.5,0.5),border=0,lty=2)
+          if(ppd) polygon(cord.x,cord.lpp,col=grey(0.5,0.5),border=0,lty=2)
+          
+          polygon(cord.x,cord.y,col=grey(ifelse(ppd,0.4,0.6),0.8),border=grey(0.4,0.8),lty=2)
           lines(Yr,fit[yr,1],lwd=2,col=1)
           if(jara$settings$SE.I  ==TRUE | max(jara$settings$SE2)>0.005){ 
             iv = c(-0.25,0.25)
@@ -538,7 +546,7 @@ jrplot_fits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FALSE
           }
             points(yr.i,cpue.i/mufit,pch=21,xaxt="n",yaxt="n",bg="white")
           
-        legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
+            if(index.label==TRUE) legend('top',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.9)
         }
         mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=0.75,cex=1)
         mtext(paste("Normalized Index"), side=2, outer=TRUE, at=0.5,line=1,cex=1)
