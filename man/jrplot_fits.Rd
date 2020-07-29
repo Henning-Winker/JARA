@@ -6,17 +6,21 @@
 \usage{
 jrplot_fits(
   jara,
+  ppd = TRUE,
   output.dir = getwd(),
   as.png = FALSE,
   single.plots = FALSE,
   width = NULL,
   height = NULL,
   indices = "all",
+  index.label = TRUE,
   add = FALSE
 )
 }
 \arguments{
 \item{jara}{output list from fit_jara}
+
+\item{ppd}{show posterior predictive distribution}
 
 \item{output.dir}{directory to save plots}
 
@@ -29,6 +33,8 @@ jrplot_fits(
 \item{height}{plot hight}
 
 \item{indices}{names of indices to plot (default = "all")}
+
+\item{index.label}{show index name in plot}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
 
