@@ -786,6 +786,7 @@ jara_plots = function(jara,output.dir = getwd(),as.png=TRUE,statusplot ="kobe"){
   jrplot_poptrj(jara,as.png=as.png,output.dir=output.dir)
   jrplot_r(jara,as.png=as.png,output.dir=output.dir)
   jrplot_changes(jara,as.png=as.png,output.dir=output.dir)
+  jrplot_state(jara,as.png=as.png,output.dir=output.dir)
   jrplot_iucn(jara,as.png=as.png,output.dir=output.dir)
 }
 
