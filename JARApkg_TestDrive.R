@@ -25,6 +25,10 @@ mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPU
 # Check input
 jrplot_indices(mls.input)
 
+mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
+jarainput = mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
+
+
 # fit JARA model
 mls.fit = fit_jara(mls.input,quickmcmc=T) # quick test run
 # re-run with 3 chains (default)

@@ -17,7 +17,7 @@ jara2jags = function(jarainput){
     mean.r[i] ~ dnorm(0, 0.001) 
     logN.est[1,i] ~ dnorm(log(Ninit[i]),pow(0.5,-2))   # Prior for initial population size with CV =100%
     }
-  
+    
     ")
     
     if(jarainput$settings$sigma.proc==TRUE){
@@ -94,8 +94,17 @@ jara2jags = function(jarainput){
     for (i in 1:nI){
     for(t in 1:(EY-1)){
     rdev[t,i] ~ dnorm(0, isigma2) #T(proc.pen[2],proc.pen[3])
-    r[t,i] <- mean.r[i]+ rdev[t,i]-0.5*sigma2    #dnorm(mean.r[i], isigma2)
+    # Theta-Logistic
+    r[t,i] <- mean.r[i]+ rdev[t,i]- 0.5*sigma2
     }}
+    
+    
+    # Carrying Capacity for Projections only
+    for(i in 1:nI){
+    logpk[i] ~ dnorm(log(pk.mu[i]),pow(pk.cv[i],-2))
+    logK[i] <- log(1)-logpk[i]+max(logN.est[pk.y,i])
+    K[i] <- exp(logK[i])
+    }
     
                ",append=TRUE)
     
@@ -118,7 +127,7 @@ jara2jags = function(jarainput){
     for (i in 1:nI){
     for(t in EY:(T-1)){
     rdev[t,i] ~ dnorm(0, pow(0.01,-2))
-    r[t,i] <- ifelse(logN.est[t,i]>max(logN.est[1:(EY-1),i])+log(Ks[i]),0,r.proj[i]) 
+    r[t,i] <- r.proj[i]*(1-pow(exp(logN.est[t,i]-logK[i]),theta))
       
     }}
     ",append=TRUE)}else{
@@ -126,18 +135,12 @@ jara2jags = function(jarainput){
     for (i in 1:nI){
     for(t in EY:(T-1)){
     rdev[t,i] ~ dnorm(0, isigma2)T(proc.pen[2],proc.pen[3])
-    r[t,i] <- ifelse(logN.est[t,i]>max(logN.est[1:(EY-1),i])+log(Ks[i]),-0.01,r.proj[i]+ rdev[t,i]-0.5*sigma2) 
+    r[t,i] <- r.proj[i]*(1-pow(exp(logN.est[t,i]-logK[i]),theta))+ rdev[t,i]-0.5*sigma2) 
     }}
     ",append=TRUE)  
     }
     
     cat("  
-    #for(t in 1:(T)){
-    #for (i in 1:nI){
-    #devK[t,i]  <- ifelse(logN.est[t,i]>log(Ks[i]),logN.est[t,i]-log(Ks[i]),0) # penalty if N > K 
-    #penK[t,i] ~ dnorm(devK[t,i],pow(0.1,-2))
-    #}}
-    
     
     lambda[1] <- 1
     # Observation process
@@ -180,7 +183,6 @@ jara2jags = function(jarainput){
       q[i] <- pow(iq[i],-1)
       logq[i] <-  log(q[i])
       }
-      
       
       ")
     
@@ -259,7 +261,13 @@ jara2jags = function(jarainput){
       r[t] <- mean.r+rdev[t]-0.5*sigma2   
       logY.est[t+1] <- logY.est[t] + r[t] 
       }
-
+      
+      # Carrying Capacity for Projections only
+      logpk ~ dnorm(log(pk.mu),pow(pk.cv,-2))
+      logK <- log(1)-logpk+max(logY.est[pk.y])
+      K <- exp(logK)
+      #logK <- log(pow(pk,-1))+max(I[pk.y])
+      #K <- exp(logK)
       ",append=TRUE)
     
     if(jarainput$settings$prjr.type=="mean"){
@@ -277,16 +285,16 @@ jara2jags = function(jarainput){
       cat("
       for (t in EY:(T)){
       rdev[t] ~ dnorm(0, pow(0.01,-2))
-      r[t] <- ifelse(logY.est[t]>(max(logY.est[1:(EY-1)])+log(Ks)),0,r.proj) 
+      r[t] <- r.proj*(1-pow(exp(logY.est[t]-logK),theta)) 
       logY.est[t+1] <- logY.est[t]+r[t]   
       }
       ",append=TRUE)} else {
         cat("
       for (t in EY:(T)){
             rdev[t] ~ dnorm(0, pow(isigma2,-2))T(0.5*proc.pen[2],0.5*proc.pen[3])
-            r[t] <- ifelse(logY.est[t]>(max(logY.est[1:(EY-1)])+log(Ks)),0,r.proj+rdev[t]-0.5*sigma2) 
+            r[t] <- r.proj*(1-pow(exp(logY.est[t]-logK),theta))+rdev[t]-0.5*sigma2 
             logY.est[t+1] <- logY.est[t] + r[t] 
-            #devK[t]  <- ifelse(logY.est[t+1]>log(Ks),logY.est[t+1]-log(Ks),0) # penalty if Y > K 
+          
       }
       ",append=TRUE)}  
     

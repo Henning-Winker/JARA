@@ -176,8 +176,11 @@ fit_jara = function(jarainput,
         }}
     
     Nfit <- Nlow <- Nhigh <- as.numeric()
+    
+    pop.posterior = NULL
     # get total pop size
     for (t in 1:nT){
+      pop.posterior = cbind(pop.posterior,rowSums(Nbias.correct[,t,]))
       Nfit[t] = mean(rowSums(Nbias.correct[,t,]))# o<
       Nlow[t] = quantile(rowSums(Nbias.correct[,t,]),0.025)# o<
       Nhigh[t] = quantile(rowSums(Nbias.correct[,t,]),0.975)# o<
@@ -200,14 +203,15 @@ fit_jara = function(jarainput,
     
       # Total population
       Nfit <- Nlow <- Nhigh <- as.numeric()
+      pop.posterior = NULL
       # get total pop size
       for (t in 1:nT){
+      pop.posterior = cbind(pop.posterior,posteriors$Y.est[,t])  
       Nfit[t] = median(posteriors$Y.est[,t])
       Nlow[t] = quantile(posteriors$Y.est[,t], 0.025)
       Nhigh[t] = quantile(posteriors$Y.est[,t], 0.975)}
     }
-  
-  
+      
   
   
 
@@ -306,7 +310,8 @@ fit_jara = function(jarainput,
   trends =  data.frame(change,rs)
   colnames(trends ) = c("pop.change",paste0("r.",cnam[1:ncol(rs)]))
   
-  
+  pop.posterior = data.frame(  pop.posterior)
+  colnames(pop.posterior) = Yr
   #jara = list(settings=Settings,data=jags.data,parameters=pars,trends=trends,abundance=abundance.est,perc.risk=data.frame(CR=CR,EN=EN,VU=VU,LC=LC) ,status=status)
   
 
@@ -327,6 +332,7 @@ fit_jara = function(jarainput,
   jara$residuals = Resids
   jara$trj = trj
   jara$posteriors = trends
+  jara$pop.posterior = pop.posterior
   
   if(save.jara==TRUE){
     save(jara,file=paste0(output.dir,"/",settings$assessment,"_",settings$scenario,"_jara.rdata"))

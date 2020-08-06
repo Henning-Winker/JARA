@@ -203,11 +203,97 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
     lines(rep(mu.lamda,2),c(0,max(y)),col=c(1,4,3,2)[i],lwd=1,lty=1)
     
   }
-  axis(1,at=seq(floor(min(x)),ceiling(max(x)),1),tick=seq(min(x),max(x),5),cex.axis=0.9)
+  axis(1,at=seq(floor(min(lamdas)),ceiling(max(lamdas)),1),tick=seq(min(x),max(x),5),cex.axis=0.9)
   abline(v=0,lty=2)
   legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(lamdas,2,median),2)>0,"+",""),round(apply(lamdas,2,median),2),"%"),pch=15,col=c(jcol),bty="n")
   if(as.png==TRUE) dev.off()
 } # End rate of change plot  
+
+
+#' jrplot_state
+#'
+#' Plots current or projected population change relative to the first year    
+#' @param jara output list from fit_jara
+#' @param type final year type = c("current","projected","both")
+#' @param ref.yr year(s) used as reference; default is avg. first 3 years
+#' @param extinction threshold for extiction classification default < 1% or ref.yr
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param plot.cex cex graphic option
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @return Relative state 
+#' @export
+#' @author Henning Winker and Richard Sherley
+
+jrplot_state <- function(jara, type=NULL,ref.yr=NULL,extinction=0.01, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
+  
+  cat(paste0("\n","><> jrplot_state() - %change relative to reference year <><","\n"))
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(as.png==TRUE){png(file = paste0(output.dir,"/State_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+  pdyn = jara$pop.posterior
+  yrs = 1:ncol(pdyn)
+  nyrs = length(yrs)
+  yr = as.numeric(names(pdyn))
+  if(is.null(ref.yr)) ref.yr = yr[1:3]
+  end.yr = max(jara$yr) 
+  prj.yr = max(jara$pyr)
+  pop.ref = apply(pdyn[,which(yr%in%ref.yr)],1,mean)
+  states =  cbind(pdyn[,which(yr%in%end.yr)]/pop.ref,pdyn[,which(yr%in%prj.yr)]/pop.ref)
+  
+  if(is.null(type)){
+    type=ifelse(prj.yr-end.yr<3,"current","both") 
+  }
+  
+  
+  lymax=rymax = lxrange = lxmax =NULL # maximum and range for plotting
+  for(i in 1:2){
+    if(i == 1 & type =="current" | type== "both" |i == 2 & type =="projected"){
+    den = stats::density(states[,i],adjust=2)
+    assign(paste0("xl",i),den$x)
+    assign(paste0("yl",i),den$y)
+    lymax=c(lymax,max(den$y))
+    lxmax = c(lxmax,quantile(states[,i],0.99))
+    }}
+  plot(1,1)
+  
+  lxrange = ifelse(lxrange<0,0,lxrange)
+  jcol = c(grey(0.4,0.6),rgb(1,0,0,0.6))
+  plot(0,0,type="n",ylab="Density",xlab=paste("Relative State"),xaxt="n",cex.main=0.9,ylim=c(0,1.15*max(lymax)),xlim=c(0,max(lxmax)),xaxs="i",yaxs="i") 
+  for(i in 2:1){
+    x = get(paste0("xl",i))
+    y = get(paste0("yl",i))
+    polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
+    mu = round(median(states[,i]),10)
+    lines(rep(mu,2),c(0,max(lymax*c(1.05,1.0)[i])),col=c(1,2)[i],lwd=1,lty=c(1))
+    text(mu,max(lymax*c(1.1,1.05)[i]),c(end.yr,prj.yr)[i],cex=0.9)
+  }
+  axis(1,at=seq(0,ceiling(max(states)),0.2),cex.axis=0.9)
+  lines(rep(1,2),c(0,max(lymax*c(1.05,1.0)[1])),col=1,lwd=1,lty=2)
+  text(1,max(lymax*c(1.1)),min((ref.yr)),cex=0.9)
+  
+  #cnam = c(bquote("Cur"[.(end.yr) ~ "/" ~ .(min(ref.yr))] ~ "=" ~ .(round(median(states[,1]),2))),
+  #         bquote("Prj"[.(end.yr) ~ "/" ~ .(min(ref.yr))]~ "=" ~ .(round(median(states[,2]),2))))
+  cnam = c(paste0("Cur = ",round(median(states[,1]),2)),paste0("Proj = ",round(median(states[,2]),2)))
+  if(type =="current") type.id = 1 
+  if(type =="projected") type.id = 2 
+  if(type =="both") type.id = 1:2 
+  legend("topright",cnam[type.id],pch=15,col=c(jcol),bty="n")
+  quants =apply(states,2,quantile,c(0.5,0.05,0.98))
+  state = NULL
+  state$state = data.frame(State=cnam,year=c(end.yr,prj.yr),median=quants[1,],lci=quants[2,],uci=quants[3,])
+  if(type=="current"){state$prob.pextinct = "Requires projection horizon"} else {
+    state$prob.extinct = sum(ifelse(states[,2]<extinction,1,0))/nrow(states)
+  }
+  
+  if(as.png==TRUE) dev.off()
+} # End rate of change plot  
+
 
 
 #' jrplot_r
@@ -362,6 +448,7 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
 #'
 #' Plots the estimated population trajector relative to GL   
 #' @param jara output list from fit_jara
+#' @param plotGL TRUE/FALSE indicates Generation Length
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
 #' @param width plot width
@@ -369,7 +456,7 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
 #' @param plot.cex cex graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
-jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
+jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
   
   cat(paste0("\n","><> jrplot_poptrj() - plots trends against GL blocks <><","\n"))
   
@@ -381,6 +468,11 @@ jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
   n.years = length(years)
   abundance = jara$settings$model.type
   GL = jara$settings$GL
+  if(is.null(plotGL) & is.null(jara$settings$proj.yrs.user)){
+    plotGL = TRUE
+  } else if(is.null(plotGL) & is.null(jara$settings$proj.yrs.user)==FALSE){
+    plotGL = FALSE
+  }
   
     Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
     if(as.png==TRUE){png(file = paste0(output.dir,"/PopTrend_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
@@ -400,12 +492,16 @@ jrplot_poptrj <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
   lines(year[end.yr:nT],Nt$mu[end.yr:nT], type = "l",col=2, lwd=2,lty=5)
   lines(years,Nt$mu[1:end.yr], type = "l",col=1,lwd=2)
   if(n.years-3*GL-1>0) lines(rep(year[n.years]-3*GL,2),c(0,m2*.93),lty=2,col=2)
+  if(plotGL){
   lines(rep(year[n.years]-1*GL,2),c(0,m2*.93),lty=2,col=4,lwd=2)
   lines(rep(year[n.years]-2*GL,2),c(0,m2*.93),lty=2,col=3,lwd=2)
-  lines(rep(year[n.years],2),c(0,m2)*.93,lty=2,col=1,lwd=2)
   if(n.years-3*GL-1>0) text(year[n.years]-3*GL,m2*.96,"-3GL",lwd=2)
   text(year[n.years]-2*GL,m2*.96,"-2GL")
   text(year[n.years]-GL,m2*.96,"-1xGL")
+  } else {
+    cat("\n","><> Not showing GLs as assessment period is specified by user","\n")
+  }
+  lines(rep(year[n.years],2),c(0,m2)*.93,lty=2,col=1,lwd=2)
   text(year[n.years],m2*.96,paste0(year[n.years]))
   
   if(as.png==TRUE) dev.off()

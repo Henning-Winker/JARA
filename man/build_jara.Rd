@@ -17,9 +17,12 @@ build_jara(
   fixed.obsE = NULL,
   sigma.proc.fixed = FALSE,
   proc.pen = NULL,
-  Klim = FALSE,
-  K.manual = FALSE,
-  prjr.type = c("all", "GL1", "year")[1],
+  proj.mod = c("theta10", "logistic", "theta.value")[1],
+  pk.prior = c(0.25, 0.1),
+  pk.yr = NULL,
+  pk.i = NULL,
+  proj.r = c("all", "GL1", "year")[1],
+  proj.yrs.user = NULL,
   proj.stoch = FALSE
 )
 }
@@ -48,11 +51,17 @@ build_jara(
 
 \item{proc.pen}{advanced user setting to penalize extreme process error deviations}
 
-\item{Klim}{penalty to restrict extrem values during projections c(TRUE, FALSE)}
+\item{proj.mod}{specified by theta c("theta10","logistic")}
 
-\item{K.manual}{option to specify a carrying capacity for each census time series}
+\item{pk.prior}{lognormal prior of population to K c(mu,lod.sd,yr) envoked during projections}
 
-\item{prjr.type}{# rate of change for c("all","GL1", years), "all" is default}
+\item{pk.yr}{reference year for the depletion prior. NULL ratio to max pred. abundance across all years}
+
+\item{pk.i}{option to specify specify different depletion levels for colonies in the census model}
+
+\item{proj.r}{# rate of change for c("all","GL1", years), "all" is default}
+
+\item{proj.yrs.user}{option to overwrite GL and costomize projections for forecasting}
 
 \item{proj.stoch}{allows for projections with process error c(TRUE, FALSE), FALSE is default}
 }
