@@ -53,7 +53,7 @@ build_jara <- function(
                   
                 if(is.null(GL)){GL = floor((nrow(I)-3)/3)} else {GL=GL[1]}
                 # If proj.yrs.user is provided it overwrites GL 
-                if(is.null(proj.yrs.user)==FALSE){GL = floor((nrow(I)+proj.yrs.user-1)/3)} else {GL=GL[1]}
+                if(is.null(proj.yrs.user)==FALSE){GL = floor((nrow(dat)+proj.yrs.user-1)/3)} else {GL=GL[1]}
   
                 GL1 = round(GL,0) # rounded for r.recent
                 GL3 = round(3*GL,0) # 3 x GL rounded for year steps
@@ -72,7 +72,8 @@ build_jara <- function(
                 if(is.na(start.year)) start.year = dat[1,1]   
                 if(is.na(end.year)) end.year = dat[nrow(dat),1]   
                 dat = dat[dat[,1]>=as.numeric(start.year),]  
-                dat = dat[dat[,1]<=as.numeric(end.year),]  
+                dat = dat[dat[,1]<=as.numeric(end.year),]
+                
                 if(is.null(se)==TRUE){ SE.I=FALSE} else {SE.I=TRUE}
                 
                 if(SE.I==TRUE){
@@ -252,15 +253,23 @@ build_jara <- function(
                 jarainput$settings$SE.I = SE.I
                 jarainput$settings$sigma.proc = sigma.proc
                 jarainput$settings$sigma.obs.est= sigma.obs.est
+                jarainput$settings$fixed.obsE = fixed.obsE
+                jarainput$settings$sigma.proc.fixed = sigma.proc.fixed  
+                jarainput$settings$proc.pen = proc.pen
+                # Projection stuff
+                jarainput$settings$proj.mod =  proj.mod
                 jarainput$settings$prjr.type = prjr.type
-                jarainput$settings$proj.r = prjr.type
+                jarainput$settings$proj.r = proj.r
                 jarainput$settings$proj.stoch =proj.stoch
+                jarainput$settings$pk.prior = pk.prior
+                jarainput$settings$pk.yr = pk.yr
+                jarainput$settings$pk.i = pk.i
                 jarainput$settings$pk.mu =pk.mu
                 jarainput$settings$pk.cv =pk.cv
                 jarainput$settings$proj.yrs.user = proj.yrs.user
                 jarainput$settings$Ninit = Ninit
                 jarainput$settings$qs = qs
-                jarainput$settings$proc.pen = proc.pen
+                
                 if(model.type!="census") {jarainput$settings$q.init = q.init} else {
                   jarainput$settings$q.init = "Not available for census model"
                 }
