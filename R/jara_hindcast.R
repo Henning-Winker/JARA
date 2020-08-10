@@ -40,7 +40,7 @@ jara_hindcast = function(jarainput,
   
   
   # hindcast object define object  
-  hc = list(scenario = jarainput$settings$scenario, yr=jarainput$data$yr,pyr = jarainput$data$pyr,peels=peels,trj = NULL,fits=NULL,posteiors=NULL,settings=NULL)
+  hc = list(assessment= jarainput$settings$assessment,scenario = jarainput$settings$scenario, yr=jarainput$data$yr,pyr = jarainput$data$pyr,peels=peels,trj = NULL,fits=NULL,posteiors=NULL,settings=NULL)
   hc$settings$cols = jarainput$settings$cols
   
   Scenario = jarainput$settings$scenario

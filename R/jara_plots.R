@@ -189,7 +189,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 
   if(Plot==TRUE){
     Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
-    if(as.png==TRUE){png(file = paste0(output.dir,"/IUCNplot_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+    if(as.png==TRUE){png(file = paste0(output.dir,"/IUCNretro_",hc$assessment,"_",hc$scenario,".png"), width = width, height = height,
                          res = 200, units = "in")}
     if(add==FALSE) par(Par)
     
@@ -239,7 +239,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
   return(out)
 }
 
-#' jrplot_retro() to plot retrospective pattern
+#' jrplot_retrobias() to plot retrospective pattern
 #'
 #' Plots retrospective pattern of B, F, BBmsy, FFmsy, BB0 and SP #'
 #' @param hc output from jabba_hindast()
@@ -253,10 +253,9 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param show.rho shows rho statistic in plot
 #' @return Mohn's rho statistic for several quantaties
 #' @export
-jrplot_retro <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,height=NULL,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
+jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,height=NULL,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
   
-  cat(paste0("\n","><> jplot_retro() - retrospective analysis <><","\n"))
-  cat(paste0("\n","><> jrplot_poptrj() - plots trends against GL blocks <><","\n"))
+  cat(paste0("\n","><> jrplot_retrobias() - retrospective analysis <><","\n"))
   if(is.null(cols)) cols=hc$settings$cols
   Nt = hc$trj[hc$trj$name=="global",]
   Nt0 = Nt[Nt$level==0,]
@@ -267,7 +266,7 @@ jrplot_retro <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,height=NU
   if(is.null(Xlim)) Xlim = c(min(year)-0.05,max(year)+0.5)
   
   Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
-  if(as.png==TRUE){png(file = paste0(output.dir,"/PopTrend_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+  if(as.png==TRUE){png(file = paste0(output.dir,"/RetroBias_",hc$assessment,"_",hc$scenario,".png"), width = width, height = height,
                        res = 200, units = "in")}
   if(add==FALSE) par(Par)
   
