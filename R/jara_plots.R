@@ -247,13 +247,15 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param as.png save as png file of TRUE
 #' @param width plot width
 #' @param height plot hight
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @param plot.cex plotting parameter
 #' @param Xlim  allows to "zoom-in" requires speficiation Xlim=c(first.yr,last.yr)
 #' @param cols option to add colour palette 
 #' @param legend.loc location of legend
 #' @param show.rho shows rho statistic in plot
 #' @return Mohn's rho statistic for several quantaties
 #' @export
-jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,height=NULL,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
+jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,height=NULL,add=FALSE,plot.cex=1,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
   
   cat(paste0("\n","><> jrplot_retrobias() - retrospective analysis <><","\n"))
   if(is.null(cols)) cols=hc$settings$cols
@@ -263,6 +265,7 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,heigh
   end.yr = which(year==max(Nt$yr[Nt$estimation=="fit"])) 
   nyrs = length(year)
   suby = 1:nyrs
+  peels = hc$peels
   if(is.null(Xlim)) Xlim = c(min(year)-0.05,max(year)+0.5)
   
   Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
@@ -294,7 +297,7 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,heigh
   diags = rbind(diags,data.frame(rho=rho,hcrho=hcrho))
   
   }
-  legend(legend.loc,paste(year[nyrs-peels]),col=cols,bty="n",cex=0.7,pt.cex=0.7,lwd=c(2,rep(1,length(retros))))
+  legend(legend.loc,paste(year[nyrs-peels]),col=cols,bty="n",cex=0.7,pt.cex=0.7,lwd=c(2,rep(1,length(peels))))
   diags = rbind(diags,data.frame(rho=mean(diags$rho),hcrho=mean(diags$hcrho)))
   mrho = round(diags[nrow(diags),1],2)
   mhcrho = round(diags[nrow(diags),2],2)

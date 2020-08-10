@@ -10,6 +10,8 @@ jrplot_retrobias(
   as.png = FALSE,
   width = NULL,
   height = NULL,
+  add = FALSE,
+  plot.cex = 1,
   Xlim = NULL,
   cols = NULL,
   legend.loc = "topright",
@@ -26,6 +28,10 @@ jrplot_retrobias(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{add}{if TRUE par is not called to enable manual multiplots}
+
+\item{plot.cex}{plotting parameter}
 
 \item{Xlim}{allows to "zoom-in" requires speficiation Xlim=c(first.yr,last.yr)}
 
