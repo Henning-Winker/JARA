@@ -12,6 +12,7 @@
 #' @param saves the all posteriors as .rdata to output.dir (big file)
 #' @param save.csvs writes results into csv to output.dir
 #' @param output.dir path to save plot. default is getwd()
+#' @param peels = NULL, # retrospective 'peel' option
 #' @param save.jarafile saves jara model and convergence stats as .txt file (default = TRUE)
 #' @param quickmcmc option "test run" jara with short (fast) mcmc chains 
 #' @return A result list containing estimates of JARA model input, settings and results
@@ -28,6 +29,7 @@ fit_jara = function(jarainput,
                      save.all = FALSE,
                      save.csvs = FALSE,
                      save.jarafile = TRUE,
+                     peels = NULL, 
                     output.dir = getwd(),
                     quickmcmc = FALSE
                     ){
@@ -46,7 +48,7 @@ fit_jara = function(jarainput,
   
   cat(paste0("\n","><> Running  JARA as ",jarainput$settings$model.type," model for ",jarainput$settings$assessment," ",jarainput$settings$scenario," <><","\n"))
   
-  
+
   # jara model data
   jd = jarainput$jagsdata
   n.indices = ncol(jd$y)
@@ -59,12 +61,23 @@ fit_jara = function(jarainput,
   GL3 = round(3*GL,0) # 3 x GL rounded for year steps
   
   
+  if(is.null(peels)) peels = 0
+  peel.i = NULL
+  if(peels > 0){
+    peel.i=(length(years)-peels+1) : length(years)
+    jd$y[peel.i,]  = NA
+  }
+  
+  # Check if all indices have observations
+  checks = exp(jd$y)
+  checks[is.na(checks)] = 0
+  jd$y[1,which(apply(checks,2,mean)==0)] = mean(jd$y,na.rm=T)
+  
   # Initial starting values (new Eq)
   if(jarainput$settings$model.type=="census"){
     inits <- function(){list(mean.r = rnorm(n.indices,0,0.5),isigma2.est=runif(1,20,100), itau2=runif(1,80,200), logN.est =matrix(log(rbind(jarainput$settings$Ninit,matrix(rep(NA,(nT-1)*n.indices),(nT-1),n.indices))),nT,n.indices))  }
   } else {
     inits <- function(){list(isigma2.est=runif(1,20,100), itau2=runif(1,80,200), mean.r = rnorm(0,0.2),iq = 1/jarainput$settings$q.init)}
-    
   } 
   
   out = output.dir
@@ -220,7 +233,6 @@ fit_jara = function(jarainput,
   # Goodness of fit Statistics
   #------------------------------------------------------------------
   
-  
   DIC =round(jara.mod$BUGSoutput$DIC,1)
   
   # get residuals
@@ -261,9 +273,9 @@ fit_jara = function(jarainput,
       sigma.obs.i = (apply(posteriors$TOE[,,i],2,quantile,c(0.5)))[is.na(settings$y[,i])==F]
       
       yr.i = Yr[is.na(settings$I[,qs[i]+1])==F]
-      diags = rbind(diags,data.frame(assessment=settings$assessment,scenario=settings$scenario,name=names(settings$I)[qs[i]+1],year=yr.i,obs=obs.i,obs.err=sigma.obs.i,hat=exp.i,lci=expLCI.i,uci=expUCI.i,lpp=ppdLCI.i,upp=ppdUCI.i,residual=log(obs.i)-log(exp.i)))
+      diags = rbind(diags,data.frame(assessment=settings$assessment,scenario=settings$scenario,name=names(settings$I)[qs[i]+1],year=yr.i,obs=obs.i,obs.err=sigma.obs.i,hat=exp.i,lci=expLCI.i,uci=expUCI.i,lpp=ppdLCI.i,upp=ppdUCI.i,residual=log(obs.i)-log(exp.i),retro.peels=peels))
     } 
-  
+    
   # predicted abundance trajectories
   
   trj=data.frame(assessment=settings$assessment,scenario=settings$scenario,name="global", yr=year,Type=abundance,estimation=ifelse(year %in% years,rep("fit",length(year)) ,rep("prj",length(year))), mu=Nfit,lci=Nlow,uci=Nhigh,lpp=NA,upp=NA)
@@ -324,6 +336,7 @@ fit_jara = function(jarainput,
   jara$yr = years
   jara$pyr = year
   jara$indices = indices
+  jarainput$settings$peel.i = peel.i
   jara$settings = c(jarainput$jagsdata,jarainput$settings)
   jara$inputseries = list(I=jarainput$data$I,se=jarainput$data$se)
   jara$pars=pars
