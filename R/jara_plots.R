@@ -151,6 +151,168 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   return(out)
 }
 
+#' jrplot_retroiucn
+#'
+#' Retrospective IUCN posterior plot for A1 or A2   
+#' @param hc output list from jara_hindcast()
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param criteria A1 or A2 for decline
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @param plot.cex cex graphic option
+#' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
+#' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
+#' @param Plot if FALSE then only threat status stats are returned 
+#' @return Retrospectice IUCN classification 
+#' @author Henning Winker, Richard Sherley and Nathan Pacoureau
+#' @export
+jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE,Plot=TRUE){
+  
+  cat(paste0("\n","><> jrplot_retroiucn() - returns retrospective analysis of threat classification <><","\n"))
+  A1 = ifelse(criteria=="A1",TRUE,FALSE)
+  # settings
+  runs = hc$peels
+  d = hc$posteriors
+  ymax1 = quantile(hc$posteriors$pop.change[hc$posteriors$level==0],0.995)
+  ymax2 = quantile(hc$posteriors$pop.change[hc$posteriors$level>0],0.975)
+  ymax = max(ymax1,ymax2)
+  ylim=c(-100,min(max(30,ymax),1000))
+  xlim=c(0.5,length(hc$peels)+0.499)
+  xall = hc$posteriors$pop.change
+  if(iucn.cols==T){
+    cols = c("#60C659","lightgreen","#F9E814","#FC7F3F","#D81E05")[c(1,3:5)] # green to red
+  } else {
+    cols=c("green","lightgreen","yellow","orange","red")[c(1,3:5)]  
+  }
+
+  if(Plot==TRUE){
+    Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+    if(as.png==TRUE){png(file = paste0(output.dir,"/IUCNplot_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                         res = 200, units = "in")}
+    if(add==FALSE) par(Par)
+    
+    plot(0,0,type="n",xlab="Assessment year",xlim=xlim,ylim=ylim,axes=F,xaxs = "i",yaxs="i",ylab="Change(%)")  
+    axis(1,at=seq(-.5,length(hc$peels)+1,1),labels=max(hc$yr)-rev(c(min(hc$peels-1),hc$peels,max(hc$peels+1))),cex.axis=0.8,mgp=c(2,0.5,0))
+    axis(2,at=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),tick=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),cex.axis=0.8,mgp=c(2,0.5,0))
+    
+    out = NULL
+    for(j in 1:length(runs)){
+      #change = log(d[rev(runs) ==runs[j],]$pop.change+100)
+      change = d[d$level ==rev(runs)[j],]$pop.change
+      change=ifelse(change>ymax,ymax+20,change)
+      den = stats::density(change,adjust=1)
+      
+      #y1 = exp(den$x)-100
+      y1 = den$x
+      x1 = den$y/max(den$y)+j-0.5
+      # get status
+      categories = c("Pr.Decl","change3GL","CR","EN","VU","LC")  
+      CR = round(sum(ifelse(change< ifelse(A1,-90,-80),1,0))/length(change)*100,1)
+      EN = round(sum(ifelse(change> ifelse(A1,-90,-80) & change< ifelse(A1,-70,-50),1,0))/length(change)*100,1)
+      VU = round(sum(ifelse(change> ifelse(A1,-70,-50) & change< ifelse(A1,-50,-30),1,0))/length(change)*100,1)
+      LC = round(sum(ifelse(change> -30,1,0))/length(change)*100,1)
+      Change3xGL = round(median(change),3)# round(sum(ifelse(change< 0,1,0))/length(change)*100,1)
+      percentages = c(CR,EN,VU,LC)
+      status= ifelse(which(percentages==max(percentages))==4 & max(percentages)<50,"NT",categories[3:6][which(percentages==max(percentages))])
+      out = rbind(out,data.frame(Year=max(hc$yr)-rev(runs)[j], Change3xGL,CR,EN,VU,LC,status))
+      
+      lc = c(ifelse(A1,-50,-30))
+      polygon(c(x1[y1>=lc],rep(min(x1),length(y1[y1>=lc]))),c(y1[y1>=lc],rev(y1[y1>=lc])),col=cols[1] ,border=cols[1])
+      vu = c(ifelse(A1,-70,-50))
+      polygon(c(x1[y1<=lc & y1>=vu],rep(min(x1),length(y1[y1<=lc & y1>=vu]))),c(y1[y1<lc & y1>=vu],rev(y1[y1<lc & y1>=vu])),col=cols[2],border=cols[2])
+      en =ifelse(A1,-90,-80)
+      polygon(c(x1[y1<vu & y1>=en],rep(min(x1),length(y1[y1<vu & y1>=en]))),c(y1[y1<vu & y1>=en],rev(y1[y1<vu & y1>=en])),col=cols[3],border=cols[3])
+      polygon(c(x1[y1<en],rep(min(x1),length(y1[y1<en]))),c(y1[y1<en],rev(y1[y1<en])),col=cols[4],border=cols[4])
+      polygon(c(x1,rep(min(x1),length(x1))),c(y1,rev(y1)))
+    }
+    
+    text(1:length(runs),max(ylim)*0.95,(out$status),cex=0.8)
+    legend(par('usr')[2]*1.01, quantile(par('usr')[3:4],0.6), bty='n', xpd=NA,
+           c("LC","VU","EN","CR"),pch=15,col=c(cols),pt.cex=2,cex=0.9)
+    
+    
+    if(as.png==TRUE) dev.off()
+  } # End IUCN Plot = TRUE
+  
+  return(out)
+}
+
+#' jrplot_retro() to plot retrospective pattern
+#'
+#' Plots retrospective pattern of B, F, BBmsy, FFmsy, BB0 and SP #'
+#' @param hc output from jabba_hindast()
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param Xlim  allows to "zoom-in" requires speficiation Xlim=c(first.yr,last.yr)
+#' @param cols option to add colour palette 
+#' @param legend.loc location of legend
+#' @param show.rho shows rho statistic in plot
+#' @return Mohn's rho statistic for several quantaties
+#' @export
+jrplot_retro <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,height=NULL,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
+  
+  cat(paste0("\n","><> jplot_retro() - retrospective analysis <><","\n"))
+  cat(paste0("\n","><> jrplot_poptrj() - plots trends against GL blocks <><","\n"))
+  if(is.null(cols)) cols=hc$settings$cols
+  Nt = hc$trj[hc$trj$name=="global",]
+  Nt0 = Nt[Nt$level==0,]
+  year = hc$y
+  end.yr = which(year==max(Nt$yr[Nt$estimation=="fit"])) 
+  nyrs = length(year)
+  suby = 1:nyrs
+  if(is.null(Xlim)) Xlim = c(min(year)-0.05,max(year)+0.5)
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(as.png==TRUE){png(file = paste0(output.dir,"/PopTrend_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+  # Total N
+  m1 <- 0
+  m2 <- max(c(Nt0$uci,Nt$mu), na.rm = TRUE)*1.05
+  
+  plot(0, 0, ylim = c(m1, m2), xlim = Xlim, ylab = paste("Population abundance"), xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxt="n",xaxs="i",yaxs="i")
+  axis(1,at=seq(min(year),max(year)+5,ceiling(length(year)/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
+  
+  polygon(x = c(year,rev(year)), y = c(Nt0$lci[suby],rev(Nt0$uci[suby])), col = gray(0.4,0.5), border = gray(0.4,0.5))
+  #add trend
+  lines(year,Nt$mu[suby], type = "l",col=1,lwd=2)
+  diags = data.frame(rho=NULL,hcrho=NULL)
+  for(i in 2:length(hc$peels)){
+  Nti  = Nt[Nt$level==peels[i],]
+  sub0 = 1:(end.yr-peels[i])
+  sub1 = 1:(end.yr-peels[i]+1)
+  sub2 = (end.yr-peels[i]+1)
+  lines(year[sub0],Nti$mu[sub0], type = "l",col=cols[i],lwd=2)
+  lines(year[sub1],Nti$mu[sub1], type = "l",col=cols[i],lwd=2,lty=2)
+  points(year[sub2],Nti$mu[sub2],bg=cols[i],pch=21,cex=0.8)
+  rho = (Nti$mu[sub2-1]-Nt0$mu[sub2-1])/Nt0$mu[sub2-1]
+  hcrho = (Nti$mu[sub2]-Nt0$mu[sub2])/Nt0$mu[sub2]
+  diags = rbind(diags,data.frame(rho=rho,hcrho=hcrho))
+  
+  }
+  legend(legend.loc,paste(year[nyrs-peels]),col=cols,bty="n",cex=0.7,pt.cex=0.7,lwd=c(2,rep(1,length(retros))))
+  diags = rbind(diags,data.frame(rho=mean(diags$rho),hcrho=mean(diags$hcrho)))
+  mrho = round(diags[nrow(diags),1],2)
+  mhcrho = round(diags[nrow(diags),2],2)
+  
+  if(show.rho) 
+    legend("top",legend=paste0("Bias = ",mrho,"(",mhcrho,")"),bty="n",y.intersp = -0.5,cex=0.9)
+  
+  row.names(diags) <- c(year[nyrs-peels[-1]],"mu")   
+
+  if(as.png==TRUE) dev.off()
+
+  return(diags)
+} # end of Retrospective Plot
+
+
+
+
 
 #' jrplot_changes
 #'
