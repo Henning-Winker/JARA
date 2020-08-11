@@ -196,7 +196,6 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
     plot(0,0,type="n",xlab="Assessment year",xlim=xlim,ylim=ylim,axes=F,xaxs = "i",yaxs="i",ylab="Change(%)")  
     axis(1,at=seq(-.5,length(hc$peels)+1,1),labels=max(hc$yr)-rev(c(min(hc$peels-1),hc$peels,max(hc$peels+1))),cex.axis=0.8,mgp=c(2,0.5,0))
     axis(2,at=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),tick=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),cex.axis=0.8,mgp=c(2,0.5,0))
-    abline(h=0,lty=2)
     out = NULL
     for(j in 1:length(runs)){
       #change = log(d[rev(runs) ==runs[j],]$pop.change+100)
@@ -227,6 +226,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
       polygon(c(x1[y1<en],rep(min(x1),length(y1[y1<en]))),c(y1[y1<en],rev(y1[y1<en])),col=cols[4],border=cols[4])
       polygon(c(x1,rep(min(x1),length(x1))),c(y1,rev(y1)))
     }
+    abline(h=0,lty=2)
     
     text(1:length(runs),max(ylim)*0.95,(out$status),cex=0.8)
     legend(par('usr')[2]*1.01, quantile(par('usr')[3:4],0.6), bty='n', xpd=NA,
