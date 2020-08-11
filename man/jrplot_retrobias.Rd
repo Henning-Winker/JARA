@@ -8,8 +8,8 @@ jrplot_retrobias(
   hc,
   output.dir = getwd(),
   as.png = FALSE,
-  width = NULL,
-  height = NULL,
+  width = 5,
+  height = 4.5,
   add = FALSE,
   plot.cex = 1,
   Xlim = NULL,
@@ -45,5 +45,5 @@ jrplot_retrobias(
 Mohn's rho statistic for several quantaties
 }
 \description{
-Plots retrospective pattern of B, F, BBmsy, FFmsy, BB0 and SP #'
+Plots retrospective pattern of population trend
 }
