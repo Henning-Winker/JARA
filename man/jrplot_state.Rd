@@ -24,7 +24,7 @@ jrplot_state(
 
 \item{ref.yr}{year(s) used as reference; default is avg. first 3 years}
 
-\item{extinction}{threshold for extiction classification default < 1% or ref.yr}
+\item{extinction}{threshold for extiction classification default or ref.yr}
 
 \item{output.dir}{directory to save plots}
 

@@ -380,7 +380,7 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param jara output list from fit_jara
 #' @param type final year type = c("current","projected","both")
 #' @param ref.yr year(s) used as reference; default is avg. first 3 years
-#' @param extinction threshold for extiction classification default < 1% or ref.yr
+#' @param extinction threshold for extiction classification default or ref.yr
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
 #' @param width plot width
