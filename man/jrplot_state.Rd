@@ -45,5 +45,5 @@ Relative state
 Plots current or projected population change relative to the first year
 }
 \author{
-Henning Winker and Richard Sherley
+Henning Winker
 }

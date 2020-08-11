@@ -389,9 +389,10 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @return Relative state 
 #' @export
-#' @author Henning Winker and Richard Sherley
-
-jrplot_state <- function(jara, type=NULL,ref.yr=NULL,extinction=0.01, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
+#' @author Henning Winker 
+jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
+                         extinction=0.01, output.dir=getwd(),
+                         as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
   
   cat(paste0("\n","><> jrplot_state() - %change relative to reference year <><","\n"))
   
