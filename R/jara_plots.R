@@ -188,7 +188,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
   }
 
   if(Plot==TRUE){
-    Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+    Par = list(mfrow=c(1,1),mar = c(3, 3, 0, 0), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.6),mex=0.8, tck = -0.02,cex=plot.cex)
     if(as.png==TRUE){png(file = paste0(output.dir,"/IUCNretro_",hc$assessment,"_",hc$scenario,".png"), width = width, height = height,
                          res = 200, units = "in")}
     if(add==FALSE) par(Par)
@@ -196,7 +196,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
     plot(0,0,type="n",xlab="Assessment year",xlim=xlim,ylim=ylim,axes=F,xaxs = "i",yaxs="i",ylab="Change(%)")  
     axis(1,at=seq(-.5,length(hc$peels)+1,1),labels=max(hc$yr)-rev(c(min(hc$peels-1),hc$peels,max(hc$peels+1))),cex.axis=0.8,mgp=c(2,0.5,0))
     axis(2,at=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),tick=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),cex.axis=0.8,mgp=c(2,0.5,0))
-    
+    abline(h=0,lty=2)
     out = NULL
     for(j in 1:length(runs)){
       #change = log(d[rev(runs) ==runs[j],]$pop.change+100)
@@ -241,7 +241,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 
 #' jrplot_retrobias() to plot retrospective pattern
 #'
-#' Plots retrospective pattern of B, F, BBmsy, FFmsy, BB0 and SP #'
+#' Plots retrospective pattern of population trend
 #' @param hc output from jabba_hindast()
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
@@ -255,7 +255,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param show.rho shows rho statistic in plot
 #' @return Mohn's rho statistic for several quantaties
 #' @export
-jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,height=NULL,add=FALSE,plot.cex=1,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
+jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4.5,add=FALSE,plot.cex=1,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
   
   cat(paste0("\n","><> jrplot_retrobias() - retrospective analysis <><","\n"))
   if(is.null(cols)) cols=hc$settings$cols
@@ -269,7 +269,7 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,heigh
   if(is.null(Xlim)) Xlim = c(min(year)-0.05,max(year)+0.5)
   
   Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
-  if(as.png==TRUE){png(file = paste0(output.dir,"/RetroBias_",hc$assessment,"_",hc$scenario,".png"), width = width, height = height,
+  if(as.png==TRUE){png(file = paste0(output.dir,"/Retrobias_",hc$assessment,"_",hc$scenario,".png"), width = width, height = height,
                        res = 200, units = "in")}
   if(add==FALSE) par(Par)
   
@@ -303,7 +303,7 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=NULL,heigh
   mhcrho = round(diags[nrow(diags),2],2)
   
   if(show.rho) 
-    legend("top",legend=paste0("Bias = ",mrho,"(",mhcrho,")"),bty="n",y.intersp = -0.5,cex=0.9)
+    legend("top",legend=paste0("Bias = ",mrho,"(",mhcrho,")"),bty="n",y.intersp = -0.2,cex=0.9)
   
   row.names(diags) <- c(year[nyrs-peels[-1]],"mu")   
 
@@ -424,11 +424,10 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,extinction=0.01, output.dir
     lymax=c(lymax,max(den$y))
     lxmax = c(lxmax,quantile(states[,i],0.99))
     }}
-  plot(1,1)
   
   lxrange = ifelse(lxrange<0,0,lxrange)
   jcol = c(grey(0.4,0.6),rgb(1,0,0,0.6))
-  plot(0,0,type="n",ylab="Density",xlab=paste("Relative State"),xaxt="n",cex.main=0.9,ylim=c(0,1.15*max(lymax)),xlim=c(0,max(lxmax)),xaxs="i",yaxs="i") 
+  plot(0,0,type="n",ylab="Density",xlab=paste("Relative State"),xaxt="n",yaxt="n",cex.main=0.9,ylim=c(0,1.15*max(lymax)),xlim=c(0,max(lxmax,1.1)),xaxs="i",yaxs="i",frame=F) 
   for(i in 2:1){
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
@@ -438,6 +437,8 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,extinction=0.01, output.dir
     text(mu,max(lymax*c(1.1,1.05)[i]),c(end.yr,prj.yr)[i],cex=0.9)
   }
   axis(1,at=seq(0,ceiling(max(states)),0.2),cex.axis=0.9)
+  axis(2,cex.axis=0.9)
+  
   lines(rep(1,2),c(0,max(lymax*c(1.05,1.0)[1])),col=1,lwd=1,lty=2)
   text(1,max(lymax*c(1.1)),min((ref.yr)),cex=0.9)
   
@@ -447,7 +448,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,extinction=0.01, output.dir
   if(type =="current") type.id = 1 
   if(type =="projected") type.id = 2 
   if(type =="both") type.id = 1:2 
-  legend("topright",cnam[type.id],pch=15,col=c(jcol),bty="n")
+  legend("right",cnam[type.id],pch=15,col=c(jcol),box.col = "white",cex=0.9)
   quants =apply(states,2,quantile,c(0.5,0.05,0.98))
   state = NULL
   state$state = data.frame(State=cnam,year=c(end.yr,prj.yr),median=quants[1,],lci=quants[2,],uci=quants[3,])
