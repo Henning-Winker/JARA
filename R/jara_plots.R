@@ -200,7 +200,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
     for(j in 1:length(runs)){
       #change = log(d[rev(runs) ==runs[j],]$pop.change+100)
       change = d[d$level ==rev(runs)[j],]$pop.change
-      change=ifelse(change>ymax,ymax+20,change)
+      change=ifelse(change>ymax,max(ymax+20,30),change)
       den = stats::density(change,adjust=1)
       
       #y1 = exp(den$x)-100
@@ -429,13 +429,14 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,extinction=0.01, output.dir
   jcol = c(grey(0.4,0.6),rgb(1,0,0,0.6))
   plot(0,0,type="n",ylab="Density",xlab=paste("Relative State"),xaxt="n",yaxt="n",cex.main=0.9,ylim=c(0,1.15*max(lymax)),xlim=c(0,max(lxmax,1.1)),xaxs="i",yaxs="i",frame=F) 
   for(i in 2:1){
+    if(i == 1 & type =="current" | type== "both" |i == 2 & type =="projected"){
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
     polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
     mu = round(median(states[,i]),10)
     lines(rep(mu,2),c(0,max(lymax*c(1.05,1.0)[i])),col=c(1,2)[i],lwd=1,lty=c(1))
     text(mu,max(lymax*c(1.1,1.05)[i]),c(end.yr,prj.yr)[i],cex=0.9)
-  }
+  }}
   axis(1,at=seq(0,ceiling(max(states)),0.2),cex.axis=0.9)
   axis(2,cex.axis=0.9)
   
@@ -449,7 +450,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,extinction=0.01, output.dir
   if(type =="projected") type.id = 2 
   if(type =="both") type.id = 1:2 
   legend("right",cnam[type.id],pch=15,col=c(jcol),box.col = "white",cex=0.9)
-  quants =apply(states,2,quantile,c(0.5,0.05,0.98))
+  quants =apply(states,2,quantile,c(0.5,0.05,0.95))
   state = NULL
   state$state = data.frame(State=cnam,year=c(end.yr,prj.yr),median=quants[1,],lci=quants[2,],uci=quants[3,])
   if(type=="current"){state$prob.pextinct = "Requires projection horizon"} else {
