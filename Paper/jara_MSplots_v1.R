@@ -10,7 +10,7 @@
 #><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
 
 setwd("C:/Work/Research/MS_JARA2020/MSplots")
-# Install ss3diags
+# Install JARA
 #devtools::install_github("henning-winker/jara")
 
 # load pakage

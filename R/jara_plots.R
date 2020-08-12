@@ -6,8 +6,14 @@
 #' @param omi graphical par for outer plot margins
 #' @param plot.cex cex graphic option
 #' @export
-jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.35,0.2,0,.15),omi=c(0,0,0,0)+0.1,labs=TRUE){
-  if(labs)  mai=c(0.45,0.45,0.15,.15)
+jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=NULL,omi=c(0,0,0,0),labs=TRUE){
+  if(is.null(mai)){
+  if(labs){
+    omi = omi+0.1
+    mai=c(0.45,0.45,0.15,.15)} else {
+      omi = omi=0.2
+      mai=c(0.35,0.2,0,.15)}
+    }
   par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi = c(0.2,0.25,0.2,0) + 0.1, tck = -0.02,cex=0.8))
 }
 
@@ -427,7 +433,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
     polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
     mu = round(median(states[,i]),10)
     lines(rep(mu,2),c(0,max(lymax*c(1.05,1.0)[i])),col=c(1,2)[i],lwd=1,lty=c(1))
-    text(mu,max(lymax*c(1.1,1.05)[i]),c(end.yr,prj.yr)[i],cex=0.9)
+    text(max(mu,0.05),max(lymax*c(1.1,1.05)[i]),c(end.yr,prj.yr)[i],cex=0.9)
   }}
   axis(1,at=seq(0,ceiling(max(states)),0.2),cex.axis=0.9)
   axis(2,cex.axis=0.9)
