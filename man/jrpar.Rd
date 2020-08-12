@@ -7,8 +7,8 @@
 jrpar(
   mfrow = c(1, 1),
   plot.cex = 1,
-  mai = c(0.35, 0.2, 0, 0.15),
-  omi = c(0, 0, 0, 0) + 0.1,
+  mai = NULL,
+  omi = c(0, 0, 0, 0),
   labs = TRUE
 )
 }
