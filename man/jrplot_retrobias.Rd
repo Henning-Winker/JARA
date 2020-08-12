@@ -15,6 +15,7 @@ jrplot_retrobias(
   Xlim = NULL,
   cols = NULL,
   legend.loc = "topright",
+  add.legend = TRUE,
   show.rho = TRUE
 )
 }
@@ -38,6 +39,8 @@ jrplot_retrobias(
 \item{cols}{option to add colour palette}
 
 \item{legend.loc}{location of legend}
+
+\item{add.legend}{option to add legend}
 
 \item{show.rho}{shows rho statistic in plot}
 }

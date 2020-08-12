@@ -14,7 +14,8 @@ jrplot_retroiucn(
   criteria = c("A2", "A1")[1],
   iucn.cols = TRUE,
   add = FALSE,
-  Plot = TRUE
+  Plot = TRUE,
+  add.legend = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ jrplot_retroiucn(
 \item{add}{if TRUE par is not called to enable manual multiplots}
 
 \item{Plot}{if FALSE then only threat status stats are returned}
+
+\item{add.legend}{option add legend}
 }
 \value{
 Retrospectice IUCN classification

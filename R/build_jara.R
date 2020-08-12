@@ -51,9 +51,9 @@ build_jara <- function(
   # Prepare input data
   #-------------------------
                   
-                if(is.null(GL)){GL = floor((nrow(I)-3)/3)} else {GL=GL[1]}
+                if(is.null(GL)&is.null(proj.yrs.user)){GL = floor((nrow(I)-3)/3)} else {GL=GL[1]}
                 # If proj.yrs.user is provided it overwrites GL 
-                if(is.null(proj.yrs.user)==FALSE){GL = floor((nrow(dat)+proj.yrs.user-1)/3)} else {GL=GL[1]}
+                if(is.null(proj.yrs.user)==FALSE){GL = floor((nrow(I)+proj.yrs.user-1)/3)} else {GL=GL[1]}
   
                 GL1 = round(GL,0) # rounded for r.recent
                 GL3 = round(3*GL,0) # 3 x GL rounded for year steps

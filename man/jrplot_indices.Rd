@@ -12,6 +12,7 @@ jrplot_indices(
   height = 4.5,
   plot.cex = 1,
   add = FALSE,
+  add.legend = TRUE,
   cols = NULL
 )
 }
@@ -27,6 +28,8 @@ jrplot_indices(
 \item{plot.cex}{cex graphic option}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
+
+\item{add.legend}{option to add legend}
 
 \item{cols}{option to choose own colour palette}
 

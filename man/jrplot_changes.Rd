@@ -11,6 +11,7 @@ jrplot_changes(
   width = 5,
   height = 4.5,
   plot.cex = 1,
+  legend.cex = 0.9,
   add = FALSE
 )
 }
@@ -26,6 +27,8 @@ jrplot_changes(
 \item{height}{plot hight}
 
 \item{plot.cex}{cex graphic option}
+
+\item{legend.cex}{legend sizr graphic option}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
 }

@@ -1,27 +1,12 @@
-#' jrpar()
-#'
-#' Set the par() to options suitable for ss3diags multi plots   
-#' @param mfrow determines plot frame set up
-#' @param plot.cex cex graphic option
-#' @param mai graphical par for plot margins
-#' @param labs if TRUE margins are narrow 
-#' @export
-jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.5,0.5,0.1,.1),omi = c(0.,0.,0.,0)+ 0.05,labs=FALSE){
-  if(labs==F){
-    mai=c(0.25,0.25,0.15,.15)
-    omi = c(0.3,0.35,0.2,0.2)}
-  par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi =omi, tck = -0.02,cex=plot.cex))
-}
-
-
-
 #' jrplot_pars()
 #'
 #' Set the par() to options suitable for JARA multi plots   
 #' @param mfrow determines plot frame set up
+#' @param mai graphical par for plot margins
+#' @param omi graphical par for outer plot margins
 #' @param plot.cex cex graphic option
 #' @export
-jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.35,0.15,0,.15),labs=TRUE){
+jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.35,0.2,0,.15),omi=c(0,0,0,0)+0.1,labs=TRUE){
   if(labs)  mai=c(0.45,0.45,0.15,.15)
   par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi = c(0.2,0.25,0.2,0) + 0.1, tck = -0.02,cex=0.8))
 }
@@ -36,10 +21,11 @@ jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=c(0.35,0.15,0,.15),labs=TRUE){
 #' @param height plot hight
 #' @param criteria A1 or A2 for decline
 #' @param add if TRUE par is not called to enable manual multiplots
+#' @param add.legend option to add legend
 #' @param plot.cex cex graphic option
 #' @param cols option to choose own colour palette
 #' @export
-jrplot_indices <- function(jarainput, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE,cols=NULL){
+jrplot_indices <- function(jarainput, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE,add.legend=TRUE,cols=NULL){
 
 years =   jarainput$data$yr  
 abundance =jarainput$settings$model.type
@@ -69,7 +55,7 @@ for(j in 1:nI){
 axis(1,at=seq(min(dat[,1]),max(dat[,1])+5,ceiling(length(dat[,1])/8)),tick=seq(min(dat[,1]),max(dat[,1]),ceiling(length(dat[,1])/8)),cex.axis=0.9)
 
 posl = c(max(dat[1:3,-1],na.rm=T),max(dat[(length(years)):length(years),-1],na.rm=T))
-legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(names(dat)[2:(nI+1)]), lty = c(1, rep(nI)), lwd = c(rep(-1,nI)),pch=c(rep(21,nI)), pt.bg = c(cols[1:nI]), bty = "n", cex = 0.9,y.intersp = 0.8)
+if(add.legend) legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(names(dat)[2:(nI+1)]), lty = c(1, rep(nI)), lwd = c(rep(-1,nI)),pch=c(rep(21,nI)), pt.bg = c(cols[1:nI]), bty = "n", cex = 0.9,y.intersp = 0.8)
 if(as.png==TRUE) dev.off()
 } # End of index plot
 
@@ -84,13 +70,14 @@ if(as.png==TRUE) dev.off()
 #' @param criteria A1 or A2 for decline
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @param plot.cex cex graphic option
+#' @param legend.cex lengend size cex graphic option
 #' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
 #' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
 #' @param Plot if FALSE then only threat status stats are returned 
 #' @return IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
-jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE,Plot=TRUE){
+jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,legend.cex=0.9,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE,Plot=TRUE){
   
   cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
   change= jara$posteriors$pop.change
@@ -134,8 +121,8 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     mtext(paste("Density"), side=2, outer=F,line=1.9,cex=1)
     mtext(paste("Change (%)"), side=1, outer=F,line=1.9,cex=1)
     legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
-                     paste0("VU (",VU,"%)"),paste0("LC (",LC,"%)")),col=1,pt.bg=c("red","orange","yellow","green"),pt.cex=1.4,pch=22,bg="white",cex=1.1)
-    text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.03),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=1.2)
+                     paste0("VU (",VU,"%)"),paste0("LC (",LC,"%)")),col=1,pt.bg=c("red","orange","yellow","green"),pt.cex=1.2,pch=22,bg="white",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
+    text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.03),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1)
     
     if(as.png==TRUE) dev.off()
   } # End IUCN Plot = TRUE
@@ -165,10 +152,11 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
 #' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
 #' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
 #' @param Plot if FALSE then only threat status stats are returned 
+#' @param add.legend option add legend
 #' @return Retrospectice IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
-jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE,Plot=TRUE){
+jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE,Plot=TRUE,add.legend=TRUE){
   
   cat(paste0("\n","><> jrplot_retroiucn() - returns retrospective analysis of threat classification <><","\n"))
   A1 = ifelse(criteria=="A1",TRUE,FALSE)
@@ -193,7 +181,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
                          res = 200, units = "in")}
     if(add==FALSE) par(Par)
     
-    plot(0,0,type="n",xlab="Assessment year",xlim=xlim,ylim=ylim,axes=F,xaxs = "i",yaxs="i",ylab="Change(%)")  
+    plot(0,0,type="n",xlab="Year",xlim=xlim,ylim=ylim,axes=F,xaxs = "i",yaxs="i",ylab="Change(%)")  
     axis(1,at=seq(-.5,length(hc$peels)+1,1),labels=max(hc$yr)-rev(c(min(hc$peels-1),hc$peels,max(hc$peels+1))),cex.axis=0.8,mgp=c(2,0.5,0))
     axis(2,at=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),tick=seq(-100,max(xall,30)+50,ifelse(max(xall,30)>150,50,25)),cex.axis=0.8,mgp=c(2,0.5,0))
     out = NULL
@@ -229,7 +217,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
     abline(h=0,lty=2)
     
     text(1:length(runs),max(ylim)*0.95,(out$status),cex=0.8)
-    legend(par('usr')[2]*1.01, quantile(par('usr')[3:4],0.6), bty='n', xpd=NA,
+    if(add.legend)legend(par('usr')[2]*1.01, quantile(par('usr')[3:4],0.6), bty='n', xpd=NA,
            c("LC","VU","EN","CR"),pch=15,col=c(cols),pt.cex=2,cex=0.9)
     
     
@@ -252,10 +240,11 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param Xlim  allows to "zoom-in" requires speficiation Xlim=c(first.yr,last.yr)
 #' @param cols option to add colour palette 
 #' @param legend.loc location of legend
+#' @param add.legend option to add legend
 #' @param show.rho shows rho statistic in plot
 #' @return Mohn's rho statistic for several quantaties
 #' @export
-jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4.5,add=FALSE,plot.cex=1,Xlim=NULL,cols=NULL,legend.loc="topright",show.rho = TRUE){
+jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4.5,add=FALSE,plot.cex=1,Xlim=NULL,cols=NULL,legend.loc="topright",add.legend=TRUE,show.rho = TRUE){
   
   cat(paste0("\n","><> jrplot_retrobias() - retrospective analysis <><","\n"))
   if(is.null(cols)) cols=hc$settings$cols
@@ -275,7 +264,7 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4
   
   # Total N
   m1 <- 0
-  m2 <- max(c(Nt0$uci,Nt$mu), na.rm = TRUE)*1.05
+  m2 <- max(c(Nt0$uci,Nt$mu), na.rm = TRUE)*1.1
   
   plot(0, 0, ylim = c(m1, m2), xlim = Xlim, ylab = paste("Population abundance"), xlab = "Year", col = "black", type = "n", lwd = 2, frame = FALSE,xaxt="n",xaxs="i",yaxs="i")
   axis(1,at=seq(min(year),max(year)+5,ceiling(length(year)/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
@@ -297,7 +286,7 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4
   diags = rbind(diags,data.frame(rho=rho,hcrho=hcrho))
   
   }
-  legend(legend.loc,paste(year[nyrs-peels]),col=cols,bty="n",cex=0.7,pt.cex=0.7,lwd=c(2,rep(1,length(peels))))
+  if(add.legend) legend(legend.loc,paste(year[nyrs-peels]),col=cols,bty="n",cex=0.7,pt.cex=0.7,lwd=c(2,rep(1,length(peels))))
   diags = rbind(diags,data.frame(rho=mean(diags$rho),hcrho=mean(diags$hcrho)))
   mrho = round(diags[nrow(diags),1],2)
   mhcrho = round(diags[nrow(diags),2],2)
@@ -325,11 +314,12 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4
 #' @param width plot width
 #' @param height plot hight
 #' @param plot.cex cex graphic option
+#' @param legend.cex legend sizr graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
 #' @author Henning Winker and Richard Sherley
 
-jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
+jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,legend.cex=0.9,add=FALSE){
   
   cat(paste0("\n","><> jrplot_change() - %change over  1, 2, 3 x GL <><","\n"))
   
@@ -369,7 +359,7 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
   }
   axis(1,at=seq(floor(min(lamdas)),ceiling(max(lamdas)),1),tick=seq(min(x),max(x),5),cex.axis=0.9)
   abline(v=0,lty=2)
-  legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(lamdas,2,median),2)>0,"+",""),round(apply(lamdas,2,median),2),"%"),pch=15,col=c(jcol),bty="n")
+  legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(lamdas,2,median),2)>0,"+",""),round(apply(lamdas,2,median),2),"%"),pch=15,col=c(jcol),bty="n",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
   if(as.png==TRUE) dev.off()
 } # End rate of change plot  
 
@@ -386,13 +376,14 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param width plot width
 #' @param height plot hight
 #' @param plot.cex cex graphic option
+#' @param legend.cex legend size graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @return Relative state 
 #' @export
 #' @author Henning Winker 
 jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
                          extinction=0.01, output.dir=getwd(),
-                         as.png=FALSE,width=5,height=4.5,plot.cex=1,add=FALSE){
+                         as.png=FALSE,width=5,height=4.5,plot.cex=1,legend.cex=0.9,add=FALSE){
   
   cat(paste0("\n","><> jrplot_state() - %change relative to reference year <><","\n"))
   
@@ -450,7 +441,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
   if(type =="current") type.id = 1 
   if(type =="projected") type.id = 2 
   if(type =="both") type.id = 1:2 
-  legend("right",cnam[type.id],pch=15,col=c(jcol),box.col = "white",cex=0.9)
+  legend("right",cnam[type.id],pch=15,col=c(jcol),box.col = "white",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
   quants =apply(states,2,quantile,c(0.5,0.05,0.95))
   state = NULL
   state$state = data.frame(State=cnam,year=c(end.yr,prj.yr),median=quants[1,],lci=quants[2,],uci=quants[3,])

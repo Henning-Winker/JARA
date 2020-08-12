@@ -11,6 +11,7 @@ jrplot_iucn(
   width = 5,
   height = 4.5,
   plot.cex = 1,
+  legend.cex = 0.9,
   criteria = c("A2", "A1")[1],
   iucn.cols = TRUE,
   add = FALSE,
@@ -29,6 +30,8 @@ jrplot_iucn(
 \item{height}{plot hight}
 
 \item{plot.cex}{cex graphic option}
+
+\item{legend.cex}{lengend size cex graphic option}
 
 \item{criteria}{option to choose between IUCN A1 or A2 thresholds (A2 is default)}
 
