@@ -188,7 +188,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
     for(j in 1:length(runs)){
       #change = log(d[rev(runs) ==runs[j],]$pop.change+100)
       change = d[d$level ==rev(runs)[j],]$pop.change
-      change=ifelse(change>ymax,max(ymax+20,30),change)
+      change=ifelse(change>ymax,max(ymax+20,45),change)
       den = stats::density(change,adjust=1)
       
       #y1 = exp(den$x)-100

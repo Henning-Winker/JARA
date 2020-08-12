@@ -48,10 +48,14 @@ jara_hindcast = function(jarainput,
     if(rm.yr==TRUE){
       index = jarainput$data$I
       subset = 1:(nrow(index)-peels[i])
-      
+      if(jarainput$settings$SE.I){
+        se= jarainput$data$se
+      } else {
+        se=NULL
+      }
       jrin = build_jara(
       I = jarainput$data$I, 
-      se = jarainput$data$se,
+      se = se,
       assessment = jarainput$settings$assessment,
       scenario = peels[i],
       model.type = jarainput$settings$model.type,
