@@ -85,11 +85,11 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 }
                 
                 sigma.obs.est =TRUE
-                if(variance.weighting=="equal"){
+                if(variance.weighting[1]=="equal"){
                   sets.var = rep(1,ncol(dat)-1)
-                } else if(variance.weighting=="model"){
+                } else if(variance.weighting[1]=="model"){
                   sets.var = 1:(ncol(dat)-1)  
-                } else if(variance.weighting=="fixed"){ 
+                } else if(variance.weighting[1]=="fixed"){ 
                   sets.var = rep(1,ncol(dat)-1)
                   sigma.obs.est =FALSE} else {
                   if(length(variance.weighting)!=(ncol(dat)-1)){
@@ -220,7 +220,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 
                   cat("\n","><> Setting up JARA for census data <><","\n","\n")  
                 # Bundle data for jags
-                  jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Ninit=Ninit,sets.var,nvar,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,EY = n.years,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,prjr=prjr,proc.pen=proc.pen,theta=theta)
+                  jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Ninit=Ninit,sets.var=sets.var,nvar=nvar,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,EY = n.years,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,prjr=prjr,proc.pen=proc.pen,theta=theta)
                   # order of indices
                   qs = 1:n.indices
                   # Parameters monitored
@@ -243,7 +243,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   if(n.indices>1) for(i in 2:n.indices){q.init[i] = mean(qI_y[,i],na.rm=TRUE)/mean(qI_y[,1],na.rm=TRUE)}
                   
                   # Bundle data
-                  jags.data <- list(y = log(qI_y),SE2=qse2, logY1 = log(qI_y[1,1]), T = length(year),EY = n.years,nI=n.indices,sets.var,nvar,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,prjr=prjr,proc.pen=proc.pen,theta=theta)
+                  jags.data <- list(y = log(qI_y),SE2=qse2, logY1 = log(qI_y[1,1]), T = length(year),EY = n.years,nI=n.indices,sets.var=sets.var,nvar=nvar,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,prjr=prjr,proc.pen=proc.pen,theta=theta)
                   
                   # Parameters monitored
                   parameters <- c("mean.r", "sigma","r", "Y.est","Ntot","q","r.proj","TOE","ppd","K")

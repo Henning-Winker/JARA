@@ -87,9 +87,9 @@ fit_jara = function(jarainput,
   
   # Initial starting values (new Eq)
   if(jarainput$settings$model.type=="census"){
-    inits <- function(){list(mean.r = rnorm(n.indices,0,0.5),isigma2.est=runif(1,20,100), itau2=runif(1,80,200), logN.est =matrix(log(rbind(jarainput$settings$Ninit,matrix(rep(NA,(nT-1)*n.indices),(nT-1),n.indices))),nT,n.indices))  }
+    inits <- function(){list(mean.r = rnorm(n.indices,0,0.5),isigma2.est=runif(1,20,100), itau2=runif(jarainput$settings$nvar,80,200), logN.est =matrix(log(rbind(jarainput$settings$Ninit,matrix(rep(NA,(nT-1)*n.indices),(nT-1),n.indices))),nT,n.indices))  }
   } else {
-    inits <- function(){list(isigma2.est=runif(1,20,100), itau2=runif(1,80,200), mean.r = rnorm(0,0.2),iq = 1/jarainput$settings$q.init)}
+    inits <- function(){list(isigma2.est=runif(1,20,100), itau2=runif(jarainput$settings$nvar,80,200), mean.r = rnorm(0,0.2),iq = 1/jarainput$settings$q.init)}
   } 
   
   out = output.dir

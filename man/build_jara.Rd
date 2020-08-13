@@ -13,8 +13,8 @@ build_jara(
   GL = NULL,
   start.year = NA,
   end.year = NA,
-  sigma.obs.est = TRUE,
   fixed.obsE = NULL,
+  variance.weighting = "equal",
   sigma.proc.fixed = FALSE,
   proc.pen = NULL,
   proj.mod = c("theta10", "logistic", "theta.value")[1],
@@ -43,9 +43,9 @@ build_jara(
 
 \item{end.year}{subsetting option for end year}
 
-\item{sigma.obs.est}{Estimates additional variance (default)}
-
 \item{fixed.obsE}{minimum plausible observation error (fixed)}
+
+\item{variance.weighting}{option "equal", "model", "fixed" or user assinged vector e.g. c(1,1,2)}
 
 \item{sigma.proc.fixed}{option to fix the process error e.g = 0.1 (default FALSE)}
 
