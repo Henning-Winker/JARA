@@ -31,13 +31,9 @@
 #' buildjr <- build_jara(I = inp$I,GL=9,model.type="census")
 #' jrplot_indices(buildjr)
 
-build_jara <- function(
-              I = NULL, #abundance indices/counts,  require data.frame(year, I.1,I.2,...,I.N)
-              se = NULL,
-              assessment = "Unnamed",
-              scenario = "s1",
-              model.type = c("relative","census")[1],
-              GL=NULL, # Generation length
+build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
+              scenario = "s1",model.type = c("relative","census")[1],
+              GL=NULL, 
               start.year = NA,
               end.year = NA, 
               sigma.obs.est = TRUE, 

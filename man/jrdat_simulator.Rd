@@ -6,7 +6,7 @@
 \usage{
 jrdat_simulator(
   n0 = 1000,
-  simyrs = 40,
+  yrs = 40,
   r.mu = runif(1, -0.05, 0),
   proc.pop = 0.1,
   AR1.pop = 0.3,
@@ -14,7 +14,6 @@ jrdat_simulator(
   AR1.imp = 0.8,
   CV.obs = 0.15,
   GL = 10,
-  cutyrs = 0,
   Plot = TRUE,
   add = FALSE
 )
@@ -22,7 +21,7 @@ jrdat_simulator(
 \arguments{
 \item{n0}{start population size}
 
-\item{simyrs}{number of simulated years}
+\item{yrs}{number of simulated years with observations}
 
 \item{r.mu}{mean rate of change (default random uniform number)}
 
@@ -38,8 +37,6 @@ jrdat_simulator(
 
 \item{GL}{Generation length to measure decline over 3 x GL}
 
-\item{cutyrs}{option to delete n observations in terminal years to enforce projections}
-
 \item{Plot}{Shows plot with with simulated data and processes}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
@@ -51,7 +48,14 @@ simulated data and 'true' decline metrics
 simulates observed and "true" abundance time series
 }
 \examples{
-jrdat_simulator(simyrs=50)
+simdat <- jrdat_simulator(yrs=40,GL=15)
+inpsim <- build_jara(I = simdat$I,GL=simdat$GL)
+fitsim <- fit_jara(inpsim)
+jrpar(mfrow=c(1,2))
+jrplot_poptrj(fitsim,add=T)
+lines(simdat$N,col="cyan3",lwd=2)
+jrplot_iucn(fitsim,add=T)
+abline(v=simdat$perc.change,col="cyan3",lwd=2)
 }
 \author{
 Henning Winker (JRC-EC, Ispra)
