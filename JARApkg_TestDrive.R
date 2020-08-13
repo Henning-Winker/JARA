@@ -21,12 +21,12 @@ data("jaradata")
 
 # Striped Marlin (relative)
 # create JARA input
-mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
+mls.input = build_jara(I=jrdat$StripedMarlin_IO_CPUE$I,se=jrdat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
 # Check input
 jrplot_indices(mls.input)
 
-mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
-jarainput = mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
+mls.input = build_jara(I=jrdat$StripedMarlin_IO_CPUE$I,se=jrdat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
+jarainput = mls.input = build_jara(I=jrdat$StripedMarlin_IO_CPUE$I,se=jrdat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
 
 
 # fit JARA model
@@ -56,7 +56,7 @@ jrplot_iucn(mls.fit,add=T)
 
 # African Penguin
 # create JARA input
-ap.input = build_jara(I=dat$Afr_penguin$I,assessment="AfrPenguin",model.type = "census",GL=9.9,fixed.obsE = 0.15)
+ap.input = build_jara(I=jrdat$Afr_penguin$I,assessment="AfrPenguin",model.type = "census",GL=9.9,fixed.obsE = 0.15)
 # Check input indices
 jrplot_indices(ap.input)
 # fit JARA model
