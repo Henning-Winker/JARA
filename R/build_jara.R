@@ -10,8 +10,8 @@
 #' @param start.year subsetting option for start year
 #' @param end.year subsetting option for end year
 # Variance settings
-#' @param sigma.obs.est Estimates additional variance (default) 
 #' @param fixed.obsE minimum plausible observation error (fixed)
+#' @param variance.weighting option "equal", "model", "fixed" or user assinged vector e.g. c(1,1,2) 
 #' @param sigma.proc.fixed option to fix the process error e.g = 0.1 (default FALSE)
 #' @param proc.pen advanced user setting to penalize extreme process error deviations
 # Porjection settings
@@ -35,9 +35,9 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
               scenario = "s1",model.type = c("relative","census")[1],
               GL=NULL, 
               start.year = NA,
-              end.year = NA, 
-              sigma.obs.est = TRUE, 
+              end.year = NA,
               fixed.obsE = NULL,
+              variance.weighting = "equal",
               sigma.proc.fixed = FALSE,
               proc.pen = NULL,  
               proj.mod = c("theta10","logistic","theta.value")[1],
@@ -59,6 +59,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
   
                 GL1 = round(GL,0) # rounded for r.recent
                 GL3 = round(3*GL,0) # 3 x GL rounded for year steps
+                
                 
                 if(is.null(fixed.obsE)){
                 fixed.obsE = ifelse(is.null(se),0.15,0.01)
@@ -82,6 +83,21 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   se = se[se[,1]>=as.numeric(start.year),]  
                   se = se[se[,1]<=as.numeric(end.year),]  
                 }
+                
+                sigma.obs.est =TRUE
+                if(variance.weighting=="equal"){
+                  sets.var = rep(1,ncol(dat)-1)
+                } else if(variance.weighting=="model"){
+                  sets.var = 1:(ncol(dat)-1)  
+                } else if(variance.weighting=="fixed"){ 
+                  sets.var = rep(1,ncol(dat)-1)
+                  sigma.obs.est =FALSE} else {
+                  if(length(variance.weighting)!=(ncol(dat)-1)){
+                    stop("variance assingment mismatch with availble indices")
+                  }
+                  sets.var = variance.weighting[1:(ncol(dat)-1)]}
+                nvar = length(unique(sets.var))
+                
                 years=dat[,1]
                 styr = min(years)
                 endyr = max(years)
@@ -204,7 +220,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 
                   cat("\n","><> Setting up JARA for census data <><","\n","\n")  
                 # Bundle data for jags
-                  jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Ninit=Ninit,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,EY = n.years,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,prjr=prjr,proc.pen=proc.pen,theta=theta)
+                  jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Ninit=Ninit,sets.var,nvar,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,EY = n.years,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,prjr=prjr,proc.pen=proc.pen,theta=theta)
                   # order of indices
                   qs = 1:n.indices
                   # Parameters monitored
@@ -227,7 +243,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   if(n.indices>1) for(i in 2:n.indices){q.init[i] = mean(qI_y[,i],na.rm=TRUE)/mean(qI_y[,1],na.rm=TRUE)}
                   
                   # Bundle data
-                  jags.data <- list(y = log(qI_y),SE2=qse2, logY1 = log(qI_y[1,1]), T = length(year),EY = n.years,nI=n.indices,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,prjr=prjr,proc.pen=proc.pen,theta=theta)
+                  jags.data <- list(y = log(qI_y),SE2=qse2, logY1 = log(qI_y[1,1]), T = length(year),EY = n.years,nI=n.indices,sets.var,nvar,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,prjr=prjr,proc.pen=proc.pen,theta=theta)
                   
                   # Parameters monitored
                   parameters <- c("mean.r", "sigma","r", "Y.est","Ntot","q","r.proj","TOE","ppd","K")
@@ -256,6 +272,9 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 jarainput$settings$sigma.proc = sigma.proc
                 jarainput$settings$sigma.obs.est= sigma.obs.est
                 jarainput$settings$fixed.obsE = fixed.obsE
+                jarainput$settings$variance.weighting = variance.weighting
+                jarainput$settings$sets.var = sets.var
+                jarainput$settings$nvar = nvar
                 jarainput$settings$sigma.proc.fixed = sigma.proc.fixed  
                 jarainput$settings$proc.pen = proc.pen
                 # Projection stuff

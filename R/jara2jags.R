@@ -38,28 +38,30 @@ jara2jags = function(jarainput){
     if(jarainput$settings$sigma.obs.est==TRUE){
       cat("
       # Obsevation variance
-      # Observation error
-      itau2~ dgamma(0.001,0.001)
-      tau2 <- 1/itau2
-      
+      for(j in 1:nvar)
+      {
+      itau2[j]~ dgamma(0.001,0.001)
+      tau2[j] <- 1/itau2[j]
+      }
       
       for(i in 1:nI)
       {
       for(t in 1:T)
       {
-      var.obs[t,i] <- SE2[t,i]+tau2
+      var.obs[t,i] <- SE2[t,i]+tau2[sets.var[i]]
       ivar.obs[t,i] <- 1/var.obs[t,i]
       # note total observation error (TOE)     
       TOE[t,i] <- sqrt(var.obs[t,i])
-      
-      }}
+      }
+      }
       ",append=TRUE)  
     }else{ cat(" 
       # Obsevation variance
            # Observation error
            itau2~ dgamma(2,2)
            tau2 <- 1/itau2
-           
+           note1 <- nvar
+           note2 <- sets.var
            
            for(i in 1:nI)
            {
@@ -204,28 +206,30 @@ jara2jags = function(jarainput){
     if(jarainput$settings$sigma.obs.est==TRUE){
       cat("
         # Obsevation variance
-        # Observation error
-        itau2~ dgamma(0.001,0.001)
-        tau2 <- 1/itau2
-        
-        
-        for(i in 1:nI)
-        {
-        for(t in 1:T)
-        {
-        var.obs[t,i] <- SE2[t,i]+tau2
-        ivar.obs[t,i] <- 1/var.obs[t,i]
-        # note total observation error (TOE)     
-        TOE[t,i] <- sqrt(var.obs[t,i])
-        
-        }}
+      for(j in 1:nvar)
+      {
+      itau2[j]~ dgamma(0.001,0.001)
+      tau2[j] <- 1/itau2[j]
+      }
+      
+      for(i in 1:nI)
+      {
+      for(t in 1:T)
+      {
+      var.obs[t,i] <- SE2[t,i]+tau2[sets.var[i]]
+      ivar.obs[t,i] <- 1/var.obs[t,i]
+      # note total observation error (TOE)     
+      TOE[t,i] <- sqrt(var.obs[t,i])
+      }
+      }
         ",append=TRUE)  
     }else{ cat(" 
       # Obsevation variance
              # Observation error
              itau2~ dgamma(2,2)
              tau2 <- 1/itau2
-             
+             note1 <- nvar
+             note2 <- sets.var
              
              for(i in 1:nI)
              {
