@@ -9,12 +9,12 @@
 jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=NULL,omi=c(0,0,0,0),labs=TRUE){
   if(is.null(mai)){
   if(labs){
-    omi = omi+0.1
-    mai=c(0.45,0.45,0.15,.15)} else {
-      omi = omi=0.2
+    omi = omi+0.05
+    mai=c(0.5,0.45,0.15,.15)} else {
+      omi = omi+0.2
       mai=c(0.35,0.2,0,.15)}
     }
-  par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi = c(0.2,0.25,0.2,0) + 0.1, tck = -0.02,cex=0.8))
+  par(list(mfrow=mfrow,mai = mai, mgp =c(2.,0.5,0),omi = omi + 0.1, tck = -0.02,cex=0.8))
 }
 
 #' jrplot_indices
@@ -99,6 +99,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   VU = round(sum(ifelse(change> ifelse(A1,-70,-50) & change< ifelse(A1,-50,-30),1,0))/length(change)*100,1)
   LC = round(sum(ifelse(change> -30,1,0))/length(change)*100,1)
   Decline = round(sum(ifelse(change< 0,1,0))/length(change)*100,1)
+  
   if(iucn.cols==T){
     cols = c("#60C659","lightgreen","#F9E814","#FC7F3F","#D81E05")[c(1,3:5)] # green to red
   } else {
@@ -110,8 +111,8 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     if(as.png==TRUE){png(file = paste0(output.dir,"/IUCNplot_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
                          res = 200, units = "in")}
     if(add==FALSE) par(Par)
-    
-    plot(x1,y1,type="n",xlim=c(-100,min(max(30,quantile(change,.99)),1000)),ylim=c(0,max(y1*1.1)),ylab="",xlab="",cex.main=0.9,frame=T,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
+  
+    plot(x1,y1,type="n",xlim=c(-100,min(max(30,quantile(change,.99)),1000)),ylim=c(0,max(y1*1.1)),ylab="Density",xlab="Change (%)",cex.main=0.9,frame=T,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
     maxy = max(y1*1.11)
     x2 = c(ifelse(A1,-50,-30),1500); y2 = c(0,5)
     polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col=cols[1],border=cols[1])
@@ -124,11 +125,11 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     
     polygon(c(x1,rev(x1)),c(y1,rep(0,length(y1))),col="grey")
     axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
-    mtext(paste("Density"), side=2, outer=F,line=1.9,cex=1)
-    mtext(paste("Change (%)"), side=1, outer=F,line=1.9,cex=1)
+    #mtext(paste("Density"), side=2, outer=F,line=1.8,cex=0.9)
+    #mtext(paste("Change (%)"), side=1, outer=F,line=1.8,cex=0.9)
     legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
                      paste0("VU (",VU,"%)"),paste0("LC (",LC,"%)")),col=1,pt.bg=c("red","orange","yellow","green"),pt.cex=1.2,pch=22,bg="white",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
-    text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.03),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1)
+    text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.05),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1)
     
     if(as.png==TRUE) dev.off()
   } # End IUCN Plot = TRUE

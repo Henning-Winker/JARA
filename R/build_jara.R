@@ -10,9 +10,9 @@
 #' @param start.year subsetting option for start year
 #' @param end.year subsetting option for end year
 # Variance settings
-#' @param sigma.obs.est Estimates additional variance 
-#' @param fixed.obsE minimum plausible process error (fixed)
-#' @param sigma.proc.fixed option to fix the process error (default FALSE)
+#' @param sigma.obs.est Estimates additional variance (default) 
+#' @param fixed.obsE minimum plausible observation error (fixed)
+#' @param sigma.proc.fixed option to fix the process error e.g = 0.1 (default FALSE)
 #' @param proc.pen advanced user setting to penalize extreme process error deviations
 # Porjection settings
 #' @param proj.mod specified by theta c("theta10","logistic")

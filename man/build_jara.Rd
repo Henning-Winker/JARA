@@ -43,11 +43,11 @@ build_jara(
 
 \item{end.year}{subsetting option for end year}
 
-\item{sigma.obs.est}{Estimates additional variance}
+\item{sigma.obs.est}{Estimates additional variance (default)}
 
-\item{fixed.obsE}{minimum plausible process error (fixed)}
+\item{fixed.obsE}{minimum plausible observation error (fixed)}
 
-\item{sigma.proc.fixed}{option to fix the process error (default FALSE)}
+\item{sigma.proc.fixed}{option to fix the process error e.g = 0.1 (default FALSE)}
 
 \item{proc.pen}{advanced user setting to penalize extreme process error deviations}
 
