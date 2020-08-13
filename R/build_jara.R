@@ -24,7 +24,13 @@
 #' @param proj.yrs.user option to overwrite GL and costomize projections for forecasting  
 #' @return List to be used as data input to JARA JAGS model
 #' @export
-#' @author Henning Winker  
+#' @author Henning Winker
+#' @examples 
+#' data(jaradata)
+#' inp = jrdat$Afr_penguin
+#' buildjr <- build_jara(I = inp$I,GL=9,model.type="census")
+#' jrplot_indices(buildjr)
+
 build_jara <- function(
               I = NULL, #abundance indices/counts,  require data.frame(year, I.1,I.2,...,I.N)
               se = NULL,

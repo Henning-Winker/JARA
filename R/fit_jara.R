@@ -18,6 +18,18 @@
 #' @return A result list containing estimates of JARA model input, settings and results
 #' @export
 #' @author Henning Winker and Richard Sherley 
+#' @examples
+#' data(jaradata)
+#' inp = jrdat$Yellowspot_skate
+#' buildjr <- build_jara(I = inp$I,se=inp$SE,GL=12)
+#' fitjr <- fit_jara(buildjr)
+#' jrplot_fits(fitjr)
+#' jrplot_trjfit(fitjr)
+#' jrplot_poptrj(fitjr)
+#' jrplot_changes(fitjr)
+#' jrplot_state(fitjr)
+#' jrplot_iucn(fitjr)
+ 
 
 fit_jara = function(jarainput,
                      # MCMC settings

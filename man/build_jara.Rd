@@ -71,6 +71,12 @@ List to be used as data input to JARA JAGS model
 \description{
 Creates a data list with JABBA input and settings to be passed to fit_jara()
 }
+\examples{
+data(jaradata)
+inp = jrdat$Afr_penguin
+buildjr <- build_jara(I = inp$I,GL=9,model.type="census")
+jrplot_indices(buildjr)
+}
 \author{
 Henning Winker
 }

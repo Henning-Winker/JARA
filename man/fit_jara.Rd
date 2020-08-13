@@ -53,6 +53,18 @@ A result list containing estimates of JARA model input, settings and results
 \description{
 Fits JARA model in JAGS and produce output object as list()
 }
+\examples{
+data(jaradata)
+inp = jrdat$Yellowspot_skate
+buildjr <- build_jara(I = inp$I,se=inp$SE,GL=12)
+fitjr <- fit_jara(buildjr)
+jrplot_fits(fitjr)
+jrplot_trjfit(fitjr)
+jrplot_poptrj(fitjr)
+jrplot_changes(fitjr)
+jrplot_state(fitjr)
+jrplot_iucn(fitjr)
+}
 \author{
 Henning Winker and Richard Sherley
 }
