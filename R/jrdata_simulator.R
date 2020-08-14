@@ -10,6 +10,7 @@
 #' @param AR1.imp 1st order autoregressive error on impact
 #' @param CV.obs observation error (~ log.sd)
 #' @param GL Generation length to measure decline over 3 x GL 
+#' @param criteria A1 or A2 for decline
 #' @param Plot Shows plot with with simulated data and processes  
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @return simulated data and 'true' decline metrics
@@ -25,7 +26,7 @@
 #' jrplot_iucn(fitsim,add=T)
 #' abline(v=simdat$perc.change,col="cyan3",lwd=2)
 
-jrdat_simulator = function(n0 = 1000 ,yrs = 40,r.mu = runif(1,-0.05,0),proc.pop = 0.1,AR1.pop=0.3,proc.imp=0.05,AR1.imp=0.8,CV.obs=0.15,GL=10,Plot=TRUE,add=FALSE){ 
+jrdat_simulator = function(n0 = 1000 ,yrs = 40,r.mu = runif(1,-0.05,0),proc.pop = 0.1,AR1.pop=0.3,proc.imp=0.05,AR1.imp=0.8,CV.obs=0.15,GL=10,criteria=c("A2","A1")[1],Plot=TRUE,add=FALSE){ 
   if(max(yrs)>=round(3*GL)+1){
     simyrs = yrs
   } else {
@@ -65,7 +66,7 @@ jrdat_simulator = function(n0 = 1000 ,yrs = 40,r.mu = runif(1,-0.05,0),proc.pop 
   
   prjyrs = simyrs-yrs
   obsyrs = yrs
-  perc.change=(n_t[simyrs]/n_t[simyrs-round(3*GL)+1]-1)*100
+  change=(n_t[simyrs]/n_t[simyrs-round(3*GL)+1]-1)*100
   y_t = y_t[1:yrs]
   if(Plot==TRUE){
     jrpar(mfrow=c(1,2))
@@ -87,7 +88,7 @@ jrdat_simulator = function(n0 = 1000 ,yrs = 40,r.mu = runif(1,-0.05,0),proc.pop 
   
   return(list(I=data.frame(yr=1:obsyrs,y=y_t),
               N=data.frame(yr=1:simyrs,N=n_t),r.mu=r.mu,
-              perc.change=perc.change,
+              change=change,status=assign_iucn(change,criteria),
               simyrs=simyrs,obsyrs=obsyrs,prjyrs=prjyrs,GL=GL))
 
   

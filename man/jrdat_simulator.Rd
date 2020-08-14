@@ -14,6 +14,7 @@ jrdat_simulator(
   AR1.imp = 0.8,
   CV.obs = 0.15,
   GL = 10,
+  criteria = c("A2", "A1")[1],
   Plot = TRUE,
   add = FALSE
 )
@@ -36,6 +37,8 @@ jrdat_simulator(
 \item{CV.obs}{observation error (~ log.sd)}
 
 \item{GL}{Generation length to measure decline over 3 x GL}
+
+\item{criteria}{A1 or A2 for decline}
 
 \item{Plot}{Shows plot with with simulated data and processes}
 

@@ -139,7 +139,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   perc.risk = data.frame(perc.risk=c(Decline,mu.change,percentages))
   rownames(perc.risk)=categories
   out = list()
-  out$perc.risk = perc.risk
+  out$perc.risk = t(perc.risk)
   out$status = status
   
   return(out)
