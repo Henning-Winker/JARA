@@ -49,7 +49,7 @@ iucn_estimators = function(I=NULL,GL=10,criteria=c("A2","A1")[1]){
   out = list()
   out$reg.r = data.frame(est=coef(fit.reg)[2],se=summary(fit.reg)$coef[2,2])
   out$reg.pr = data.frame(yr=d.$yr,yobs=d.$y,yhat=pr.reg)
-  out$change = data.frame(p2=p2change,reg=reg.change)
+  out$change = data.frame(p2=p2change,reg=regchange)
   out$status = data.frame(p2=assign_iucn(p2change,criteria),reg=assign_iucn(regchange,criteria))
   return(out)
 }  
