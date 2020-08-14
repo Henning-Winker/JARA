@@ -54,6 +54,46 @@ iucn_estimators = function(I=NULL,GL=10,criteria=c("A2","A1")[1]){
   return(out)
 }  
   
+#' iucn_frame
+#'
+#' Empty iucn color plot   
+#' @param xymax determines upper x and y lims  
+#' @param width plot width
+#' @param height plot hight
+#' @param criteria A1 or A2 for decline
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @param plot.cex cex graphic option
+#' @param legend.cex lengend size cex graphic option
+#' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
+#' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
+#' @author Henning Winker, Richard Sherley and Nathan Pacoureau
+#' @export
+iucn_frame <- function(xylim=c(100,1),plot.cex=1,legend.cex=0.9,criteria=c("A2","A1")[1],iucn.cols=TRUE,add=FALSE){
+  
+  A1 = ifelse(criteria=="A1",TRUE,FALSE)
+  
+  if(iucn.cols==T){
+    cols = c("#60C659","lightgreen","#F9E814","#FC7F3F","#D81E05")[c(1,3:5)] # green to red
+  } else {
+    cols=c("green","lightgreen","yellow","orange","red")[c(1,3:5)]  
+  }
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(add==FALSE) par(Par)
+  x1 = c(-100,xylim[1])
+  plot(c(-100,xylim[1]),c(0,xylim[2]),type="n",ylab="Density",xlab="Change (%)",cex.main=0.9,frame=T,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
+  x2 = c(ifelse(A1,-50,-30),1500); y2 = c(0,5)
+  polygon(c(x2,rev(x2)),c(rep(xylim[2],2),rev(rep(0,2))),col=cols[1],border=cols[1])
+  x3 = c(ifelse(A1,-70,-50),x2[1])
+  polygon(c(x3,rev(x3)),c(rep(xylim[2],2),rev(rep(0,2))),col=cols[2],border=cols[2])
+  x4 = c(ifelse(A1,-90,-80),x3[1])
+  polygon(c(x4,rev(x4)),c(rep(xylim[2],2),rep(0,2)),col=cols[3],border=cols[3])
+  x5 = c(-100,x4[1])
+  polygon(c(x5,rev(x5)),c(rep(xylim[2],2),rep(0,2)),col=cols[4],border=cols[4])
+  
+  axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
+  
+} # End IUCN frame 
 
 
 
