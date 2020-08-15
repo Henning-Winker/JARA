@@ -55,9 +55,9 @@ simdat <- jrdat_simulator(yrs=40,GL=15)
 inpsim <- build_jara(I = simdat$I,GL=simdat$GL)
 fitsim <- fit_jara(inpsim)
 jrpar(mfrow=c(1,2))
-jrplot_poptrj(fitsim,add=T)
+jrplot_poptrj(fitsim,add=TRUE)
 lines(simdat$N,col="cyan3",lwd=2)
-jrplot_iucn(fitsim,add=T)
+jrplot_iucn(fitsim,add=TRUE)
 abline(v=simdat$perc.change,col="cyan3",lwd=2)
 }
 \author{

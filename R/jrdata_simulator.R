@@ -21,9 +21,9 @@
 #' inpsim <- build_jara(I = simdat$I,GL=simdat$GL)
 #' fitsim <- fit_jara(inpsim)
 #' jrpar(mfrow=c(1,2))
-#' jrplot_poptrj(fitsim,add=T)
+#' jrplot_poptrj(fitsim,add=TRUE)
 #' lines(simdat$N,col="cyan3",lwd=2)
-#' jrplot_iucn(fitsim,add=T)
+#' jrplot_iucn(fitsim,add=TRUE)
 #' abline(v=simdat$perc.change,col="cyan3",lwd=2)
 
 jrdat_simulator = function(n0 = 1000 ,yrs = 40,r.mu = runif(1,-0.05,0),proc.pop = 0.1,AR1.pop=0.3,proc.imp=0.05,AR1.imp=0.8,CV.obs=0.15,GL=10,criteria=c("A2","A1")[1],Plot=TRUE,add=FALSE){ 
