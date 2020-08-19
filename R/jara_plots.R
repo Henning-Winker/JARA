@@ -380,6 +380,7 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param type final year type = c("current","projected","both")
 #' @param ref.yr year(s) used as reference; default is avg. first 3 years
 #' @param extinction threshold for extiction classification default or ref.yr
+#' @param credibility Confidence interval credibility calue with default of 0.95 
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
 #' @param width plot width
@@ -391,7 +392,7 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @export
 #' @author Henning Winker 
 jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
-                         extinction=0.01, output.dir=getwd(),
+                         extinction=0.01,credibility=0.95, output.dir=getwd(),
                          as.png=FALSE,width=5,height=4.5,plot.cex=1,legend.cex=0.9,add=FALSE){
   
   cat(paste0("\n","><> jrplot_state() - %change relative to reference year <><","\n"))
@@ -444,14 +445,14 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
   lines(rep(1,2),c(0,max(lymax*c(1.05,1.0)[1])),col=1,lwd=1,lty=2)
   text(1,max(lymax*c(1.1)),min((ref.yr)),cex=0.9)
   
-  #cnam = c(bquote("Cur"[.(end.yr) ~ "/" ~ .(min(ref.yr))] ~ "=" ~ .(round(median(states[,1]),2))),
-  #         bquote("Prj"[.(end.yr) ~ "/" ~ .(min(ref.yr))]~ "=" ~ .(round(median(states[,2]),2))))
   cnam = c(paste0("Cur = ",round(median(states[,1]),2)),paste0("Proj = ",round(median(states[,2]),2)))
   if(type =="current") type.id = 1 
   if(type =="projected") type.id = 2 
   if(type =="both") type.id = 1:2 
   legend("right",cnam[type.id],pch=15,col=c(jcol),box.col = "white",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
-  quants =apply(states,2,quantile,c(0.5,0.05,0.95))
+  mu =apply(states,2,quantile,c(0.5))
+  quants = rbind(mu,HDInterval::hdi(states,credMass=credibility))
+  
   state = NULL
   state$state = data.frame(State=cnam,year=c(end.yr,prj.yr),median=quants[1,],lci=quants[2,],uci=quants[3,])
   if(type=="current"){state$prob.pextinct = "Requires projection horizon"} else {
@@ -459,6 +460,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
   }
   
   if(as.png==TRUE) dev.off()
+  return(state)
 } # End rate of change plot  
 
 

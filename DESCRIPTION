@@ -24,7 +24,8 @@ Imports:
       R2jags,
       snpar,
       reshape,
-      scales
+      scales,
+      HDInterval
 Suggests:      
       fitdistrplus,
       mvtnorm

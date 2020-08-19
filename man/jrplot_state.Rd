@@ -9,6 +9,7 @@ jrplot_state(
   type = NULL,
   ref.yr = NULL,
   extinction = 0.01,
+  credibility = 0.95,
   output.dir = getwd(),
   as.png = FALSE,
   width = 5,
@@ -26,6 +27,8 @@ jrplot_state(
 \item{ref.yr}{year(s) used as reference; default is avg. first 3 years}
 
 \item{extinction}{threshold for extiction classification default or ref.yr}
+
+\item{credibility}{Confidence interval credibility calue with default of 0.95}
 
 \item{output.dir}{directory to save plots}
 

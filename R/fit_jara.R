@@ -2,6 +2,7 @@
 #'
 #' Fits JARA model in JAGS and produce output object as list()
 #' @param jarainput List of input variables as output by build_jara()
+#' @param credibility Confidence Credibility Value with default of 0.95 
 #' MCMC settings
 #' @param ni number of iterations
 #' @param nt thinning interval of saved iterations
@@ -31,7 +32,7 @@
 #' jrplot_iucn(fitjr)
  
 
-fit_jara = function(jarainput,
+fit_jara = function(jarainput,credibility=0.95,
                      # MCMC settings
                      ni = 9000, # Number of iterations
                      nt = 2, # Steps saved
@@ -144,15 +145,24 @@ fit_jara = function(jarainput,
   heidle = coda::heidel.diag(data.frame(par.dat))
   
   # Capture Results
-  results = round(t(cbind(apply(par.dat,2,quantile,c(0.025,0.5,0.975)))),4)
-  pars = data.frame(median = results[,2],lci=results[,1],uci=results[,3],Geweke.p=round(pvalues,3),Heidelberger.p=round(heidle[,3],3))
+  results = round(data.frame(cbind(apply(par.dat,2,median),t(HDInterval::hdi(par.dat,credMass=credibility)))),4)
+
+  
+  pars = data.frame(median = results[,1],lci=results[,2],uci=results[,3],Geweke.p=round(pvalues,3),Heidelberger.p=round(heidle[,3],3))
   if(abundance=="relative"){par.names = c("mu.r","sigma.proc",paste0("q.",indices[qs]))} else {
     par.names = c(paste0("r.",indices[qs]),"sigma.proc")  
   }
   row.names(pars) = par.names
   
+  r.prj = data.frame(t(rbind(apply(posteriors$r.proj,2,median),HDInterval::hdi(posteriors$r.proj,credMass=credibility))))
+  colnames(r.prj) = c("mu","lci","uci")
+  if(abundance=="census"){
+    rownames(r.prj) = c(paste0("r.",indices[qs]))
+  }
+  
   if(save.jarafile==TRUE){
   options(max.print=1000000)
+  
     
   sink(paste0(output.dir,"/JARAjags_",settings$assessment,"_",settings$scenario,".txt"))
   cat(WARN)
@@ -188,10 +198,10 @@ fit_jara = function(jarainput,
     for(i in 1:n.indices){
       for (t in 1:end.yr){
         fitted[t,i] <- median(posteriors$N.est[,t,i])
-        lower[t,i] <- quantile(posteriors$N.est[,t,i], 0.025)
-        upper[t,i] <- quantile(posteriors$N.est[,t,i], 0.975)
-        lo.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.025)
-        hi.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.975)}}
+        lower[t,i] <- HDInterval::hdi(posteriors$N.est[,t,i],credMass=credibility)[1]
+        upper[t,i] <- HDInterval::hdi(posteriors$N.est[,t,i],credMass=credibility)[2]
+        lo.ppd[t,i] <-HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[1]
+        hi.ppd[t,i] <-HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[2]}}
     
     # log-normal bias correction from Sherley et al. (in press)
     Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT,n.indices))
@@ -207,23 +217,23 @@ fit_jara = function(jarainput,
     for (t in 1:nT){
       pop.posterior = cbind(pop.posterior,rowSums(Nbias.correct[,t,]))
       Nfit[t] = mean(rowSums(Nbias.correct[,t,]))# o<
-      Nlow[t] = quantile(rowSums(Nbias.correct[,t,]),0.025)# o<
-      Nhigh[t] = quantile(rowSums(Nbias.correct[,t,]),0.975)# o<
+      Nlow[t] = HDInterval::hdi(rowSums(Nbias.correct[,t,]),credMass=credibility)[1]# o<
+      Nhigh[t] = HDInterval::hdi(rowSums(Nbias.correct[,t,]),credMass=credibility)[2]# o<
     }  
     } else {
     q.adj = apply(posteriors$q,2,median)
     fitted <- lower <- upper <- as.null()
     for (t in 1:end.yr){
       fitted[t] <- median(posteriors$Y.est[,t])
-      lower[t] <- quantile(posteriors$Y.est[,t], 0.025)
-      upper[t] <- quantile(posteriors$Y.est[,t], 0.975)
+      lower[t] <- HDInterval::hdi(posteriors$Y.est[,t],credMass=credibility)[1]
+      upper[t] <- HDInterval::hdi(posteriors$Y.est[,t],credMass=credibility)[2]
     }
     
     lo.ppd <- hi.ppd <- matrix(NA,end.yr,(n.indices))
     for(i in 1:n.indices){
       for (t in 1:end.yr){
-        lo.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.025)
-        hi.ppd[t,i] <-quantile(posteriors$ppd[,t,i], 0.975)}}
+        lo.ppd[t,i] <- HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[1]
+        hi.ppd[t,i] <- HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[2]}}
     
     
       # Total population
@@ -233,8 +243,8 @@ fit_jara = function(jarainput,
       for (t in 1:nT){
       pop.posterior = cbind(pop.posterior,posteriors$Y.est[,t])  
       Nfit[t] = median(posteriors$Y.est[,t])
-      Nlow[t] = quantile(posteriors$Y.est[,t], 0.025)
-      Nhigh[t] = quantile(posteriors$Y.est[,t], 0.975)}
+      Nlow[t] = HDInterval::hdi(posteriors$Y.est[,t],credMass=credibility)[1]
+      Nhigh[t] = HDInterval::hdi(posteriors$Y.est[,t],credMass=credibility)[2]}
     }
       
   
@@ -297,18 +307,18 @@ fit_jara = function(jarainput,
     Yr = min(Yr):max(Yr)
     yr = Yr-min(years)+1
     if(abundance=="relative"){
-      exp.i = apply(posteriors$Y.est,2,quantile,c(0.5,0.025,0.975))[1,]*q.adj[i]
-      expLCI.i = apply(posteriors$Y.est,2,quantile,c(0.5,0.025,0.975))[2,]*q.adj[i]
-      expUCI.i = apply(posteriors$Y.est,2,quantile,c(0.5,0.025,0.975))[3,]*q.adj[i]
-      ppdLCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[2,]
-      ppdUCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[3,]
+      exp.i = apply(posteriors$Y.est,2,median)*q.adj[i]
+      expLCI.i =HDInterval::hdi(posteriors$Y.est,credMass=credibility)[1,]*q.adj[i]
+      expUCI.i = HDInterval::hdi(posteriors$Y.est,credMass=credibility)[2,]*q.adj[i]
+      ppdLCI.i = HDInterval::hdi(posteriors$ppd[,,i],credMass=credibility)[1,]
+      ppdUCI.i = HDInterval::hdi(posteriors$ppd[,,i],credMass=credibility)[2,]
       
     } else {
-      exp.i = apply(posteriors$N.est[,,i],2,quantile,c(0.5,0.025,0.975))[1,]
-      expLCI.i = apply(posteriors$N.est[,,i],2,quantile,c(0.5,0.025,0.975))[2,]
-      expUCI.i = apply(posteriors$N.est[,,i],2,quantile,c(0.5,0.025,0.975))[3,]
-      ppdLCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[2,]
-      ppdUCI.i = apply(posteriors$ppd[,,i],2,quantile,c(0.5,0.025,0.975))[3,]
+      exp.i = apply(posteriors$N.est[,,i],2,median)
+      expLCI.i = HDInterval::hdi(posteriors$N.est[,,i],credMass=credibility)[1,]
+      expUCI.i = HDInterval::hdi(posteriors$N.est[,,i],credMass=credibility)[2,]
+      ppdLCI.i = HDInterval::hdi(posteriors$ppd[,,i],credMass=credibility)[1,]
+      ppdUCI.i = HDInterval::hdi(posteriors$ppd[,,i],credMass=credibility)[2,]
       
       } 
       
@@ -357,6 +367,7 @@ fit_jara = function(jarainput,
   jara$residuals = Resids
   jara$trj = trj
   jara$posteriors = trends
+  jare$r.prj = r.prj
   jara$pop.posterior = pop.posterior
   
   if(save.jara==TRUE){

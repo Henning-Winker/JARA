@@ -6,6 +6,7 @@
 \usage{
 fit_jara(
   jarainput,
+  credibility = 0.95,
   ni = 9000,
   nt = 2,
   nb = 2000,
@@ -20,7 +21,9 @@ fit_jara(
 )
 }
 \arguments{
-\item{jarainput}{List of input variables as output by build_jara()
+\item{jarainput}{List of input variables as output by build_jara()}
+
+\item{credibility}{Confidence Credibility Value with default of 0.95 
 MCMC settings}
 
 \item{ni}{number of iterations}
