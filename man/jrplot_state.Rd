@@ -14,6 +14,8 @@ jrplot_state(
   as.png = FALSE,
   width = 5,
   height = 4.5,
+  ylab = "Density",
+  xlab = "Relative state",
   plot.cex = 1,
   legend.cex = 0.9,
   add = FALSE
@@ -37,6 +39,10 @@ jrplot_state(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{ylab}{option to change y-axis label}
+
+\item{xlab}{option to change x-axis label}
 
 \item{plot.cex}{cex graphic option}
 

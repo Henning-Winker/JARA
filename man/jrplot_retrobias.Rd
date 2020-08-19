@@ -11,6 +11,8 @@ jrplot_retrobias(
   width = 5,
   height = 4.5,
   add = FALSE,
+  xlab = "Year",
+  ylab = "Abundance",
   plot.cex = 1,
   Xlim = NULL,
   cols = NULL,
@@ -31,6 +33,10 @@ jrplot_retrobias(
 \item{height}{plot hight}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
+
+\item{xlab}{option to change x-axis label}
+
+\item{ylab}{option to change y-axis label}
 
 \item{plot.cex}{plotting parameter}
 

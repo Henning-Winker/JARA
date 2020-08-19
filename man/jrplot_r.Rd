@@ -10,6 +10,8 @@ jrplot_r(
   as.png = FALSE,
   width = 5,
   height = 4.5,
+  xlab = "r",
+  ylab = "Density",
   plot.cex = 1,
   add = FALSE
 )
@@ -24,6 +26,10 @@ jrplot_r(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{xlab}{option to change x-axis label}
+
+\item{ylab}{option to change y-axis label}
 
 \item{plot.cex}{cex graphic option}
 

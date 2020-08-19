@@ -11,6 +11,8 @@ jrplot_poptrj(
   as.png = FALSE,
   width = 5,
   height = 4.5,
+  xlab = "Year",
+  ylab = "Abundance",
   plot.cex = 1,
   add = FALSE
 )
@@ -27,6 +29,10 @@ jrplot_poptrj(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{xlab}{option to change x-axis label}
+
+\item{ylab}{option to change y-axis label}
 
 \item{plot.cex}{cex graphic option}
 

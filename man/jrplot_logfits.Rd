@@ -11,6 +11,8 @@ jrplot_logfits(
   single.plots = FALSE,
   width = NULL,
   height = NULL,
+  ylab = "Log(index)",
+  xlab = "Year",
   indices = "all",
   add = FALSE
 )
@@ -27,6 +29,10 @@ jrplot_logfits(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{ylab}{option to change y-axis label}
+
+\item{xlab}{option to change x-axis label}
 
 \item{indices}{names of indices to plot (default = "all")}
 

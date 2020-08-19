@@ -10,6 +10,8 @@ jrplot_trjfit(
   as.png = FALSE,
   width = 5,
   height = 4.5,
+  ylab = "Abundance",
+  xlab = "Year",
   plot.cex = 1,
   add = FALSE,
   indices = "all",
@@ -26,6 +28,10 @@ jrplot_trjfit(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{ylab}{option to change y-axis label}
+
+\item{xlab}{option to change x-axis label}
 
 \item{plot.cex}{cex graphic option}
 

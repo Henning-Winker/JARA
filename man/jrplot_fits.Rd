@@ -12,6 +12,8 @@ jrplot_fits(
   single.plots = FALSE,
   width = NULL,
   height = NULL,
+  ylab = "Normalized index",
+  xlab = "Year",
   indices = "all",
   index.label = TRUE,
   add = FALSE
@@ -31,6 +33,10 @@ jrplot_fits(
 \item{width}{plot width}
 
 \item{height}{plot hight}
+
+\item{ylab}{option to change y-axis label}
+
+\item{xlab}{option to change x-axis label}
 
 \item{indices}{names of indices to plot (default = "all")}
 
