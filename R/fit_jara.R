@@ -367,7 +367,7 @@ fit_jara = function(jarainput,credibility=0.95,
   jara$residuals = Resids
   jara$trj = trj
   jara$posteriors = trends
-  jare$r.prj = r.prj
+  jara$r.prj = r.prj
   jara$pop.posterior = pop.posterior
   
   if(save.jara==TRUE){
