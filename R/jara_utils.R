@@ -96,5 +96,36 @@ iucn_frame <- function(xylim=c(100,1),plot.cex=1,legend.cex=0.9,criteria=c("A2",
 } # End IUCN frame 
 
 
+#' Function to do runs.test and 3 x sigma limits
+#'
+#' runs test is conducted with library(snpar)
+#' @param x residuals from CPUE fits
+#' @param type only c("resid","observations")
+#' @return runs p value and 3 x sigma limits
+#' @export
+jr_runs <- function(x,type=NULL) {
+  if(is.null(type)) type="resid"
+  if(type=="resid"){mu = 0}else{mu = mean(x, na.rm = TRUE)}
+  # Average moving range
+  mr  <- abs(diff(x - mu))
+  amr <- mean(mr, na.rm = TRUE)
+  # Upper limit for moving ranges
+  ulmr <- 3.267 * amr
+  # Remove moving ranges greater than ulmr and recalculate amr, Nelson 1982
+  mr  <- mr[mr < ulmr]
+  amr <- mean(mr, na.rm = TRUE)
+  # Calculate standard deviation, Montgomery, 6.33
+  stdev <- amr / 1.128
+  # Calculate control limits
+  lcl <- mu - 3 * stdev
+  ucl <- mu + 3 * stdev
+  if(nlevels(factor(sign(x)))>1){
+    runstest = snpar::runs.test(x)
+    pvalue = round(runstest$p.value,3)} else {
+      pvalue = 0.001
+    }
+  
+  return(list(sig3lim=c(lcl,ucl),p.runs= pvalue))
+}
 
 

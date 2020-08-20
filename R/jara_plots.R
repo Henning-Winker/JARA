@@ -177,7 +177,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
   runs = hc$peels
   d = hc$posteriors
   ymax1 = quantile(hc$posteriors$pop.change[hc$posteriors$level==0],0.995)
-  ymax2 = quantile(hc$posteriors$pop.change[hc$posteriors$level>0],0.975)
+  ymax2 = quantile(hc$posteriors$pop.change[hc$posteriors$level>0],0.985)
   ymax = max(ymax1,ymax2)
   ylim=c(-100,min(max(30,ymax),1000))
   xlim=c(0.5,length(hc$peels)+0.49)
@@ -202,7 +202,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
     for(j in 1:length(runs)){
       #change = log(d[rev(runs) ==runs[j],]$pop.change+100)
       change = d[d$level ==rev(runs)[j],]$pop.change
-      change=ifelse(change>ymax,max(ymax+20,45),change)
+      change=ifelse(change>ymax,max(ymax+50,45),change)
       den = stats::density(change,adjust=1)
       
       #y1 = exp(den$x)-100
@@ -230,7 +230,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
     }
     abline(h=0,lty=2)
     
-    text(1:length(runs),max(ylim)*0.945,(out$status),cex=0.8)
+    text(1:length(runs),par('usr')[4],(out$status),cex=0.8,pos=1,offset = 0.2)
     if(add.legend)legend(par('usr')[2]*1.01, quantile(par('usr')[3:4],0.6), bty='n', xpd=NA,
            c("LC","VU","EN","CR"),pch=15,col=c(cols),pt.cex=2,cex=0.9)
     
@@ -244,7 +244,7 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' jrplot_retrobias() to plot retrospective pattern
 #'
 #' Plots retrospective pattern of population trend
-#' @param hc output from jabba_hindast()
+#' @param hc output from jara_hindast()
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
 #' @param width plot width
@@ -271,7 +271,7 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4
   nyrs = length(year)
   suby = 1:nyrs
   peels = hc$peels
-  if(is.null(Xlim)) Xlim = c(min(year)-0.05,max(year)+0.5)
+  if(is.null(Xlim)) Xlim = c(min(year)-0.99,max(year)+0.99)
   
   Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
   if(as.png==TRUE){png(file = paste0(output.dir,"/Retrobias_",hc$assessment,"_",hc$scenario,".png"), width = width, height = height,
@@ -282,8 +282,8 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4
   m1 <- 0
   m2 <- max(c(Nt0$uci,Nt$mu), na.rm = TRUE)*1.1
   
-  plot(0, 0, ylim = c(m1, m2), xlim = Xlim-0.99, ylab = ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxt="n",xaxs="i",yaxs="i")
-  axis(1,at=seq(min(year),max(year)+5,ceiling(length(year)/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
+  plot(0, 0, ylim = c(m1, m2), xlim = Xlim, ylab = ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxt="n",xaxs="i",yaxs="i")
+  axis(1,at=seq(min(year),max(year),ceiling(length(year)/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
   
   polygon(x = c(year,rev(year)), y = c(Nt0$lci[suby],rev(Nt0$uci[suby])), col = gray(0.4,0.5), border = gray(0.4,0.5))
   #add trend
@@ -294,21 +294,23 @@ jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4
   sub0 = 1:(end.yr-peels[i])
   sub1 = 1:(end.yr-peels[i]+1)
   sub2 = (end.yr-peels[i]+1)
-  lines(year[sub0],Nti$mu[sub0], type = "l",col=cols[i],lwd=2)
-  lines(year[sub1],Nti$mu[sub1], type = "l",col=cols[i],lwd=2,lty=2)
-  points(year[sub2],Nti$mu[sub2],bg=cols[i],pch=21,cex=0.8)
+  lines(year[sub0],Nti$mu[sub0], type = "l",col=cols[i-1],lwd=2)
+  lines(year[sub1],Nti$mu[sub1], type = "l",col=cols[i-1],lwd=2,lty=2)
+  points(year[sub2],Nti$mu[sub2],bg=cols[i-1],pch=21,cex=0.8)
   rho = (Nti$mu[sub2-1]-Nt0$mu[sub2-1])/Nt0$mu[sub2-1]
   hcrho = (Nti$mu[sub2]-Nt0$mu[sub2])/Nt0$mu[sub2]
   diags = rbind(diags,data.frame(rho=rho,hcrho=hcrho))
   
   }
-  if(add.legend) legend(legend.loc,paste(year[nyrs-peels]),col=cols,bty="n",cex=0.7,pt.cex=0.7,lwd=c(2,rep(1,length(peels))))
+  lines(year,Nt$mu[suby], type = "l",col=1,lwd=1)
+  
+  if(add.legend) legend(legend.loc,paste(year[nyrs-peels]),col=c(1,cols),bty="n",cex=0.7,pt.cex=0.7,lwd=c(2,rep(1,length(peels))))
   diags = rbind(diags,data.frame(rho=mean(diags$rho),hcrho=mean(diags$hcrho)))
   mrho = round(diags[nrow(diags),1],2)
   mhcrho = round(diags[nrow(diags),2],2)
   
   if(show.rho) 
-    legend("top",legend=paste0("Bias = ",mrho,"(",mhcrho,")"),bty="n",y.intersp = -0.2,cex=0.9)
+    legend("top",legend=paste0("Bias = ",mrho," (",mhcrho,")"),bty="n",y.intersp = -0.2,cex=0.9)
   
   row.names(diags) <- c(year[nyrs-peels[-1]],"mu")   
 
@@ -959,12 +961,174 @@ jrplot_logfits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FA
 
 } # End of logfit
 
+#' joint residual plot
+#'
+#' plots residuals for all indices as boxplot with a loess showing systematic trends
+#'
+#' @param jara output list from fit_jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param add if true don't call par() to allow construction of multiplots
+#' @param ylab option to change y-axis label
+#' @param xlab option to change x-axis label
+#' @param width plot width
+#' @param height plot hight
+#' @param cols option to add colour palette 
+#' @export
+jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,ylab="log Residuals",xlab="Year", width = 5, height = 3.5,cols=NULL){
+  
+    cat(paste0("\n","><> jrplot_residuals() - Joint residual plot  <><","\n"))
+    if(is.null(cols)) cols = jara$settings$cols 
+    years = jara$yr
+    check.yrs = abs(apply(jara$residuals,2,sum,na.rm=TRUE))
+    cpue.yrs = years[check.yrs>0]
+    Resids = jara$residuals
+    Yr = jara$yr
+    n.years = length(Yr)
+    n.indices = jara$settings$nI
+    indices = unique(jara$diags$name)
+    series = 1:jara$settings$nI
+    
+    # Joint-residual plot
+    Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.1, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
+    if(as.png==TRUE){png(file = paste0(output.dir,"/Residuals_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                         res = 200, units = "in")}
+    if(add==FALSE) par(Par)
+    
+    
+    plot(Yr,Yr,type = "n",ylim=ifelse(rep(max(Resids,na.rm = T),2)>0.9,range(1.2*Resids,na.rm = T),range(c(-1.3,1.2))),xlim=range(cpue.yrs),ylab=ylab,xlab=xlab)
+    boxplot(Resids,add=TRUE,at=c(Yr),xaxt="n",col=grey(0.8,0.5),notch=FALSE,outline = FALSE)
+    abline(h=0,lty=2)
+    positions=runif(n.indices,-0.2,0.2)
+    
+    for(i in 1:n.indices){
+      for(t in 1:n.years){
+        lines(rep((Yr+positions[i])[t],2),c(0,Resids[i,t]),col=cols[i])}
+      points(Yr+positions[i],Resids[i,],col=1,pch=21,bg=cols[i])}
+    mean.res = apply(Resids,2,mean,na.rm =TRUE)[Yr%in%cpue.yrs]
+    smooth.res = predict(stats::loess(mean.res~cpue.yrs),data.frame(cpue.yrs=cpue.yrs))
+    lines(cpue.yrs,smooth.res,lwd=2)
+    # get degree of freedom
+    Nobs =length(as.numeric(Resids)[is.na(as.numeric(Resids))==FALSE])
+    
+    RMSE = round(jara$stats[2,2],2)
+    
+    legend('topright',c(paste0("RMSE = ",RMSE,"%")),bty="n")
+    legend('bottomright',c(paste(jara$indices),"Loess"),bty="n",col=1,pt.cex=1.1,cex=0.75,pch=c(rep(21,n.indices),-1),pt.bg=c(jara$settings$col[series],1),lwd=c(rep(-1,n.indices),2))
+    if(as.png==TRUE){dev.off()}
+} # End of functions
+
+
+#' JARA runs test plots
+#'
+#' Residual diagnostics with runs test p-value and 3xsigma limits
+#' @param jara output list from fit_jara
+#' @param index option to plot specific indices (numeric & in order)
+#' @param output.dir directory to save plots
+#' @param add if true par() is surpressed within the plot function
+#' @param as.png save as png file of TRUE
+#' @param single.plots if TRUE plot invidual fits else make multiplot
+#' @param ylab option to change y-axis label
+#' @param xlab option to change x-axis label
+#' @param width plot width
+#' @param height plot hight
+#' @export
+jrplot_runstest <- function(jara,indices="all", output.dir=getwd(),add=FALSE,as.png=FALSE,single.plots=FALSE,ylab="Residuals",xlab="Year",width=NULL,height=NULL){
+  
+    cat(paste0("\n","><> jrplot_runstest()   <><","\n"))
+    
+  
+  years = jara$yr
+  N = length(years)
+  if(indices[1]=="all"){
+    indices = unique(jara$fits$name)
+    n.indices = jara$settings$nI
+    index = 1:n.indices
+  } else {
+    if(length(indices[indices%in%unique(jara$fits$name)])<1) stop("non-existent index name provided")
+    indices = indices[indices%in%unique(jara$fits$name)]
+    n.indices = length(indices)
+    index = which(unique(jara$fits$name)%in%indices)
+  }
+  series = 1:jara$settings$nI
+  CPUE = jara$settings$y
+  check.yrs = abs(apply(jara$residuals,2,sum,na.rm=TRUE))
+  cpue.yrs = years[check.yrs>0]
+  
+  Resids = jara$residuals
+
+    
+    if(single.plots==TRUE){
+      if(is.null(width)) width = 5
+      if(is.null(height)) height = 3.5
+      for(i in 1:n.indices){
+        Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
+        if(as.png==TRUE){png(file = paste0(output.dir,"/ResRunsTests_",jara$assessment,"_",jara$scenario,"_",indices[i],".png"), width = width, height = height,
+                             res = 200, units = "in")}
+        
+        if(add==FALSE){
+          if(as.png==TRUE | i==1) par(Par)
+        }
+        
+        
+        resid = (Resids[index[i],is.na(Resids[index[i],])==F])
+        res.yr = years[is.na(Resids[index[i],])==F]
+        runstest = jr_runs(x=as.numeric(resid),type="resid")
+        # CPUE Residuals with runs test
+        plot(res.yr,rep(0,length(res.yr)),type="n",ylim=c(min(-1,runstest$sig3lim[1]*1.25),max(1,runstest$sig3lim[2]*1.25)),lty=1,lwd=1.3,xlab="Year",ylab="Residuals")
+        abline(h=0,lty=2)
+        lims = runstest$sig3lim
+        cols =  c(rgb(1,0,0,0.5),rgb(0,1,0,0.5))[ifelse(runstest$p.runs<0.05,1,2)]
+        rect(min(years-1),lims[1],max(years+1),lims[2],col=cols,border=cols) # only show runs if RMSE >= 0.1
+        for(j in 1:length(resid)){
+          lines(c(res.yr[j],res.yr[j]),c(0,resid[j]))
+        }
+        points(res.yr,resid,pch=21,bg=ifelse(resid < lims[1] | resid > lims[2],2,"white"),cex=1)
+        legend('topright',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.8)
+        #mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
+        #mtext(expression(log(cpue[obs])-log(cpue[pred])), side=2, outer=TRUE, at=0.5,line=1,cex=1)
+        if(as.png==TRUE){dev.off()}
+      } # end of loop
+    } else { # single.plot = FALSE
+      if(is.null(width)) width = 7
+      if(is.null(height)) height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0)
+      Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=0.8)
+      if(as.png==TRUE){png(file = paste0(output.dir,"/ResRunsTests_",jara$assessment,"_",jara$scenario,".png"), width = 7, height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0),
+                           res = 200, units = "in")}
+      if(add==FALSE) par(Par)
+      for(i in 1:n.indices){
+        resid = (Resids[index[i],is.na(Resids[index[i],])==F])
+        res.yr = years[is.na(Resids[index[i],])==F]
+        runstest = jr_runs(x=as.numeric(resid),type="resid")
+        # CPUE Residuals with runs test
+        plot(res.yr,rep(0,length(res.yr)),type="n",ylim=c(min(-1,runstest$sig3lim[1]*1.25),max(1,runstest$sig3lim[2]*1.25)),lty=1,lwd=1.3,xlab="Year",ylab="Residuals")
+        abline(h=0,lty=2)
+        lims = runstest$sig3lim
+        cols =  c(rgb(1,0,0,0.5),rgb(0,1,0,0.5))[ifelse(runstest$p.runs<0.05,1,2)]
+        rect(min(years-1),lims[1],max(years+1),lims[2],col=cols,border=cols) # only show runs if RMSE >= 0.1
+        for(j in 1:length(resid)){
+          lines(c(res.yr[j],res.yr[j]),c(0,resid[j]))
+        }
+        points(res.yr,resid,pch=21,bg=ifelse(resid < lims[1] | resid > lims[2],2,"white"),cex=1)
+        legend('topright',paste(indices[i]),bty="n",y.intersp = -0.2,cex=0.8)
+        
+      }
+      mtext(paste("Year"), side=1, outer=TRUE, at=0.5,line=1,cex=1)
+      mtext("Residuals", side=2, outer=TRUE, at=0.5,line=1,cex=1)
+      if(as.png==TRUE){dev.off()}
+    }
+    
+    
+
+  
+} # end of runstest plot function
+
 
 #' wrapper jara_plots function
 #'
 #' plots all routine JARA plots to output.dir if as.png=TRUE (default)
 #'
-#' @param jara output list from fit_jabba
+#' @param jara output list from fit_jara
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
 #' @export

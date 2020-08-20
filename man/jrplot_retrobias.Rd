@@ -22,7 +22,7 @@ jrplot_retrobias(
 )
 }
 \arguments{
-\item{hc}{output from jabba_hindast()}
+\item{hc}{output from jara_hindast()}
 
 \item{output.dir}{directory to save plots}
 

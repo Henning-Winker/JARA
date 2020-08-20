@@ -7,7 +7,7 @@
 jara_plots(jara, output.dir = getwd(), as.png = TRUE, statusplot = "kobe")
 }
 \arguments{
-\item{jara}{output list from fit_jabba}
+\item{jara}{output list from fit_jara}
 
 \item{output.dir}{directory to save plots}
 
