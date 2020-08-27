@@ -7,6 +7,7 @@
 jrplot_runstest(
   jara,
   indices = "all",
+  alternative = "less",
   output.dir = getwd(),
   add = FALSE,
   as.png = FALSE,
@@ -19,6 +20,8 @@ jrplot_runstest(
 }
 \arguments{
 \item{jara}{output list from fit_jara}
+
+\item{alternative}{hypothesis undermixing "less" or both "two-sided"}
 
 \item{output.dir}{directory to save plots}
 

@@ -4,12 +4,14 @@
 \alias{jr_runs}
 \title{Function to do runs.test and 3 x sigma limits}
 \usage{
-jr_runs(x, type = NULL)
+jr_runs(x, type = NULL, alternative = "less")
 }
 \arguments{
 \item{x}{residuals from CPUE fits}
 
 \item{type}{only c("resid","observations")}
+
+\item{alternative}{hypothesis undermixing "less" or both "two-sided"}
 }
 \value{
 runs p value and 3 x sigma limits
