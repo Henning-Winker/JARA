@@ -1024,6 +1024,7 @@ jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,yl
 #' Residual diagnostics with runs test p-value and 3xsigma limits
 #' @param jara output list from fit_jara
 #' @param index option to plot specific indices (numeric & in order)
+#' @param alternative hypothesis undermixing "less" or both "two-sided"
 #' @param output.dir directory to save plots
 #' @param add if true par() is surpressed within the plot function
 #' @param as.png save as png file of TRUE
@@ -1033,7 +1034,7 @@ jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,yl
 #' @param width plot width
 #' @param height plot hight
 #' @export
-jrplot_runstest <- function(jara,indices="all", output.dir=getwd(),add=FALSE,as.png=FALSE,single.plots=FALSE,ylab="Residuals",xlab="Year",width=NULL,height=NULL){
+jrplot_runstest <- function(jara,indices="all",alternative="less", output.dir=getwd(),add=FALSE,as.png=FALSE,single.plots=FALSE,ylab="Residuals",xlab="Year",width=NULL,height=NULL){
   
     cat(paste0("\n","><> jrplot_runstest()   <><","\n"))
     
@@ -1073,7 +1074,7 @@ jrplot_runstest <- function(jara,indices="all", output.dir=getwd(),add=FALSE,as.
         
         resid = (Resids[index[i],is.na(Resids[index[i],])==F])
         res.yr = years[is.na(Resids[index[i],])==F]
-        runstest = jr_runs(x=as.numeric(resid),type="resid")
+        runstest = jr_runs(x=as.numeric(resid),type="resid",altenative = alternative)
         # CPUE Residuals with runs test
         plot(res.yr,rep(0,length(res.yr)),type="n",ylim=c(min(-1,runstest$sig3lim[1]*1.25),max(1,runstest$sig3lim[2]*1.25)),lty=1,lwd=1.3,xlab="Year",ylab="Residuals")
         abline(h=0,lty=2)

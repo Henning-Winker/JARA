@@ -101,9 +101,10 @@ iucn_frame <- function(xylim=c(100,1),plot.cex=1,legend.cex=0.9,criteria=c("A2",
 #' runs test is conducted with library(snpar)
 #' @param x residuals from CPUE fits
 #' @param type only c("resid","observations")
+#' @param alternative hypothesis undermixing "less" or both "two-sided" 
 #' @return runs p value and 3 x sigma limits
 #' @export
-jr_runs <- function(x,type=NULL) {
+jr_runs <- function(x,type=NULL,alternative="less") {
   if(is.null(type)) type="resid"
   if(type=="resid"){mu = 0}else{mu = mean(x, na.rm = TRUE)}
   # Average moving range
@@ -120,7 +121,7 @@ jr_runs <- function(x,type=NULL) {
   lcl <- mu - 3 * stdev
   ucl <- mu + 3 * stdev
   if(nlevels(factor(sign(x)))>1){
-    runstest = snpar::runs.test(x)
+    runstest = snpar::runs.test(x,alternative = alternative)
     pvalue = round(runstest$p.value,3)} else {
       pvalue = 0.001
     }
