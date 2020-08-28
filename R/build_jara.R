@@ -78,7 +78,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                           "Please carefully check residual patterns and the origin of these zeros (true/false)","\n"
                           )
                   find0[,2] = find0[,2]+1 
-                  muI = apply(Itest[find0[,2]],2,mean,na.rm=T)
+                  muI = apply(I[find0[,2]],2,mean,na.rm=T)
                   I[find0] = muI*0.1  
                 }
                 dat = data.frame(I)
