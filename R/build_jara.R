@@ -71,14 +71,15 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 cat(paste0("\n","><> Prepare input data <><","\n","\n"))
                 # Do checks 
                 # check for zeros 
-                find0 = which(I[,-1]==0,arr.ind = T)
+                find0 = which(as.matrix(I[,-1])==0,arr.ind = T)
+                
                 if(nrow(find0)>0){
                   warning("\n","There are zeros in the times series!","\n", 
                           "These will replaced by constants C = 0.1*mean(Index[i]) to prevent log(0) errors","\n",
                           "Please carefully check residual patterns and the origin of these zeros (true/false)","\n"
                           )
                   find0[,2] = find0[,2]+1 
-                  muI = apply(I[find0[,2]],2,mean,na.rm=T)
+                  muI = apply(as.matrix(I[,unique(find0[,2])]),2,mean,na.rm=T)
                   I[find0] = muI*0.1  
                 }
                 dat = data.frame(I)
@@ -94,13 +95,14 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 # check for NAs in first years 
                 Itest = dat
                 Itest[is.na(Itest)] = 0
-                na.rows = as.numeric(apply(Itest[,-1],1,sum))
+                na.rows = as.numeric(apply(as.matrix(Itest[,-1]),1,sum))
                 na.st = which(na.rows>0)[1]
                 if(na.st>1 ){
+                  start.year = Itest[na.st,1]
+                  
                   warning("\n","Only NAs in first year!","\n", 
                           "The first ",na.st-1," years are excluded from the dataset to prevent errors","\n",
                           "New start.year = ",start.year,"\n")
-                  start.year = Itest[na.st,1]
                   dat = dat[dat[,1]>=as.numeric(start.year),]  
                   
                   
