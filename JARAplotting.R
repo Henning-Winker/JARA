@@ -7,21 +7,23 @@
 
 library(JARA)
 data("jaradata")
-
+dat = jrdat
 # Set working directory
-setwd("C:/Work/Research/GitHub/JARA")
+setwd("C:/Work/Research/GitHub/JARA.Rcheck")
 # create subfolder
 output.dir = "JARAplotting"
 dir.create(file.path(getwd(),output.dir),showWarnings = F)
 
 # Example Smoothhound Shark
-shsh.input = build_jara(I=dat$SmoothhoundShark$I,se=dat$SmoothhoundShark$SE,model.type = "relative",assessment = "Smoothhound",GL=13.7)
+shsh.input = build_jara(I=jrdat$SmoothhoundShark$I,se=jrdat$SmoothhoundShark$SE,model.type = "relative",assessment = "Smoothhound",GL=13.7)
 # check trawl survey indices
 jrplot_indices(shsh.input)
 # Now save as png to output dir
 jrplot_indices(shsh.input,as.png=T,output.dir = output.dir)
 # fit jata
-shsh.fit = fit_jara(shsh.input,quickmcmc=F) # quick test run
+shsh.fit = fit_jara(shsh.input,quickmcmc=F,do.ppc = T) # quick test run
+
+
 # now plot overall fit 
 jrplot_trjfit(shsh.fit)
 # you can save this also as jpg
@@ -37,14 +39,25 @@ dev.print(jpeg,paste0(output.dir,"/shsh.trj.jpg"), width = 5, height = 4.5, res 
 
 # Lets look at Striped Marlin (relative)
 # create JARA input
-mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5)
+mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5,variance.weighting = "model")
 # Check input
 jrplot_indices(mls.input)
 # fit JARA model
-mls.fit = fit_jara(mls.input,quickmcmc=T) # quick test run
-jrplot_trjfit(mls.fit)
+mls.fit = jara = fit_jara(mls.input,quickmcmc=T,do.ppc=T) # quick test run
+load("MLS_s1_posteriors.rdata")
+jrplot_fits(mls.fit)
+
+ppc = ap$PPC
+jrpar(mfrow=c(1,1))
+
+
+
+plot(ppc[,2:3])
+abline(0,1,col=2)
 # Test Colour option
 jrplot_trjfit(mls.fit,cols=rainbow(6))
+
+
 
 # now if we want to show two examples in the same plot we use the option add=T
 jrpar(mfrow = c(1,2),plot.cex = 0.8)
@@ -76,7 +89,7 @@ ap.input = build_jara(I=dat$Afr_penguin$I,assessment="AfrPenguin",model.type = "
 # Check input indices
 jrplot_indices(ap.input)
 # fit JARA model
-ap.fit = fit_jara(ap.input,quickmcmc=F)
+ap.fit = fit_jara(ap.input,quickmcmc=F,do.ppc=T)
 
 # and check the fits and population trajectory
 jrpar(mfrow = c(1,2),plot.cex = 0.7)

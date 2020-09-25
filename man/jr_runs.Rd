@@ -4,18 +4,21 @@
 \alias{jr_runs}
 \title{Function to do runs.test and 3 x sigma limits}
 \usage{
-jr_runs(x, type = NULL, alternative = "less")
+jr_runs(x, type = NULL, mixing = "less")
 }
 \arguments{
 \item{x}{residuals from CPUE fits}
 
 \item{type}{only c("resid","observations")}
 
-\item{alternative}{hypothesis undermixing "less" or both "two-sided"}
+\item{mixing}{c("less","greater","two.sided"). Default less is checking for postive autocorrelation only}
 }
 \value{
 runs p value and 3 x sigma limits
 }
 \description{
-runs test is conducted with library(snpar)
+runs test is conducted with library(randtests)
+}
+\author{
+Henning Winker (JRC-EC) and Laurance Kell (Sea++)
 }

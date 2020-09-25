@@ -7,7 +7,7 @@
 jrplot_runstest(
   jara,
   indices = "all",
-  alternative = "less",
+  mixing = "less",
   output.dir = getwd(),
   add = FALSE,
   as.png = FALSE,
@@ -20,8 +20,6 @@ jrplot_runstest(
 }
 \arguments{
 \item{jara}{output list from fit_jara}
-
-\item{alternative}{hypothesis undermixing "less" or both "two-sided"}
 
 \item{output.dir}{directory to save plots}
 
@@ -40,6 +38,11 @@ jrplot_runstest(
 \item{height}{plot hight}
 
 \item{index}{option to plot specific indices (numeric & in order)}
+
+\item{alternative}{hypothesis undermixing "less" or both "two-sided"}
+}
+\value{
+Runs Test p-values and sig3 limits
 }
 \description{
 Residual diagnostics with runs test p-value and 3xsigma limits

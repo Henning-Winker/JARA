@@ -841,6 +841,129 @@ jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.pl
       
   } # End of CPUE plot function
 
+#' jrplot_PPC
+#'
+#' Plots Posterior Predictive Checks for Chisq Goodness-of-Fit (Omnibus Discrepancy) 
+#' @param jara output list from fit_jara
+#' @param joint.ppc FALSE/TRUE, if TRUE a joint Posterior Predictive Check (indices combined) is plotted
+#' @param thin.plot  TRUE/FALSE thinning option for plotting
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param single.plots if TRUE plot invidual fits else make multiplot
+#' @param width plot width
+#' @param height plot hight
+#' @param ylab option to change y-axis label
+#' @param xlab option to change x-axis label
+#' @param plot.cex graphic option
+#' @param indices names of indices to plot (default = "all")
+#' @param index.label show index name in plot
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @return Bayesin p values and n observation per index
+#' @export
+jrplot_PPC <- function(jara,joint.ppc=FALSE,thin.plot = TRUE ,output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab=expression(paste("Predicted D(",chi^2,")")),xlab=expression(paste("Realized D(",chi^2,")")),indices="all",index.label=TRUE,add=FALSE){
+  
+  cat(paste0("\n","><> jrplot_PPC() - Posterior Predictive Checks <><","\n"))
+  if(is.null(jara$PPC)) stop("To enable PPCs please use option fit_jara(jarainput,do.ppc=TRUE)") 
+  PPC = jara$PPC
+  Bp = NULL # Bayesian p-value
+  name.check = jara$fits$name
+  if(joint.ppc){
+    PPC$name ="Combined"
+    indices = "Combined"
+    n.indices = 1
+    
+  } else {
+  if(indices[1]=="all"){
+    indices = unique(name.check)
+    n.indices = jara$settings$nI
+  } else {
+    if(length(indices[indices%in%unique(name.check)])<1) stop("non-existent index name provided")
+    indices = indices[indices%in%unique(name.check)]
+    n.indices = length(indices)
+  }
+  series = 1:jara$settings$nI
+  for(i in 1:n.indices){
+    ppc = PPC[PPC$name%in%indices[i],2:3]
+    Bp = rbind(Bp,data.frame(Index=indices[i],Bayesian.p=sum(ppc$Dy>ppc$Dx)/length(ppc$Dx),nobs=nrow(jara$fits[name.check==indices[i],]))) 
+  }}
+  ppc = PPC[PPC$name%in%indices,2:3]
+  Bp = rbind(Bp,data.frame(Index="Combined",Bayesian.p=sum(ppc$Dy>ppc$Dx)/length(ppc$Dx),nobs=nrow(jara$fits[name.check%in%indices,]))) 
+   
+  
+  if(single.plots==TRUE){
+    if(is.null(width)) width = 5
+    if(is.null(height)) height = 5
+    for(i in 1:n.indices){
+      Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
+      if(as.png==TRUE){png(file = paste0(output.dir,"/Fits",jara$assessment,"_",jara$scenario,"_",indices[i],".png"), width = width, height = height,
+                           res = 200, units = "in")}
+      if(add==FALSE){
+        if(as.png==TRUE | i==1) par(Par)
+      }  
+      # set observed vs predicted CPUE
+      ppc = PPC[PPC$name%in%indices[i],2:3]
+      nmc = nrow(ppc)
+      if(thin.plot){
+        thinning = seq(1,nmc,floor(nmc/1000*0.5))
+        ppct = ppc[thinning,]
+      } else {
+          ppct=ppc
+          }
+       
+      # Plot Observed vs predicted CPUE
+      plot(ppct[,1],ppct[,2],ylab="",xlab="",ylim=c(0,max(ppc)*1.05),xlim=c(0,max(ppc)*1.05),type='n',xaxt="n",yaxt="n")
+      axis(1,labels=TRUE,cex=0.8)
+      axis(2,labels=TRUE,cex=0.8)
+      points(ppct,pch=21,col=grey(0.4,0.7),bg=grey(0.7,0.5),cex=0.9)
+      abline(0,1,lwd=1.5)
+      if(index.label==TRUE)legend('top',paste(indices[i],": p =",round(Bp$Bayesian.p[i],3)),bty="n",y.intersp = -0.2,cex=0.9)
+      mtext(xlab, side=1, outer=TRUE, at=0.5,line=0.5,cex=1)
+      mtext(ylab, side=2, outer=TRUE, at=0.5,line=0.3,cex=1)
+      if(as.png==TRUE) dev.off()
+    }
+  } else {
+    
+    if(is.null(width)) width = 7
+    if(is.null(height)) height = ifelse(n.indices==1,7,ifelse(n.indices==2,4.,3.5))*round(n.indices/2+0.01,0)
+    Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=0.8)
+    if(as.png==TRUE){png(file = paste0(output.dir,"/Fits_",jara$assessment,"_",jara$scenario,".png"), width = 7, height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0),
+                         res = 200, units = "in")}
+    par(Par)
+    
+    for(i in 1:n.indices){
+      # set observed vs predicted CPUE
+      # set observed vs predicted CPUE
+      ppc = PPC[PPC$name%in%indices[i],2:3]
+      nmc = nrow(ppc)
+      if(thin.plot){
+        thinning = seq(1,nmc,ceiling(nmc/1000*0.2))
+        ppct = ppc[thinning,]
+      } else {
+        ppct=ppc
+      }
+      
+      # Plot Observed vs predicted CPUE
+      plot(ppct[,1],ppct[,2],ylab="",xlab="",ylim=c(0,max(ppc)*1.05),xlim=c(0,max(ppc)*1.05),type='n',xaxt="n",yaxt="n")
+      axis(1,labels=TRUE,cex=0.8)
+      axis(2,labels=TRUE,cex=0.8)
+      points(ppct,pch=21,col=grey(0.4,0.7),bg=grey(0.7,0.5),cex=0.9)
+      abline(0,1,lwd=1.5)
+      if(index.label==TRUE)legend('top',paste(indices[i],": p =",round(Bp$Bayesian.p[i],3)),bty="n",y.intersp = -0.2,cex=0.9)
+      
+      
+    }
+    if(add==FALSE | i==1){
+    mtext(xlab, side=1, outer=TRUE, at=0.5,line=0.75,cex=1)
+    mtext(ylab, side=2, outer=TRUE, at=0.5,line=1,cex=1)
+    }
+    if(as.png==TRUE){dev.off()}
+  }
+  cat("\n","Posterior Predictive Checks with Bayesian p values","\n")
+  return(Bp)
+} # End of CPUE plot function
+
+
+
 #' log(index) fits
 #'
 #' Plot of fitted CPUE indices on log-scale (r4ss-style)
@@ -1033,8 +1156,10 @@ jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,yl
 #' @param xlab option to change x-axis label
 #' @param width plot width
 #' @param height plot hight
+#' @return Runs Test p-values and sig3 limits
 #' @export
-jrplot_runstest <- function(jara,indices="all",alternative="less", output.dir=getwd(),add=FALSE,as.png=FALSE,single.plots=FALSE,ylab="Residuals",xlab="Year",width=NULL,height=NULL){
+
+jrplot_runstest <- function(jara,indices="all",mixing="less", output.dir=getwd(),add=FALSE,as.png=FALSE,single.plots=FALSE,ylab="Residuals",xlab="Year",width=NULL,height=NULL){
   
     cat(paste0("\n","><> jrplot_runstest()   <><","\n"))
     
@@ -1057,7 +1182,7 @@ jrplot_runstest <- function(jara,indices="all",alternative="less", output.dir=ge
   cpue.yrs = years[check.yrs>0]
   
   Resids = jara$residuals
-
+  runs = NULL
     
     if(single.plots==TRUE){
       if(is.null(width)) width = 5
@@ -1074,7 +1199,10 @@ jrplot_runstest <- function(jara,indices="all",alternative="less", output.dir=ge
         
         resid = (Resids[index[i],is.na(Resids[index[i],])==F])
         res.yr = years[is.na(Resids[index[i],])==F]
-        runstest = jr_runs(x=as.numeric(resid),type="resid",altenative = alternative)
+        
+        runstest = jr_runs(x=as.numeric(resid),type="resid",mixing=mixing)
+        runs = rbind(runs,c(runstest$p.runs,runstest$sig3lim))
+            
         # CPUE Residuals with runs test
         plot(res.yr,rep(0,length(res.yr)),type="n",ylim=c(min(-1,runstest$sig3lim[1]*1.25),max(1,runstest$sig3lim[2]*1.25)),lty=1,lwd=1.3,xlab="Year",ylab="Residuals")
         abline(h=0,lty=2)
@@ -1100,7 +1228,8 @@ jrplot_runstest <- function(jara,indices="all",alternative="less", output.dir=ge
       for(i in 1:n.indices){
         resid = (Resids[index[i],is.na(Resids[index[i],])==F])
         res.yr = years[is.na(Resids[index[i],])==F]
-        runstest = jr_runs(x=as.numeric(resid),type="resid")
+        runstest = jr_runs(x=as.numeric(resid),type="resid",mixing=mixing)
+        runs = rbind(runs,c(runstest$p.runs,runstest$sig3lim))
         # CPUE Residuals with runs test
         plot(res.yr,rep(0,length(res.yr)),type="n",ylim=c(min(-1,runstest$sig3lim[1]*1.25),max(1,runstest$sig3lim[2]*1.25)),lty=1,lwd=1.3,xlab="Year",ylab="Residuals")
         abline(h=0,lty=2)
@@ -1119,7 +1248,10 @@ jrplot_runstest <- function(jara,indices="all",alternative="less", output.dir=ge
       if(as.png==TRUE){dev.off()}
     }
     
-    
+  runstable = data.frame(Index=indices,runs.p=as.matrix(runs)[,1],Test=ifelse(as.matrix(runs)[,1]<0.05,"Failed","Passed"),sigma3.lo=as.matrix(runs)[,2],sigma3.hi=as.matrix(runs)[,3]) 
+  colnames(runstable) = c("Index","runs.p","test","sigma3.lo","sigma3.hi")
+  cat(paste0("\n","Runs Test stats:","\n"))
+  return(runstable)
 
   
 } # end of runstest plot function
