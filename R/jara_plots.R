@@ -20,7 +20,7 @@ jrpar <- function(mfrow=c(1,1),plot.cex=1,mai=NULL,omi=c(0,0,0,0),labs=TRUE){
 #' jrplot_indices
 #'
 #' Plot mean rates of change (%) over 1, 2 anf 3 Generation lengths    
-#' @param jara output list from fit_jara
+#' @param jarainput output list from build_jara()
 #' @param output.dir directory to save plots
 #' @param as.png save as png file of TRUE
 #' @param width plot width
@@ -713,7 +713,7 @@ jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,wid
 #' @param index.label show index name in plot
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
-jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab="Normalized index",xlab="Year",indices="all",index.label=TRUE,add=FALSE){
+jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab="Normalized index",xlab="Year",plot.cex=0.8,indices="all",index.label=TRUE,add=FALSE){
   
     cat(paste0("\n","><> jrplot_fits() - fits to abudance indices <><","\n"))
     years = jara$yr
@@ -735,7 +735,7 @@ jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.pl
       if(is.null(width)) width = 5
       if(is.null(height)) height = 3.5
       for(i in 1:n.indices){
-        Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
+        Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=plot.cex)
         if(as.png==TRUE){png(file = paste0(output.dir,"/Fits",jara$assessment,"_",jara$scenario,"_",indices[i],".png"), width = width, height = height,
                              res = 200, units = "in")}
         if(add==FALSE){
@@ -788,7 +788,7 @@ jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.pl
         
         if(is.null(width)) width = 7
         if(is.null(height)) height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0)
-        Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=0.8)
+        Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=plot.cex)
         if(as.png==TRUE){png(file = paste0(output.dir,"/Fits_",jara$assessment,"_",jara$scenario,".png"), width = 7, height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0),
                              res = 200, units = "in")}
         par(Par)
@@ -860,7 +860,7 @@ jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.pl
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @return Bayesin p values and n observation per index
 #' @export
-jrplot_PPC <- function(jara,joint.ppc=FALSE,thin.plot = TRUE ,output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab=expression(paste("Predicted D(",chi^2,")")),xlab=expression(paste("Realized D(",chi^2,")")),indices="all",index.label=TRUE,add=FALSE){
+jrplot_PPC <- function(jara,joint.ppc=FALSE,thin.plot = TRUE ,output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab=expression(paste("Predicted D(",chi^2,")")),xlab=expression(paste("Realized D(",chi^2,")")),plot.cex=0.8,indices="all",index.label=TRUE,add=FALSE){
   
   cat(paste0("\n","><> jrplot_PPC() - Posterior Predictive Checks <><","\n"))
   if(is.null(jara$PPC)) stop("To enable PPCs please use option fit_jara(jarainput,do.ppc=TRUE)") 
@@ -894,7 +894,7 @@ jrplot_PPC <- function(jara,joint.ppc=FALSE,thin.plot = TRUE ,output.dir=getwd()
     if(is.null(width)) width = 5
     if(is.null(height)) height = 5
     for(i in 1:n.indices){
-      Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=0.8)
+      Par = list(mfrow=c(1,1),mar = c(3.5, 3.5, 0.5, 0.1), mgp =c(2.,0.5,0), tck = -0.02,cex=plot.cex)
       if(as.png==TRUE){png(file = paste0(output.dir,"/Fits",jara$assessment,"_",jara$scenario,"_",indices[i],".png"), width = width, height = height,
                            res = 200, units = "in")}
       if(add==FALSE){
@@ -925,7 +925,7 @@ jrplot_PPC <- function(jara,joint.ppc=FALSE,thin.plot = TRUE ,output.dir=getwd()
     
     if(is.null(width)) width = 7
     if(is.null(height)) height = ifelse(n.indices==1,7,ifelse(n.indices==2,4.,3.5))*round(n.indices/2+0.01,0)
-    Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=0.8)
+    Par = list(mfrow=c(round(n.indices/2+0.01,0),ifelse(n.indices==1,1,2)),mai=c(0.35,0.15,0,.15),omi = c(0.2,0.25,0.2,0) + 0.1,mgp=c(2,0.5,0), tck = -0.02,cex=plot.cex)
     if(as.png==TRUE){png(file = paste0(output.dir,"/Fits_",jara$assessment,"_",jara$scenario,".png"), width = 7, height = ifelse(n.indices==1,5,ifelse(n.indices==2,3.,2.5))*round(n.indices/2+0.01,0),
                          res = 200, units = "in")}
     par(Par)
@@ -1146,8 +1146,8 @@ jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,yl
 #'
 #' Residual diagnostics with runs test p-value and 3xsigma limits
 #' @param jara output list from fit_jara
-#' @param index option to plot specific indices (numeric & in order)
-#' @param alternative hypothesis undermixing "less" or both "two-sided"
+#' @param indices option to plot specific indices (numeric & in order)
+#' @param mixing c("less","greater","two.sided"). Default less is checking for postive autocorrelation only    
 #' @param output.dir directory to save plots
 #' @param add if true par() is surpressed within the plot function
 #' @param as.png save as png file of TRUE

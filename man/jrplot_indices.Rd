@@ -19,6 +19,8 @@ jrplot_indices(
 )
 }
 \arguments{
+\item{jarainput}{output list from build_jara()}
+
 \item{output.dir}{directory to save plots}
 
 \item{as.png}{save as png file of TRUE}
@@ -38,8 +40,6 @@ jrplot_indices(
 \item{add.legend}{option to add legend}
 
 \item{cols}{option to choose own colour palette}
-
-\item{jara}{output list from fit_jara}
 
 \item{criteria}{A1 or A2 for decline}
 }

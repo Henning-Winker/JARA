@@ -53,8 +53,6 @@ MCMC settings}
 \item{speedup}{Reduces MCMC after setting runs 2+ inits to first "full" reference run}
 
 \item{rm.yr}{if TRUE remove last year, if FALSE replace obs with NA}
-
-\item{saves}{the all posteriors as .rdata to output.dir (big file)}
 }
 \value{
 A result list containing estimates of JARA model input, settings and results

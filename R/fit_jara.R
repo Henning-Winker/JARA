@@ -10,7 +10,6 @@
 #' @param nc number of mcmc chains
 #' @param save.jara saves jara list as .rdata to output.dir
 #' @param save.all saves the all posteriors as .rdata to output.dir (big file)
-#' @param saves the all posteriors as .rdata to output.dir (big file)
 #' @param save.csvs writes results into csv to output.dir
 #' @param output.dir path to save plot. default is getwd()
 #' @param peels = NULL, # retrospective 'peel' option

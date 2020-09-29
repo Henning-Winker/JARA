@@ -21,6 +21,10 @@ jrplot_runstest(
 \arguments{
 \item{jara}{output list from fit_jara}
 
+\item{indices}{option to plot specific indices (numeric & in order)}
+
+\item{mixing}{c("less","greater","two.sided"). Default less is checking for postive autocorrelation only}
+
 \item{output.dir}{directory to save plots}
 
 \item{add}{if true par() is surpressed within the plot function}
@@ -36,10 +40,6 @@ jrplot_runstest(
 \item{width}{plot width}
 
 \item{height}{plot hight}
-
-\item{index}{option to plot specific indices (numeric & in order)}
-
-\item{alternative}{hypothesis undermixing "less" or both "two-sided"}
 }
 \value{
 Runs Test p-values and sig3 limits

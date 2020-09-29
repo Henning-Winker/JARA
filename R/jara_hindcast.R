@@ -10,7 +10,6 @@
 #' @param peels sequence of retro spective peels default 0:5
 #' @param save.jara saves jara list as .rdata to output.dir
 #' @param save.all saves the all posteriors as .rdata to output.dir (big file)
-#' @param saves the all posteriors as .rdata to output.dir (big file)
 #' @param save.csvs writes results into csv to output.dir
 #' @param output.dir path to save plot. default is getwd()
 #' @param save.jarafile saves jara model and convergence stats as .txt file (default = TRUE)
@@ -62,7 +61,7 @@ jara_hindcast = function(jarainput,
       GL=jarainput$settings$GL, # Generation length
       start.year = NA,
       end.year = max(jarainput$data$yr)-peels[i], 
-      sigma.obs.est = jarainput$settings$sigma.obs.est, 
+      variance.weighting=jarainput$settings$variance.weighting, 
       fixed.obsE = jarainput$settings$fixed.obsE,
       sigma.proc.fixed = jarainput$settings$sigma.proc.fixed,
       proc.pen = jarainput$settings$proc.pen,  

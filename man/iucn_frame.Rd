@@ -14,6 +14,8 @@ iucn_frame(
 )
 }
 \arguments{
+\item{xylim}{determines upper x and y lims}
+
 \item{plot.cex}{cex graphic option}
 
 \item{legend.cex}{lengend size cex graphic option}
@@ -23,12 +25,6 @@ iucn_frame(
 \item{iucn.cols}{to use iucn color recommendation or a brighter version if FALSE}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
-
-\item{xymax}{determines upper x and y lims}
-
-\item{width}{plot width}
-
-\item{height}{plot hight}
 }
 \description{
 Empty iucn color plot

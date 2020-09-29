@@ -15,6 +15,7 @@ jrplot_PPC(
   height = NULL,
   ylab = expression(paste("Predicted D(", chi^2, ")")),
   xlab = expression(paste("Realized D(", chi^2, ")")),
+  plot.cex = 0.8,
   indices = "all",
   index.label = TRUE,
   add = FALSE
@@ -41,13 +42,13 @@ jrplot_PPC(
 
 \item{xlab}{option to change x-axis label}
 
+\item{plot.cex}{graphic option}
+
 \item{indices}{names of indices to plot (default = "all")}
 
 \item{index.label}{show index name in plot}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
-
-\item{plot.cex}{graphic option}
 }
 \value{
 Bayesin p values and n observation per index

@@ -57,9 +57,7 @@ iucn_estimators = function(I=NULL,GL=10,criteria=c("A2","A1")[1]){
 #' iucn_frame
 #'
 #' Empty iucn color plot   
-#' @param xymax determines upper x and y lims  
-#' @param width plot width
-#' @param height plot hight
+#' @param xylim determines upper x and y lims  
 #' @param criteria A1 or A2 for decline
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @param plot.cex cex graphic option

@@ -14,6 +14,7 @@ jrplot_fits(
   height = NULL,
   ylab = "Normalized index",
   xlab = "Year",
+  plot.cex = 0.8,
   indices = "all",
   index.label = TRUE,
   add = FALSE
@@ -38,13 +39,13 @@ jrplot_fits(
 
 \item{xlab}{option to change x-axis label}
 
+\item{plot.cex}{graphic option}
+
 \item{indices}{names of indices to plot (default = "all")}
 
 \item{index.label}{show index name in plot}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
-
-\item{plot.cex}{graphic option}
 }
 \description{
 Plots observed and fitted indices with expexted CIs (dark grey)
