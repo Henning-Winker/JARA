@@ -348,16 +348,16 @@ fit_jara = function(jarainput,credibility=0.95,
   
   if(abundance=="census"){
     rs =  as.matrix(apply(posteriors$r.tot[,1:(n.years-1)],1,median))
-    if(n.years>GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL,0)+1):(n.years-1)],1,median))
-    if(n.years>2*GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL*2,0)+1):(n.years-1)],1,median))
-    if(n.years>3*GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL*3,0)+1):(n.years-1)],1,median))
+    if(n.years>GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL,0)+1):(n.years)],1,median))
+    if(n.years>2*GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL*2,0)+1):(n.years)],1,median))
+    if(n.years>3*GL1) rs = cbind(rs,apply(posteriors$r.tot[,(n.years-round(GL*3,0)+1):(n.years)],1,median))
     
     
   } else {
     rs =  as.matrix(apply(posteriors$r[,1:(n.years-1)],1,median)) 
-    if(n.years>GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL,0)+1):(n.years-1)],1,median))
-    if(n.years>2*GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL*2,0)+1):(n.years-1)],1,median))
-    if(n.years>3*GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL*3,0)+1):(n.years-1)],1,median))
+    if(n.years>GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL,0)):(n.years)],1,median))
+    if(n.years>2*GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL*2,0)+1):(n.years)],1,median))
+    if(n.years>3*GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL*3,0)+1):(n.years)],1,median))
   }
   
   change = (apply(posteriors$Ntot[,(settings$mp.assess[2]-1):(settings$mp.assess[2]+1)],1,median)/apply(posteriors$Ntot[,(settings$mp.assess[1]-1):(settings$mp.assess[1]+1)],1,median)-1)*100
