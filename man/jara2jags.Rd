@@ -4,10 +4,12 @@
 \alias{jara2jags}
 \title{jara2jags()}
 \usage{
-jara2jags(jarainput)
+jara2jags(jarainput, jagsdir)
 }
 \arguments{
 \item{jarainput}{JARA input object from build_jara()}
+
+\item{jagsdir}{directory to save jags model, default is temp.dir()}
 }
 \description{
 Writes JAGS code for JARA into a temporary directory

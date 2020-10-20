@@ -18,7 +18,8 @@ fit_jara(
   peels = NULL,
   output.dir = getwd(),
   quickmcmc = FALSE,
-  do.ppc = FALSE
+  do.ppc = FALSE,
+  jagsdir = NULL
 )
 }
 \arguments{
@@ -50,6 +51,8 @@ MCMC settings}
 \item{quickmcmc}{option "test run" jara with short (fast) mcmc chains}
 
 \item{do.ppc}{option TRUE/FALSE to add posterior predictive checkes by index}
+
+\item{jagsdir}{directory to save jags model, default is temp.dir()}
 }
 \value{
 A result list containing estimates of JARA model input, settings and results
