@@ -9,7 +9,7 @@ jara2jags = function(jarainput,jagsdir){
 
   if(jarainput$settings$model.type=="census"){
   # JAGS MODEL
-  sink(paste0(jagsdir,"/jara.jags"))
+  sink(paste0(jagsdir,"/JARA.jags"))
     cat("
     model {
     # Priors and constraints
@@ -170,7 +170,7 @@ jara2jags = function(jarainput,jagsdir){
     sink()
   } else { #--------------------------Relative Abudance Model-------------------------------#
     
-    sink(paste0(jagsdir,"/jara.jags"))
+    sink(paste0(jagsdir,"/JARA.jags"))
     
     cat("
     model {
