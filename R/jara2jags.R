@@ -2,13 +2,14 @@
 #'
 #' Writes JAGS code for JARA into a temporary directory
 #' @param jarainput JARA input object from build_jara()
+#' @param jagsdir directory to save jags model, default is temp.dir()
 #' @export
 #' @author Henning Winker
-jara2jags = function(jarainput){
+jara2jags = function(jarainput,jagsdir){
 
   if(jarainput$settings$model.type=="census"){
   # JAGS MODEL
-  sink(paste0(tempdir(),"/jara.jags"))
+  sink(paste0(jagsdir,"/jara.jags"))
     cat("
     model {
     # Priors and constraints
@@ -169,7 +170,7 @@ jara2jags = function(jarainput){
     sink()
   } else { #--------------------------Relative Abudance Model-------------------------------#
     
-    sink(paste0(tempdir(),"/jara.jags"))
+    sink(paste0(jagsdir,"/jara.jags"))
     
     cat("
     model {

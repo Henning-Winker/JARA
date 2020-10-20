@@ -16,6 +16,7 @@
 #' @param save.jarafile saves jara model and convergence stats as .txt file (default = TRUE)
 #' @param quickmcmc option "test run" jara with short (fast) mcmc chains 
 #' @param do.ppc option TRUE/FALSE to add posterior predictive checkes by index
+#' @param jagsdir directory to save jags model, default is temp.dir()
 #' @return A result list containing estimates of JARA model input, settings and results
 #' @export
 #' @author Henning Winker and Richard Sherley 
@@ -45,10 +46,12 @@ fit_jara = function(jarainput,credibility=0.95,
                      peels = NULL, 
                     output.dir = getwd(),
                     quickmcmc = FALSE,
-                    do.ppc = FALSE
+                    do.ppc = FALSE,
+                    jagsdir = NULL
                     ){
   #write jara model
-  jara2jags(jarainput)
+  if(is.null(jagsdir)) jagsdir = tempdir()
+  jara2jags(jarainput,jagsdir)
   if(quickmcmc==TRUE){
   ni <- 7000 # Number of iterations
   nt <- 1 # Steps saved
