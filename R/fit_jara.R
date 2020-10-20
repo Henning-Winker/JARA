@@ -106,7 +106,7 @@ fit_jara = function(jarainput,credibility=0.95,
 
   ptm <- proc.time()
 
-  jara.mod <- R2jags::jags(jd, inits,params,paste0(tempdir(),"/JARA.jags"), n.chains = nc, n.thin = nt, n.iter = ni, n.burnin = nb)  # adapt is burn-in
+  jara.mod <- R2jags::jags(jd, inits,params,paste0(jagsdir,"/JARA.jags"), n.chains = nc, n.thin = nt, n.iter = ni, n.burnin = nb)  # adapt is burn-in
 
   proc.time() - ptm
   save.time = proc.time() - ptm
