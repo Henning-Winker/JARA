@@ -23,7 +23,8 @@ build_jara(
   pk.i = NULL,
   proj.r = c("all", "GL1", "year")[1],
   proj.yrs.user = NULL,
-  proj.stoch = FALSE
+  proj.stoch = FALSE,
+  silent = FALSE
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ build_jara(
 \item{proj.yrs.user}{option to overwrite GL and costomize projections for forecasting}
 
 \item{proj.stoch}{allows for projections with process error c(TRUE, FALSE), FALSE is default}
+
+\item{silent}{option to put notifications on siltent}
 }
 \value{
 List to be used as data input to JARA JAGS model

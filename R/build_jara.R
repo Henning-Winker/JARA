@@ -22,6 +22,7 @@
 #' @param proj.r  # rate of change for c("all","GL1", years), "all" is default
 #' @param proj.stoch allows for projections with process error c(TRUE, FALSE), FALSE is default
 #' @param proj.yrs.user option to overwrite GL and costomize projections for forecasting  
+#' @param silent option to put notifications on siltent
 #' @return List to be used as data input to JARA JAGS model
 #' @export
 #' @author Henning Winker
@@ -46,7 +47,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
               pk.i = NULL,
               proj.r = c("all","GL1","year")[1],
               proj.yrs.user = NULL,
-              proj.stoch = FALSE){
+              proj.stoch = FALSE,silent=FALSE){
   
   
   #-------------------------
@@ -68,7 +69,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   proc.pen = c(ifelse(model.type=="census",1,0.5),log(ifelse(model.type=="census",0.1,0.5)),ifelse(model.type=="census",log(5),log(2)))
                 }
                 
-                cat(paste0("\n","><> Prepare input data <><","\n","\n"))
+                if(silent) cat(paste0("\n","><> Prepare input data <><","\n","\n"))
                 # Do checks 
                 # check for zeros 
                 find0 = which(as.matrix(I[,-1])==0,arr.ind = T)
@@ -240,7 +241,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                                               "#46f0f0", "#f032e6", "#d2f53c",
                                               "#fabebe", "#008080","#e6beff", "#aa6e28",rainbow(10)))
                 
-                cat("\n","><> Assuming a Generation length of GL =",round(GL,2),"years <><","\n","\n")
+                if(silent) cat("\n","><> Assuming a Generation length of GL =",round(GL,2),"years <><","\n","\n")
                 
                 Ninit = NULL
                 # get starting values Ninit
@@ -250,7 +251,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 
                 if(model.type=="census"){
                 
-                  cat("\n","><> Setting up JARA for census data <><","\n","\n")  
+                  if(silent) cat("\n","><> Setting up JARA for census data <><","\n","\n")  
                 # Bundle data for jags
                   jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Ninit=Ninit,sets.var=sets.var,nvar=nvar,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,EY = n.years,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,prjr=prjr,proc.pen=proc.pen,theta=theta)
                   # order of indices
@@ -260,7 +261,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 }  
                                 
                 if(model.type=="relative"){
-                  cat("\n","><> Setting up JARA for relative abundance indices <><","\n","\n")  
+                  if(silent) cat("\n","><> Setting up JARA for relative abundance indices <><","\n","\n")  
                   
                   #find first time-series with first CPUE
                   q1.y = c(1:length(year))[is.na(apply(I_y,1,mean,na.rm=TRUE))==FALSE][1] #first year with CPUE
@@ -282,7 +283,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   
                 }
                 
-                cat("\n","><> Compile JARA input <><","\n","\n")  
+                if(silent) cat("\n","><> Compile JARA input <><","\n","\n")  
                 #--------------------------
                 # Capture Settings
                 #--------------------------

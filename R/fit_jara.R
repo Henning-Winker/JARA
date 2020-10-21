@@ -17,6 +17,7 @@
 #' @param quickmcmc option "test run" jara with short (fast) mcmc chains 
 #' @param do.ppc option TRUE/FALSE to add posterior predictive checkes by index
 #' @param jagsdir directory to save jags model, default is temp.dir()
+#' @param silent option to put notifications on siltent
 #' @return A result list containing estimates of JARA model input, settings and results
 #' @export
 #' @author Henning Winker and Richard Sherley 
@@ -47,7 +48,9 @@ fit_jara = function(jarainput,credibility=0.95,
                     output.dir = getwd(),
                     quickmcmc = FALSE,
                     do.ppc = FALSE,
-                    jagsdir = NULL
+                    jagsdir = NULL,
+                    silent=FALSE
+                    
                     ){
   #write jara model
   if(is.null(jagsdir)) jagsdir = tempdir()
@@ -63,7 +66,7 @@ fit_jara = function(jarainput,credibility=0.95,
   # mcmc saved
   nsaved = (ni-nb)/nt*nc
   
-  cat(paste0("\n","><> Running  JARA as ",jarainput$settings$model.type," model for ",jarainput$settings$assessment," ",jarainput$settings$scenario," <><","\n"))
+  if(silent) cat(paste0("\n","><> Running  JARA as ",jarainput$settings$model.type," model for ",jarainput$settings$assessment," ",jarainput$settings$scenario," <><","\n"))
   
 
   # jara model data
@@ -131,11 +134,12 @@ fit_jara = function(jarainput,credibility=0.95,
   
   
   RunTime =paste0("\n",paste0("><> Run  ",settings$assessment," completed in ",as.integer(save.time[3]/60)," min and ",round((save.time[3]/60-as.integer(save.time[3]/60))*100)," sec <><","\n"))
+  if(silent){
   cat(Chains1)
   cat(Chains2)
   cat(Chains3)
   cat(RunTime)
-  
+  }
   
   #-----------------------------------------------------------
   # <><<><<><<><<><<><<>< Outputs ><>><>><>><>><>><>><>><>><>

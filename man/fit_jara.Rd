@@ -19,7 +19,8 @@ fit_jara(
   output.dir = getwd(),
   quickmcmc = FALSE,
   do.ppc = FALSE,
-  jagsdir = NULL
+  jagsdir = NULL,
+  silent = FALSE
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ MCMC settings}
 \item{do.ppc}{option TRUE/FALSE to add posterior predictive checkes by index}
 
 \item{jagsdir}{directory to save jags model, default is temp.dir()}
+
+\item{silent}{option to put notifications on siltent}
 }
 \value{
 A result list containing estimates of JARA model input, settings and results
