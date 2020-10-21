@@ -66,7 +66,7 @@ fit_jara = function(jarainput,credibility=0.95,
   # mcmc saved
   nsaved = (ni-nb)/nt*nc
   
-  if(silent) cat(paste0("\n","><> Running  JARA as ",jarainput$settings$model.type," model for ",jarainput$settings$assessment," ",jarainput$settings$scenario," <><","\n"))
+  if(!silent) cat(paste0("\n","><> Running  JARA as ",jarainput$settings$model.type," model for ",jarainput$settings$assessment," ",jarainput$settings$scenario," <><","\n"))
   
 
   # jara model data
@@ -134,7 +134,7 @@ fit_jara = function(jarainput,credibility=0.95,
   
   
   RunTime =paste0("\n",paste0("><> Run  ",settings$assessment," completed in ",as.integer(save.time[3]/60)," min and ",round((save.time[3]/60-as.integer(save.time[3]/60))*100)," sec <><","\n"))
-  if(silent){
+  if(!silent){
   cat(Chains1)
   cat(Chains2)
   cat(Chains3)
