@@ -12,9 +12,13 @@ jrplot_trjfit(
   height = 4.5,
   ylab = "Abundance",
   xlab = "Year",
+  ylim = NULL,
+  xlim = NULL,
   plot.cex = 1,
   add = FALSE,
   indices = "all",
+  legend = TRUE,
+  legend.pos = NULL,
   cols = NULL
 )
 }
@@ -33,11 +37,19 @@ jrplot_trjfit(
 
 \item{xlab}{option to change x-axis label}
 
+\item{ylim}{graphic option c(min,max)}
+
+\item{xlim}{graphic option c(min,max)}
+
 \item{plot.cex}{cex graphic option}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
 
 \item{indices}{names of indices to plot (default = "all")}
+
+\item{legend}{show legend TRUE/FALSE}
+
+\item{legend.pos}{location of legend}
 
 \item{cols}{option to choose own colour palette}
 }

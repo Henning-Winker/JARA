@@ -13,6 +13,8 @@ jrplot_poptrj(
   height = 4.5,
   xlab = "Year",
   ylab = "Abundance",
+  xlim = NULL,
+  ylim = NULL,
   plot.cex = 1,
   add = FALSE
 )
@@ -33,6 +35,10 @@ jrplot_poptrj(
 \item{xlab}{option to change x-axis label}
 
 \item{ylab}{option to change y-axis label}
+
+\item{xlim}{graphic option c(min,max)}
+
+\item{ylim}{graphic option c(min,max)}
 
 \item{plot.cex}{cex graphic option}
 

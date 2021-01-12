@@ -11,6 +11,9 @@ jrplot_residuals(
   add = FALSE,
   ylab = "log Residuals",
   xlab = "Year",
+  legend = TRUE,
+  legend.pos = "bottomright",
+  legend.cex = 0.75,
   width = 5,
   height = 3.5,
   cols = NULL
@@ -28,6 +31,12 @@ jrplot_residuals(
 \item{ylab}{option to change y-axis label}
 
 \item{xlab}{option to change x-axis label}
+
+\item{legend}{show legend}
+
+\item{legend.pos}{legend position}
+
+\item{legend.cex}{legend size}
 
 \item{width}{plot width}
 

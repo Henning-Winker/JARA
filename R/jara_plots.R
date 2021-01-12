@@ -77,6 +77,8 @@ if(as.png==TRUE) dev.off()
 #' @param height plot hight
 #' @param criteria A1 or A2 for decline
 #' @param add if TRUE par is not called to enable manual multiplots
+#' @param xlim graphic option c(min,max)
+#' @param ylim graphic option c(min,max)
 #' @param plot.cex cex graphic option
 #' @param legend.cex lengend size cex graphic option
 #' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
@@ -87,7 +89,7 @@ if(as.png==TRUE) dev.off()
 #' @return IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
-jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,legend.cex=0.9,criteria=c("A2","A1")[1],iucn.cols=TRUE,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
+jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylim=NULL,legend.cex=0.9,criteria=c("A2","A1")[1],iucn.cols=TRUE,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
   
   cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
   change= jara$posteriors$pop.change
@@ -115,8 +117,10 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     if(as.png==TRUE){png(file = paste0(output.dir,"/IUCNplot_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
                          res = 200, units = "in")}
     if(add==FALSE) par(Par)
-  
-    plot(x1,y1,type="n",xlim=c(-100,min(max(30,quantile(change,.99)),1000)),ylim=c(0,max(y1*1.1)),ylab=ylab,xlab=xlab,cex.main=0.9,frame=TRUE,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
+    if(is.null(xlim)) xlim = c(-100,min(max(30,quantile(change,.99)),1000))
+    if(is.null(ylim)) ylim=c(0,max(y1*1.1))
+    
+    plot(x1,y1,type="n",xlim=xlim,ylab=ylab,xlab=xlab,cex.main=0.9,frame=TRUE,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
     maxy = max(y1*1.11)
     x2 = c(ifelse(A1,-50,-30),1500); y2 = c(0,5)
     polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col=cols[1],border=cols[1])
@@ -398,15 +402,17 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param height plot hight
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
+#' @param xlim graphical option
 #' @param plot.cex cex graphic option
 #' @param legend.cex legend size graphic option
+#' @param legend.pos legend location graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @return Relative state 
 #' @export
 #' @author Henning Winker 
 jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
                          extinction=0.01,credibility=0.95, output.dir=getwd(),
-                         as.png=FALSE,width=5,height=4.5,ylab = "Density",xlab="Relative state",plot.cex=1,legend.cex=0.9,add=FALSE){
+                         as.png=FALSE,width=5,height=4.5,ylab = "Density",xlab="Relative state",xlim=NULL,plot.cex=1,legend.cex=0.9,legend.pos="right",add=FALSE){
   
   cat(paste0("\n","><> jrplot_state() - %change relative to reference year <><","\n"))
   
@@ -441,8 +447,9 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
     }}
   
   lxrange = ifelse(lxrange<0,0,lxrange)
+  if(is.null(xlim)) xlim = c(0,max(lxmax,1.1))
   jcol = c(grey(0.4,0.6),rgb(1,0,0,0.6))
-  plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",yaxt="n",cex.main=0.9,ylim=c(0,1.22*max(lymax)),xlim=c(0,max(lxmax,1.1)),xaxs="i",yaxs="i",frame=FALSE) 
+  plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",yaxt="n",cex.main=0.9,ylim=c(0,1.22*max(lymax)),xlim=xlim,xaxs="i",yaxs="i",frame=FALSE) 
   for(i in 2:1){
     if(i == 1 & type =="current" | type== "both" |i == 2 & type =="projected"){
     x = get(paste0("xl",i))
@@ -462,7 +469,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
   if(type =="current") type.id = 1 
   if(type =="projected") type.id = 2 
   if(type =="both") type.id = 1:2 
-  legend("right",cnam[type.id],pch=15,col=c(jcol),box.col = "white",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
+  legend(legend.pos,cnam[type.id],pch=15,col=c(jcol),box.col = "white",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
   mu =apply(states,2,quantile,c(0.5))
   quants = rbind(mu,HDInterval::hdi(states,credMass=credibility))
   box()
@@ -488,10 +495,11 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
 #' @param height plot hight
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
+#' @param xlim graphical option
 #' @param plot.cex cex graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
-jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xlab="r",ylab="Density",plot.cex=1,add=FALSE){
+jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xlab="r",ylab="Density",xlim=NULL,plot.cex=1,add=FALSE){
   
   cat(paste0("\n","><> jrplot_r() - r = log(lamda) over  1, 2, 3 x G <><","\n"))
   
@@ -518,9 +526,9 @@ jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xl
     rxrange = c(rxrange,range(den$x))
   }
   cnam = c("All.yrs","1G","2G","3G")  
-  
+  if(is.null(xlim)) xlim=quantile(as.matrix(lamdas),c(0.001,0.999))
   jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
-  plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=quantile(as.matrix(lamdas),c(0.001,0.999)),xaxs="i",yaxs="i") 
+  plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=xlim,xaxs="i",yaxs="i") 
   for(i in 1:ncol(rs)){
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
@@ -546,12 +554,16 @@ jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xl
 #' @param height plot hight
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
+#' @param xlim graphic option c(min,max)
+#' @param ylim graphic option c(min,max)
 #' @param plot.cex cex graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @param indices names of indices to plot (default = "all")
+#' @param legend show legend TRUE/FALSE
+#' @param legend.pos location of legend
 #' @param cols option to choose own colour palette
 #' @export
-jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,ylab="Abundance",xlab="Year",plot.cex=1,add=FALSE,indices="all",cols=NULL){
+jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,ylab="Abundance",xlab="Year",ylim=NULL,xlim=NULL,plot.cex=1,add=FALSE,indices="all",legend=TRUE,legend.pos=NULL,cols=NULL){
   
   cat(paste0("\n","><> jrplot_trjfit() - fit to trajectories <><","\n"))
   
@@ -586,9 +598,11 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
   # Total N
   m1 <- 0
   m2 <- max(jara$trj[jara$trj$name!="global",]$uci, na.rm = TRUE)
+  if(is.null(xlim)) xlim = c(min(years-1),max(years+2))
+  if(is.null(ylim)) ylim = c(m1, m2)
   
   if(abundance=="census"){
-    plot(0, 0, ylim = c(m1, m2), xlim = c(min(years-1),max(years+2)), ylab = ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxs="i",yaxs="i",xaxt="n")
+    plot(0, 0, ylim = ylim, xlim =xlim, ylab = ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxs="i",yaxs="i",xaxt="n")
     cs = sample(seq(80,90,1))
     
     colci=paste0("gray",cs)
@@ -605,7 +619,7 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
     }
     posl = c(max(Nt[Nt$yr==min(years),"uci"]),max(Nt[Nt$yr==max(years),"uci"]))
   } else {  
-    plot(0, 0, ylim = c(m1, m2), xlim =  c(min(years-1),max(years+2)), ylab = ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxs="i",yaxs="i",xaxt="n")
+    plot(0, 0, ylim =ylim, xlim =  xlim, ylab = ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxs="i",yaxs="i",xaxt="n")
     cs = sample(seq(80,90,1))
     colci=paste0("gray",cs)
     if(is.null(cols)) cols <- jara$settings$cols
@@ -623,8 +637,11 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
   }
   posl = c(max(Nt[Nt$yr==min(years),"uci"]),max(Nt[Nt$yr==max(years),"uci"]))
 
-
-   legend(ifelse(posl[1]<posl[2],"topleft","topright"),paste(indices), lty = c(1, rep(n.indices)), lwd = c(rep(-1,n.indices)),pch=c(rep(21,n.indices)), pt.bg = c(cols[1:n.indices]), bty = "n", cex = 0.9,y.intersp = 0.8)
+  if(is.null(legend.pos)) legend.pos=ifelse(posl[1]<posl[2],"topleft","topright")
+  
+  if(legend){
+   legend(legend.pos,paste(indices), lty = c(1, rep(n.indices)), lwd = c(rep(-1,n.indices)),pch=c(rep(21,n.indices)), pt.bg = c(cols[1:n.indices]), bty = "n", cex = 0.9,y.intersp = 0.8)
+  }
    axis(1,at=seq(min(years),max(years),ceiling(n.years/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
    if(as.png==TRUE) dev.off()
 
@@ -641,10 +658,12 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
 #' @param height plot hight
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
+#' @param xlim graphic option c(min,max)
+#' @param ylim graphic option c(min,max)
 #' @param plot.cex cex graphic option
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @export
-jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xlab="Year",ylab="Abundance",plot.cex=1,add=FALSE){
+jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xlab="Year",ylab="Abundance",xlim=NULL,ylim=NULL,plot.cex=1,add=FALSE){
   
   cat(paste0("\n","><> jrplot_poptrj() - plots trends against GL blocks <><","\n"))
   
@@ -670,8 +689,10 @@ jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,wid
   # Total N
   m1 <- 0
   m2 <- max(Nt$uci, na.rm = TRUE)
+  if(is.null(xlim)) xlim = c(min(year-1),max(year+2))
+  if(is.null(ylim)){ylim = c(m1, m2)} else {m2=ylim[2]}
   
-  plot(0, 0, ylim = c(m1, m2), xlim = c(min(year-1),max(year+2)), ylab =ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxt="n",xaxs="i",yaxs="i")
+  plot(0, 0, ylim = ylim, xlim = xlim, ylab =ylab, xlab = xlab, col = "black", type = "n", lwd = 2, frame = TRUE,xaxt="n",xaxs="i",yaxs="i")
   axis(1,at=seq(min(year),max(year),ceiling(length(year)/8)),tick=seq(min(year),max(year),5),cex.axis=0.9)
   
   polygon(x = c(year,rev(year)), y = c(Nt$lci,rev(Nt$uci)), col = gray(0.6,0.3), border = "gray90")
@@ -679,8 +700,8 @@ jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,wid
   polygon(x = c(years,rev(years)), y = c(Nt$lci[1:end.yr],Nt$uci[end.yr:1]), col = gray(0.7,0.5),border = "gray90")
   lines(year[end.yr:nT],Nt$mu[end.yr:nT], type = "l",col=2, lwd=2,lty=5)
   lines(years,Nt$mu[1:end.yr], type = "l",col=1,lwd=2)
-  if(n.years-3*GL-1>0) lines(rep(year[n.years]-3*GL,2),c(0,m2*.93),lty=2,col=2)
   if(plotGL){
+  if(n.years-3*GL-1>0) lines(rep(year[n.years]-3*GL,2),c(0,m2*.93),lty=2,col=2)
   lines(rep(year[n.years]-1*GL,2),c(0,m2*.93),lty=2,col=4,lwd=2)
   lines(rep(year[n.years]-2*GL,2),c(0,m2*.93),lty=2,col=3,lwd=2)
   if(n.years-3*GL-1>0) text(year[n.years]-3*GL,m2*.96,"3G",lwd=2)
@@ -1094,11 +1115,14 @@ jrplot_logfits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FA
 #' @param add if true don't call par() to allow construction of multiplots
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
+#' @param legend show legend
+#' @param legend.pos legend position
+#' @param legend.cex legend size
 #' @param width plot width
 #' @param height plot hight
 #' @param cols option to add colour palette 
 #' @export
-jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,ylab="log Residuals",xlab="Year", width = 5, height = 3.5,cols=NULL){
+jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,ylab="log Residuals",xlab="Year",legend =TRUE,legend.pos = "bottomright",legend.cex=0.75,width = 5, height = 3.5,cols=NULL){
   
     cat(paste0("\n","><> jrplot_residuals() - Joint residual plot  <><","\n"))
     if(is.null(cols)) cols = jara$settings$cols 
@@ -1137,7 +1161,7 @@ jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,yl
     RMSE = round(jara$stats[2,2],2)
     
     legend('topright',c(paste0("RMSE = ",RMSE,"%")),bty="n")
-    legend('bottomright',c(paste(jara$indices),"Loess"),bty="n",col=1,pt.cex=1.1,cex=0.75,pch=c(rep(21,n.indices),-1),pt.bg=c(jara$settings$col[series],1),lwd=c(rep(-1,n.indices),2))
+    if(legend) legend(legend.pos,c(paste(jara$indices),"Loess"),bty="n",col=1,pt.cex=1.1,cex=legend.cex,pch=c(rep(21,n.indices),-1),pt.bg=c(jara$settings$col[series],1),lwd=c(rep(-1,n.indices),2))
     if(as.png==TRUE){dev.off()}
 } # End of functions
 

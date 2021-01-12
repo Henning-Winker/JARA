@@ -11,6 +11,8 @@ jrplot_iucn(
   width = 5,
   height = 4.5,
   plot.cex = 1,
+  xlim = NULL,
+  ylim = NULL,
   legend.cex = 0.9,
   criteria = c("A2", "A1")[1],
   iucn.cols = TRUE,
@@ -32,6 +34,10 @@ jrplot_iucn(
 \item{height}{plot hight}
 
 \item{plot.cex}{cex graphic option}
+
+\item{xlim}{graphic option c(min,max)}
+
+\item{ylim}{graphic option c(min,max)}
 
 \item{legend.cex}{lengend size cex graphic option}
 

@@ -16,8 +16,10 @@ jrplot_state(
   height = 4.5,
   ylab = "Density",
   xlab = "Relative state",
+  xlim = NULL,
   plot.cex = 1,
   legend.cex = 0.9,
+  legend.pos = "right",
   add = FALSE
 )
 }
@@ -44,9 +46,13 @@ jrplot_state(
 
 \item{xlab}{option to change x-axis label}
 
+\item{xlim}{graphical option}
+
 \item{plot.cex}{cex graphic option}
 
 \item{legend.cex}{legend size graphic option}
+
+\item{legend.pos}{legend location graphic option}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
 }
