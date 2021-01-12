@@ -190,7 +190,8 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   pk.cv = rep(as.numeric(pk.prior[2]),n.indices)
                   
                   if(is.null(pk.i)==TRUE | length(pk.i)==1){ 
-                  pk.mu = rep(pk.prior[1],n.indices)
+                  pk.mu = pk.i =rep(pk.prior[1],n.indices)
+                  
                   } else {
                     pk.mu = pk.i
                   }
