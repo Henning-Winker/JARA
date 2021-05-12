@@ -12,7 +12,7 @@ jrplot_iucn(
   height = 4.5,
   plot.cex = 1,
   xlim = NULL,
-  ylim = NULL,
+  ylimadj = 1.1,
   legend.cex = 0.9,
   criteria = c("A2", "A1")[1],
   iucn.cols = TRUE,
@@ -37,7 +37,7 @@ jrplot_iucn(
 
 \item{xlim}{graphic option c(min,max)}
 
-\item{ylim}{graphic option c(min,max)}
+\item{ylimadj}{multiplier to adjust upper ylim}
 
 \item{legend.cex}{lengend size cex graphic option}
 

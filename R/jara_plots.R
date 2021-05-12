@@ -78,7 +78,7 @@ if(as.png==TRUE) dev.off()
 #' @param criteria A1 or A2 for decline
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @param xlim graphic option c(min,max)
-#' @param ylim graphic option c(min,max)
+#' @param ylimadj multiplier to adjust upper ylim 
 #' @param plot.cex cex graphic option
 #' @param legend.cex lengend size cex graphic option
 #' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
@@ -89,7 +89,7 @@ if(as.png==TRUE) dev.off()
 #' @return IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
-jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylim=NULL,legend.cex=0.9,criteria=c("A2","A1")[1],iucn.cols=TRUE,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
+jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylimadj=1.1,legend.cex=0.9,criteria=c("A2","A1")[1],iucn.cols=TRUE,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
   
   cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
   change= jara$posteriors$pop.change
@@ -118,10 +118,10 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
                          res = 200, units = "in")}
     if(add==FALSE) par(Par)
     if(is.null(xlim)) xlim = c(-100,min(max(30,quantile(change,.99)),1000))
-    if(is.null(ylim)) ylim=c(0,max(y1*1.1))
+    ylim=c(0,max(y1*ylimadj))
     
-    plot(x1,y1,type="n",xlim=xlim,ylab=ylab,xlab=xlab,cex.main=0.9,frame=TRUE,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
-    maxy = max(y1*1.11)
+    plot(x1,y1,type="n",xlim=xlim,ylim=ylim,ylab=ylab,xlab=xlab,cex.main=0.9,frame=TRUE,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
+    maxy = max(ylim)
     x2 = c(ifelse(A1,-50,-30),1500); y2 = c(0,5)
     polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col=cols[1],border=cols[1])
     x3 = c(ifelse(A1,-70,-50),x2[1])
