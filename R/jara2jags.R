@@ -258,7 +258,7 @@ jara2jags = function(jarainput,jagsdir){
       logY.est[1] ~ dnorm(logY1, 1)       # Prior for initial population size
       
       mean.r ~ dnorm(0, 0.001)             # Prior for mean growth rate
-      
+    
       # Likelihood
       # State process
       for (t in 1:(EY-1)){
