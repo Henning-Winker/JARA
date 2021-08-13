@@ -136,20 +136,10 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 endyr = max(years)
                 n.years = length(years)
                 # process error settings
+                igamma = c(0.001,0.001)
                 if(sigma.proc.fixed==FALSE){ 
                   #------------------------------------------
                   sigma.proc = TRUE
-                  
-                  igamma = c(0.001,0.001) #specify inv-gamma parameters
-                  
-                  # Process error check
-                  gamma.check = 1/rgamma(1000,igamma[1],igamma[2])
-                  # check mean process error + CV
-                  mu.proc = sqrt(mean(gamma.check)); CV.proc = sd(sqrt(gamma.check))/mean(sqrt(gamma.check))
-                  
-                  # check CV
-                  round(c(mu.proc,CV.proc),3)
-                  quantile(sqrt(gamma.check),c(0.1,0.9))
                 }else{
                   sigma.proc = as.numeric(sigma.proc.fixed) #IF Fixed: typicallly 0.05-0.15 (see Ono et al. 2012)
                 }
