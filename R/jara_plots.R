@@ -597,7 +597,7 @@ jrplot_trjfit <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4
   
   # Total N
   m1 <- 0
-  m2 <- max(jara$trj[jara$trj$name!="global",]$uci, na.rm = TRUE)
+  m2 <- max(jara$trj[jara$trj$name!="global"&jara$trj$estimation=="fit",]$uci, na.rm = TRUE)
   if(is.null(xlim)) xlim = c(min(years-1),max(years+2))
   if(is.null(ylim)) ylim = c(m1, m2)
   
