@@ -397,6 +397,12 @@ fit_jara = function(jarainput,credibility=0.95,
   jara$posteriors = trends
   jara$r.prj = r.prj
   jara$pop.posterior = pop.posterior
+  if(!jara$settings$timeblock){
+  jara$timeblock = NULL} else {
+  jara$timeblock = data.frame(year=timeblock,effect=posteriors$mean.dr)  
+  }
+  
+  
   jara$PPC = NULL
   if(do.ppc) jara$PPC = PPC 
   if(save.jara==TRUE){

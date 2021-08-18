@@ -14,7 +14,9 @@
 #' @param variance.weighting option "equal", "model", "fixed" or user assinged vector e.g. c(1,1,2) 
 #' @param sigma.proc.fixed option to fix the process error e.g = 0.1 (default FALSE)
 #' @param proc.pen advanced user setting to penalize extreme process error deviations
-# Porjection settings
+#' New break point settings
+#' @param  timeblock option to set a time block for mean.r a specified year (default FALSE)  
+# Projection settings
 #' @param proj.mod specified by theta c("theta10","logistic")
 #' @param pk.prior lognormal prior of population to K c(mu,lod.sd,yr) envoked during projections  
 #' @param pk.yr reference year for the depletion prior. NULL ratio to max pred. abundance across all years 
@@ -41,6 +43,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
               variance.weighting = "equal",
               sigma.proc.fixed = FALSE,
               proc.pen = NULL,  
+              timeblock = FALSE,
               proj.mod = c("theta10","logistic","theta.value")[1],
               pk.prior = c(0.25,0.1),
               pk.yr = NULL,
@@ -162,6 +165,9 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   se2 = matrix(ifelse(is.na(conv.se),rep(0.01,length(conv.se)),conv.se)^2,n.years,n.indices)+fixed.obsE^2#/2
                 }
                 
+                
+                
+                
                 #------------------------------------
                 # Projection Settings
                 #------------------------------------
@@ -240,15 +246,32 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   Ninit[i] = na.omit(I_y[,i])[1]  
                 }
                 
+                #--------------------------
+                # Time-Block Option
+                #-------------------------
+                
+                # Add depletion prior
+                dr.pr = c(0,100)  # not active
+                tbvec = rep(0,length(year)) # not active
+                addtb =FALSE
+                if(timeblock%in%year){
+                addtb = TRUE
+                dr.pr = c(0,0.001)  # uninformative
+                tbvec[which(year%in%timeblock):length(tbvec)] = 1 
+                if(length(year)-which(year%in%timeblock)<3){
+                  stop("Less than 3 years for estimating time-block effect") 
+                }}
+                
                 if(model.type=="census"){
                 
                   if(!silent) cat("\n","><> Setting up JARA for census data <><","\n","\n")  
                 # Bundle data for jags
-                  jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Ninit=Ninit,sets.var=sets.var,nvar=nvar,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,EY = n.years,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,prjr=prjr,proc.pen=proc.pen,theta=theta)
+                  jags.data <- list(y = log(I_y+10^-20),SE2=se2, T = length(year),nI=n.indices,Ninit=Ninit,sets.var=sets.var,nvar=nvar,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,EY = n.years,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,prjr=prjr,proc.pen=proc.pen,theta=theta,dr.pr=dr.pr,tbvec=tbvec)
                   # order of indices
                   qs = 1:n.indices
                   # Parameters monitored
                   parameters <- c("mean.r","sigma","logNtot", "N.est","Ntot","r.tot","r.proj","TOE","ppd","K")
+                  if(addtb) parameters <- c(parameters,"mean.dr")
                 }  
                                 
                 if(model.type=="relative"){
@@ -267,11 +290,11 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                   if(n.indices>1) for(i in 2:n.indices){q.init[i] = mean(qI_y[,i],na.rm=TRUE)/mean(qI_y[,1],na.rm=TRUE)}
                   
                   # Bundle data
-                  jags.data <- list(y = log(qI_y),SE2=qse2, logY1 = log(qI_y[1,1]), T = length(year),EY = n.years,nI=n.indices,sets.var=sets.var,nvar=nvar,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,prjr=prjr,proc.pen=proc.pen,theta=theta)
+                  jags.data <- list(y = log(qI_y),SE2=qse2, logY1 = log(qI_y[1,1]), T = length(year),EY = n.years,nI=n.indices,sets.var=sets.var,nvar=nvar,sigma.fixed=ifelse(sigma.proc==TRUE,0,sigma.proc),igamma=igamma,penSig=0,pk.mu=pk.mu,pk.cv=pk.cv,pk.y=pk.y,prjr=prjr,proc.pen=proc.pen,theta=theta,dr.pr=dr.pr,tbvec=tbvec)
                   
                   # Parameters monitored
                   parameters <- c("mean.r", "sigma","r", "Y.est","Ntot","q","r.proj","TOE","ppd","K")
-                  
+                  if(addtb) parameters <- c(parameters,"mean.dr")
                 }
                 
                 if(!silent) cat("\n","><> Compile JARA input <><","\n","\n")  
@@ -301,6 +324,8 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 jarainput$settings$nvar = nvar
                 jarainput$settings$sigma.proc.fixed = sigma.proc.fixed  
                 jarainput$settings$proc.pen = proc.pen
+                # timeblock
+                jarainput$settings$timeblock = timeblock
                 # Projection stuff
                 jarainput$settings$proj.mod =  proj.mod
                 jarainput$settings$prjr.type = prjr.type

@@ -17,6 +17,7 @@ build_jara(
   variance.weighting = "equal",
   sigma.proc.fixed = FALSE,
   proc.pen = NULL,
+  timeblock = FALSE,
   proj.mod = c("theta10", "logistic", "theta.value")[1],
   pk.prior = c(0.25, 0.1),
   pk.yr = NULL,
@@ -50,7 +51,10 @@ build_jara(
 
 \item{sigma.proc.fixed}{option to fix the process error e.g = 0.1 (default FALSE)}
 
-\item{proc.pen}{advanced user setting to penalize extreme process error deviations}
+\item{proc.pen}{advanced user setting to penalize extreme process error deviations
+New break point settings}
+
+\item{timeblock}{option to set a time block for mean.r a specified year (default FALSE)}
 
 \item{proj.mod}{specified by theta c("theta10","logistic")}
 

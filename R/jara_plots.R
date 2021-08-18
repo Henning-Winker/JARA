@@ -1302,4 +1302,92 @@ jara_plots = function(jara,output.dir = getwd(),as.png=TRUE,statusplot ="kobe"){
 }
 
 
+#' jrplot_timeblock
+#'
+#' Plots timeblock effect or change     
+#' @param jara output list from fit_jara
+#' @param type "change" 
+#' @param credibility Confidence interval credibility calue with default of 0.95 
+#' @param probability show probility P(Effect>0) in plot
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param ylab option to change y-axis label
+#' @param xlab option to change x-axis label
+#' @param xlim plotting optio
+#' @param plot.cex cex graphic option
+#' @param legend.pos Choose legend position
+#' @param legend.cex legend sizr graphic option
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @export
+#' @author Henning Winker 
+
+jrplot_timeblock <- function(jara,type=c("change","r"),credibility=0.95,probability=TRUE,output=TRUE, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,ylab ="Density",xlab=NULL,xlim=NULL,plot.cex=1,legend.cex=0.9,legend.pos="topright",add=FALSE){
+  type = type[1]
+  
+
+  cat(paste0("\n","><> jrplot_timeblock() - type: ",type," <><","\n"))
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  if(as.png==TRUE){png(file = paste0(output.dir,"/TimeblockEffect_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+  if(is.null(jara$timeblock)){
+    cat("No timeblock provided")
+  } else {
+  
+  tbe = jara$timeblock
+  
+  if(is.null(xlab)){
+    xlab = paste0("Time-block effect (",tbe[1,1],")") 
+  }
+  
+  if(type=="change") effect= (exp(tbe[,2])-1)*100
+  if(type=="r") effect = tbe[,2]
+  
+  lymax=rymax = lxrange = lxmax =NULL # maximum and range for plotting
+     den = stats::density(effect,adjust=2)
+      x = den$x
+      y = den$y
+      lymax=max(den$y)
+      lxmax = quantile(effect,0.999)
+      lxmin = quantile(effect,0.001)
+  
+ 
+  if(is.null(xlim)){
+    if(type=="change") xlim = c(min(lxmin,-1.1),max(lxmax,1.1))  
+   if(type=="r") xlim = c(min(lxmin,-0.05),max(lxmax,0.05))
+  }
+   jcol = c(grey(0.5,1))
+  jcolci = c(grey(0.7,1))
+  plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",yaxt="n",cex.main=0.9,ylim=c(0,1.22*max(lymax)),xlim=xlim,xaxs="i",yaxs="i",frame=FALSE) 
+      polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol,border=0)
+      mu = ifelse(type=="r",round(median(effect),2),round(median(effect),1))
+      metric = ifelse(mu<0,paste0("-",mu),paste0("+",mu))
+      metric = ifelse(type=="r",paste0(metric),paste0(metric,"%"))
+      quants = c(mu,rbind(HDInterval::hdi(effect,credMass=credibility)))
+      polygon(c(x[x<quants[2]],rev(x[x<quants[2]])),c(y[x<quants[2]],rep(0,length(y[x<quants[2]]))),col=jcolci,border=0)
+      polygon(c(x[x>quants[3]],rev(x[x>quants[3]])),c(y[x>quants[3]],rep(0,length(y[x>quants[3]]))),col=jcolci,border=0)
+      
+      
+      lines(rep(quants[1],2),c(0,max(lymax*c(1.05,1.0))),col=c(1),lwd=1,lty=c(1))
+      
+      text(max(mu),max(lymax*c(1.1)),metric,cex=0.9)
+
+  if(type=="change") axis(1,at=seq(floor(min(effect)),ceiling(max(effect)),0.5),cex.axis=0.9)
+  if(type=="r") axis(1,at=seq(floor(min(effect)),ceiling(max(effect)),0.02),cex.axis=0.9)
+  axis(2,cex.axis=0.9)
+  abline(v=0,col="blue")
+  probs = round(mean(effect>0),3)
+  if(probability) legend(legend.pos,paste0("Pr(Effect>0)=",probs) ,pch=-1,col=c(jcol),cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8,bty="n")
+  box()
+  
+  if(as.png==TRUE) dev.off()
+  out = data.frame(TimeBlock=tbe[1,1],change=mu,lci=quants[2],uc=quants[3],Prob=probs)
+  return(out)
+  }
+} # End rate of change plot  
+
 

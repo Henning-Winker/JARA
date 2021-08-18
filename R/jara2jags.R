@@ -19,6 +19,11 @@ jara2jags = function(jarainput,jagsdir){
     logN.est[1,i] ~ dnorm(log(Ninit[i]),pow(0.5,-2))   # Prior for initial population size with CV =100%
     }
     
+    mean.dr ~ dnorm(dr.pr[1],dr.pr[2]) # change in r if time-block is speficied
+    for(t in 1:T){
+       dr[t] <- mean.dr*tbvec[t] 
+    } 
+    
     ")
     
     if(jarainput$settings$sigma.proc==TRUE){
@@ -98,7 +103,7 @@ jara2jags = function(jarainput,jagsdir){
     for(t in 1:(EY-1)){
     rdev[t,i] ~ dnorm(0, isigma2) #T(proc.pen[2],proc.pen[3])
     # Theta-Logistic
-    r[t,i] <- mean.r[i]+ rdev[t,i]- 0.5*sigma2
+    r[t,i] <- mean.r[i]+dr[t]+ rdev[t,i]- 0.5*sigma2
     }}
     
     
@@ -114,13 +119,13 @@ jara2jags = function(jarainput,jagsdir){
     if(jarainput$settings$prjr.type=="mean"){
       cat("  
     for (i in 1:nI){
-    r.proj[i] <- mean.r[i]
+    r.proj[i] <- mean.r[i]+mean.dr
     } 
       
      ",append=TRUE)}else{
        cat(" 
    for (i in 1:nI){
-   r.proj[i] <- mean(mean.r[i]+ rdev[prjr,i]-0.5*sigma2)} 
+   r.proj[i] <- mean(mean.r[i]+mean.dr+ rdev[prjr,i]-0.5*sigma2)} 
    ",append=TRUE)  
      }
     
@@ -258,12 +263,15 @@ jara2jags = function(jarainput,jagsdir){
       logY.est[1] ~ dnorm(logY1, 1)       # Prior for initial population size
       
       mean.r ~ dnorm(0, 0.001)             # Prior for mean growth rate
-    
+      mean.dr ~ dnorm(dr.pr[1],dr.pr[2]) # change in r if time-block is speficied
+      for(t in 1:T){
+       dr[t] <- mean.dr*tbvec[t] 
+      } 
       # Likelihood
       # State process
       for (t in 1:(EY-1)){
       rdev[t] ~ dnorm(0, isigma2)T(proc.pen[2],proc.pen[3])
-      r[t] <- mean.r+rdev[t]-0.5*sigma2   
+      r[t] <- mean.r+dr[t]+rdev[t]-0.5*sigma2   
       logY.est[t+1] <- logY.est[t] + r[t] 
       }
       
@@ -277,11 +285,11 @@ jara2jags = function(jarainput,jagsdir){
     
     if(jarainput$settings$prjr.type=="mean"){
       cat("  
-      r.proj <- mean.r  
+      r.proj <- mean.r+mean.dr  
       prjr.dummy <- prjr   
     ",append=TRUE)}else{
       cat(" 
-        r.proj <- mean(mean.r+rdev[prjr]-0.5*sigma2) 
+        r.proj <- mean(mean.r+mean.dr+rdev[prjr]-0.5*sigma2) 
         ",append=TRUE)  
     }
     
