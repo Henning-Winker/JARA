@@ -40,12 +40,17 @@ dev.print(jpeg,paste0(output.dir,"/shsh.trj.jpg"), width = 5, height = 4.5, res 
 # Lets look at Striped Marlin (relative)
 # create JARA input
 mls.input = build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5,variance.weighting = "model")
+mls.fix =  build_jara(I=dat$StripedMarlin_IO_CPUE$I,se=dat$StripedMarlin_IO_CPUE$SE,model.type = "relative",assessment = "MLS",GL=5.5,variance.weighting = "equal")
 # Check input
 jrplot_indices(mls.input)
 # fit JARA model
 mls.fit = jara = fit_jara(mls.input,quickmcmc=T,do.ppc=T) # quick test run
+fit.fix = fit_jara(mls.fix,quickmcmc=T,do.ppc=T)
 load("MLS_s1_posteriors.rdata")
 jrplot_fits(mls.fit)
+
+jrplot_PPC(mls.fit,joint.ppc = F)
+jrplot_PPC(fit.fix,joint.ppc = F)
 
 ppc = ap$PPC
 jrpar(mfrow=c(1,1))

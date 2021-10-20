@@ -20,6 +20,7 @@ jara2jags = function(jarainput,jagsdir){
     }
     
     mean.dr ~ dnorm(dr.pr[1],dr.pr[2]) # change in r if time-block is speficied
+    
     for(t in 1:T){
        dr[t] <- mean.dr*tbvec[t] 
     } 
@@ -125,7 +126,7 @@ jara2jags = function(jarainput,jagsdir){
      ",append=TRUE)}else{
        cat(" 
    for (i in 1:nI){
-   r.proj[i] <- mean(mean.r[i]+mean.dr+ rdev[prjr,i]-0.5*sigma2)} 
+   r.proj[i] <- mean(mean.r[i]+dr[prjr]+ rdev[prjr,i]-0.5*sigma2)} 
    ",append=TRUE)  
      }
     
@@ -289,7 +290,7 @@ jara2jags = function(jarainput,jagsdir){
       prjr.dummy <- prjr   
     ",append=TRUE)}else{
       cat(" 
-        r.proj <- mean(mean.r+mean.dr+rdev[prjr]-0.5*sigma2) 
+        r.proj <- mean(mean.r+dr[prjr]+rdev[prjr]-0.5*sigma2) 
         ",append=TRUE)  
     }
     

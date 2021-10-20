@@ -370,13 +370,15 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
     rxrange = c(rxrange,range(den$x))
   }
   cnam = c("All.yrs","1G","2G","3G")  
-  
+  xlim = quantile(as.matrix(lamdas),c(0.001,0.999))
   jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
-  plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=quantile(as.matrix(lamdas),c(0.001,0.999)),xaxs="i",yaxs="i") 
+  plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=xlim,xaxs="i",yaxs="i") 
   for(i in 1:ncol(rs)){
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
-    polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
+    xp = x[x>xlim[1] & x<xlim[2]]
+    yp = y[x>xlim[1] & x<xlim[2]]
+    polygon(c(xp,rev(xp)),c(yp,rep(0,length(yp))),col=jcol[i],border=NA)
     mu.lamda = round(median(lamdas[,i]),10)
     lines(rep(mu.lamda,2),c(0,max(y)),col=c(1,4,3,2)[i],lwd=1,lty=1)
     
@@ -454,7 +456,9 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
     if(i == 1 & type =="current" | type== "both" |i == 2 & type =="projected"){
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
-    polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
+    xp = x[x>xlim[1] & x<xlim[2]]
+    yp = y[x>xlim[1] & x<xlim[2]]
+    polygon(c(xp,rev(xp)),c(yp,rep(0,length(yp))),col=jcol[i],border=NA)
     mu = round(median(states[,i]),10)
     lines(rep(mu,2),c(0,max(lymax*c(1.05,1.0)[i])),col=c(1,2)[i],lwd=1,lty=c(1))
     text(max(mu,0.05),max(lymax*c(1.11,1.05)[i]),c(end.yr,prj.yr)[i],cex=0.9)
@@ -532,7 +536,9 @@ jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xl
   for(i in 1:ncol(rs)){
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
-    polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol[i],border=0)
+    xp = x[x>xlim[1] & x<xlim[2]]
+    yp = y[x>xlim[1] & x<xlim[2]]
+    polygon(c(xp,rev(xp)),c(yp,rep(0,length(yp))),col=jcol[i],border=NA)
     mu.lamda = round(median(lamdas[,i]),10)
     lines(rep(mu.lamda,2),c(0,max(y)),col=c(1,4,3,2)[i],lwd=1,lty=1)
     
@@ -1363,6 +1369,7 @@ jrplot_timeblock <- function(jara,type=c("change","r"),credibility=0.95,probabil
    jcol = c(grey(0.5,1))
   jcolci = c(grey(0.7,1))
   plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",yaxt="n",cex.main=0.9,ylim=c(0,1.22*max(lymax)),xlim=xlim,xaxs="i",yaxs="i",frame=FALSE) 
+      
       polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol,border=0)
       mu = ifelse(type=="r",round(median(effect),2),round(median(effect),1))
       metric = ifelse(mu<0,paste0("-",mu),paste0("+",mu))

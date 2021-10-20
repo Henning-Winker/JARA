@@ -251,7 +251,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 #-------------------------
                 
                 # Add depletion prior
-                dr.pr = c(0,100)  # not active
+                dr.pr = c(0,1000)  # not active
                 tbvec = rep(0,length(year)) # not active
                 addtb =FALSE
                 if(timeblock%in%year){
