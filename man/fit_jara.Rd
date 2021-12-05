@@ -14,7 +14,7 @@ fit_jara(
   save.jara = FALSE,
   save.all = FALSE,
   save.csvs = FALSE,
-  save.jarafile = TRUE,
+  save.jarafile = FALSE,
   peels = NULL,
   output.dir = getwd(),
   quickmcmc = FALSE,
@@ -39,7 +39,7 @@ MCMC settings}
 
 \item{save.jara}{saves jara list as .rdata to output.dir}
 
-\item{save.all}{saves the all posteriors as .rdata to output.dir (big file)}
+\item{save.all}{adds all posteriors to fitted object (big size)}
 
 \item{save.csvs}{writes results into csv to output.dir}
 

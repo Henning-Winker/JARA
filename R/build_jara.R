@@ -5,7 +5,7 @@
 #' @param se optional log standard error (CV) time series,requires data.frame(year, se.1,se.2,...,se.N)
 #' @param assessment = "species.X",
 #' @param scenario = "s1",
-#' @param model.type abundance data type c("relative","census")
+#' @param model.type abundance data type c("relative","census","mixed.trends")
 #' @param GL Generation length (default n.years/3)
 #' @param start.year subsetting option for start year
 #' @param end.year subsetting option for end year
@@ -68,6 +68,13 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 if(is.null(fixed.obsE)){
                 fixed.obsE = ifelse(is.null(se),0.15,0.01)
                 }
+                
+                mixed.trends = FALSE 
+                if(model.type=="mixed.trends"){
+                  model.type = "census"
+                  mixed.trends = TRUE
+                }
+                
                 if(is.null(proc.pen)){
                   proc.pen = c(ifelse(model.type=="census",1,0.5),log(ifelse(model.type=="census",0.1,0.5)),ifelse(model.type=="census",log(5),log(2)))
                 }
@@ -324,6 +331,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 jarainput$settings$nvar = nvar
                 jarainput$settings$sigma.proc.fixed = sigma.proc.fixed  
                 jarainput$settings$proc.pen = proc.pen
+                jarainput$settings$mixed.trends = mixed.trends 
                 # timeblock
                 jarainput$settings$timeblock = timeblock
                 # Projection stuff

@@ -37,7 +37,7 @@ build_jara(
 
 \item{scenario}{= "s1",}
 
-\item{model.type}{abundance data type c("relative","census")}
+\item{model.type}{abundance data type c("relative","census","mixed.trends")}
 
 \item{GL}{Generation length (default n.years/3)}
 
