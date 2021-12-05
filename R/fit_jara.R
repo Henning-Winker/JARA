@@ -9,7 +9,7 @@
 #' @param nb burn-in
 #' @param nc number of mcmc chains
 #' @param save.jara saves jara list as .rdata to output.dir
-#' @param save.all saves the all posteriors as .rdata to output.dir (big file)
+#' @param save.all adds all posteriors to fitted object (big size)
 #' @param save.csvs writes results into csv to output.dir
 #' @param output.dir path to save plot. default is getwd()
 #' @param peels = NULL, # retrospective 'peel' option
@@ -43,7 +43,7 @@ fit_jara = function(jarainput,credibility=0.95,
                      save.jara = FALSE,
                      save.all = FALSE,
                      save.csvs = FALSE,
-                     save.jarafile = TRUE,
+                     save.jarafile = FALSE,
                      peels = NULL, 
                     output.dir = getwd(),
                     quickmcmc = FALSE,
@@ -152,9 +152,26 @@ fit_jara = function(jarainput,credibility=0.95,
   pvalues
   heidle = coda::heidel.diag(data.frame(par.dat))
   
+  # Bootstrap MCMC by resampling indices with replacement and compute median
+  if(settings$mixed.trends){
+  nmc = nrow(posteriors$K)
+  Ntot= posteriors$Ntot
+  boot.mat = split(matrix(sample(1:n.indices,n.indices*nmc,replace = TRUE),nrow=nmc),seq(nmc))
+  
+  for(y in 1:ncol(posteriors$Ntot)){
+  Ntot[,y] = do.call(c,Map(function(x,y){
+  median(x[y])
+  },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
+  }
+  posteriors$Ntot  = Ntot
+  } # End of mixed-trend
+  
+  
   # Capture Results
   results = round(data.frame(cbind(apply(par.dat,2,median),t(HDInterval::hdi(par.dat,credMass=credibility)))),4)
 
+  
+  
   
   pars = data.frame(median = results[,1],lci=results[,2],uci=results[,3],Geweke.p=round(pvalues,3),Heidelberger.p=round(heidle[,3],3))
   if(abundance=="relative"){par.names = c("mu.r","sigma.proc",paste0("q.",indices[qs]))} else {
@@ -409,9 +426,9 @@ fit_jara = function(jarainput,credibility=0.95,
     save(jara,file=paste0(output.dir,"/",settings$assessment,"_",settings$scenario,"_jara.rdata"))
   }
   
-  # Safe posteriors (Produces large object!)
-  if(save.all==TRUE) save(posteriors,file=paste0(output.dir,"/",settings$assessment,"_",settings$scenario,"_posteriors.rdata"))
-  
+  # Safe posteriors (Produces large object!
+  if(save.all==TRUE) jara$posteriors = posteriors
+    
   if(save.csvs==TRUE){
     # Save results
     write.csv(diags,paste0(output.dir,"/Fits_",settings$assessment,"_",settings$scenario,".csv"),row.names = FALSE)
