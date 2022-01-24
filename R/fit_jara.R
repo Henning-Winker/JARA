@@ -236,15 +236,26 @@ fit_jara = function(jarainput,credibility=0.95,
         }}
     
     Nfit <- Nlow <- Nhigh <- as.numeric()
-    
     pop.posterior = NULL
     # get total pop size
+    if(!settings$mixed.trends){ 
     for (t in 1:nT){
       pop.posterior = cbind(pop.posterior,rowSums(Nbias.correct[,t,]))
       Nfit[t] = mean(rowSums(Nbias.correct[,t,]))# o<
       Nlow[t] = HDInterval::hdi(rowSums(Nbias.correct[,t,]),credMass=credibility)[1]# o<
       Nhigh[t] = HDInterval::hdi(rowSums(Nbias.correct[,t,]),credMass=credibility)[2]# o<
     }  
+    } else { # ><> new mixed-effects option
+      for (t in 1:nT){
+        pop.posterior = cbind(pop.posterior,Ntot[,t])
+        Nfit[t] = median(Ntot[,t])# o<
+        Nlow[t] = HDInterval::hdi((Ntot[,t]),credMass=credibility)[1]# o<
+        Nhigh[t] = HDInterval::hdi((Ntot[,t]),credMass=credibility)[2]# o<
+      }  
+      
+    } # end loop mixed-effects
+      
+      
     } else {
     q.adj = apply(posteriors$q,2,median)
     fitted <- lower <- upper <- as.null()
