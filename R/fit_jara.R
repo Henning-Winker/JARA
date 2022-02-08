@@ -160,7 +160,7 @@ fit_jara = function(jarainput,credibility=0.95,
   
   for(y in 1:ncol(posteriors$Ntot)){
   Ntot[,y] = do.call(c,Map(function(x,y){
-  median(x[y])
+  exp(mean(log(x[y])))
   },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
   }
   posteriors$Ntot  = Ntot
@@ -228,7 +228,7 @@ fit_jara = function(jarainput,credibility=0.95,
         lo.ppd[t,i] <-HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[1]
         hi.ppd[t,i] <-HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[2]}}
     
-    # log-normal bias correction from Sherley et al. (in press)
+    # log-normal bias correction from Sherley et al. (2020)
     Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT,n.indices))
       for(i in 1:n.indices){
         for (t in 1:nT){
@@ -429,7 +429,7 @@ fit_jara = function(jarainput,credibility=0.95,
   jara$timeblock = NULL} else {
   jara$timeblock = data.frame(year=jara$settings$timeblock,effect=posteriors$mean.dr)  
   }
-  
+
   
   jara$PPC = NULL
   if(do.ppc) jara$PPC = PPC 
@@ -438,7 +438,8 @@ fit_jara = function(jarainput,credibility=0.95,
   }
   
   # Safe posteriors (Produces large object!
-  if(save.all==TRUE) jara$posteriors = posteriors
+  jara$all = NULL
+  if(save.all==TRUE) jara$all = posteriors
     
   if(save.csvs==TRUE){
     # Save results
