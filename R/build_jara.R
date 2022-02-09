@@ -267,7 +267,12 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 tbvec[which(year%in%timeblock):length(tbvec)] = 1 
                 if(length(year)-which(year%in%timeblock)<3){
                   stop("Less than 3 years for estimating time-block effect") 
-                }}
+                # Adjust projections
+                  #prjr.st = round(as.numeric(proj.r),0)  
+                  
+                }
+                prjr = max(which(tbvec==0)+1):n.years  #><> change prjr
+                }
                 
                 if(model.type=="census"){
                 

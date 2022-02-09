@@ -272,8 +272,8 @@ jara2jags = function(jarainput,jagsdir){
       # State process
       for (t in 1:(EY-1)){
       rdev[t] ~ dnorm(0, isigma2)T(proc.pen[2],proc.pen[3])
-      r[t] <- mean.r+dr[t]+rdev[t]-0.5*sigma2   
-      logY.est[t+1] <- logY.est[t] + r[t] 
+      r[t] <- mean.r+dr[t]+rdev[t]   
+      logY.est[t+1] <- logY.est[t] + r[t]-0.5*sigma2 # moved bias correction 
       }
       
       # Carrying Capacity for Projections only
@@ -290,7 +290,7 @@ jara2jags = function(jarainput,jagsdir){
       prjr.dummy <- prjr   
     ",append=TRUE)}else{
       cat(" 
-        r.proj <- mean(mean.r+dr[prjr]+rdev[prjr]-0.5*sigma2) 
+        r.proj <- mean(mean.r+dr[prjr]+rdev[prjr ]-0.5*sigma2) 
         ",append=TRUE)  
     }
     
