@@ -1350,8 +1350,8 @@ jrplot_timeblock <- function(jara,type=c("change","r"),credibility=0.95,probabil
     xlab = paste0("Time-block effect (",tbe[1,1],")") 
   }
   
-  if(type=="change") effect= (exp(tbe[,2])-1)*100
-  if(type=="r") effect = tbe[,2]
+  if(type=="change") effect= (exp(tbe[,"effect"])-1)*100
+  if(type=="r") effect = tbe[,"mean.r"]+tbe[,"effect"]
   
   lymax=rymax = lxrange = lxmax =NULL # maximum and range for plotting
      den = stats::density(effect,adjust=2)
@@ -1372,7 +1372,7 @@ jrplot_timeblock <- function(jara,type=c("change","r"),credibility=0.95,probabil
       
       polygon(c(x,rev(x)),c(y,rep(0,length(y))),col=jcol,border=0)
       mu = ifelse(type=="r",round(median(effect),2),round(median(effect),1))
-      metric = ifelse(mu<0,paste0("-",mu),paste0("+",mu))
+      metric = ifelse(mu<0,paste0(mu),paste0("+",mu))
       metric = ifelse(type=="r",paste0(metric),paste0(metric,"%"))
       quants = c(mu,rbind(HDInterval::hdi(effect,credMass=credibility)))
       polygon(c(x[x<quants[2]],rev(x[x<quants[2]])),c(y[x<quants[2]],rep(0,length(y[x<quants[2]]))),col=jcolci,border=0)
@@ -1387,8 +1387,11 @@ jrplot_timeblock <- function(jara,type=c("change","r"),credibility=0.95,probabil
   if(type=="r") axis(1,at=seq(floor(min(effect)),ceiling(max(effect)),0.02),cex.axis=0.9)
   axis(2,cex.axis=0.9)
   abline(v=0,col="blue")
-  probs = round(mean(effect>0),3)
-  if(probability) legend(legend.pos,paste0("Pr(Effect>0)=",probs) ,pch=-1,col=c(jcol),cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8,bty="n")
+  larger =mean(effect)>0
+  if(larger) probs = round(mean(effect>0),3)
+  if(!larger) probs = round(mean(effect<0),3)
+  
+  if(probability) legend(legend.pos,paste0(ifelse(larger,"Pr(Effect>0)=","Pr(Effect<0)="),probs) ,pch=-1,col=c(jcol),cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8,bty="n")
   box()
   
   if(as.png==TRUE) dev.off()

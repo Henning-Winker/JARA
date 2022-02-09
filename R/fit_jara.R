@@ -427,7 +427,13 @@ fit_jara = function(jarainput,credibility=0.95,
   jara$pop.posterior = pop.posterior
   if(!jara$settings$timeblock){
   jara$timeblock = NULL} else {
-  jara$timeblock = data.frame(year=jara$settings$timeblock,effect=posteriors$mean.dr)  
+  
+  if(jara$settings$model.type=="relative"){ 
+    jara$timeblock = data.frame(year=jara$settings$timeblock,mean.r=posteriors$mean.r,effect=posteriors$mean.dr)  
+  } else {
+    jara$timeblock = data.frame(year=jara$settings$timeblock,mean.r=apply(posteriors$mean.r,1,mean),effect=apply(posteriors$mean.dr,1,mean))  
+  }
+  
   }
 
   

@@ -18,12 +18,14 @@ jara2jags = function(jarainput,jagsdir){
     mean.r[i] ~ dnorm(0, 0.001) 
     logN.est[1,i] ~ dnorm(log(Ninit[i]),pow(0.5,-2))   # Prior for initial population size with CV =100%
     }
+    for(i in 1:nI){
+    mean.dr[i] ~ dnorm(dr.pr[1],dr.pr[2]) # change in r if time-block is speficied
+    }
     
-    mean.dr ~ dnorm(dr.pr[1],dr.pr[2]) # change in r if time-block is speficied
-    
+    for(i in 1:nI){
     for(t in 1:T){
-       dr[t] <- mean.dr*tbvec[t] 
-    } 
+       dr[t,i] <- mean.dr[i]*tbvec[t] 
+    }} 
     
     ")
     
@@ -104,7 +106,7 @@ jara2jags = function(jarainput,jagsdir){
     for(t in 1:(EY-1)){
     rdev[t,i] ~ dnorm(0, isigma2) #T(proc.pen[2],proc.pen[3])
     # Theta-Logistic
-    r[t,i] <- mean.r[i]+dr[t]+ rdev[t,i]- 0.5*sigma2
+    r[t,i] <- mean.r[i]+dr[t,i]+ rdev[t,i]- 0.5*sigma2
     }}
     
     
@@ -120,13 +122,13 @@ jara2jags = function(jarainput,jagsdir){
     if(jarainput$settings$prjr.type=="mean"){
       cat("  
     for (i in 1:nI){
-    r.proj[i] <- mean.r[i]+mean.dr
+    r.proj[i] <- mean.r[i]+mean.dr[i]
     } 
       
      ",append=TRUE)}else{
        cat(" 
    for (i in 1:nI){
-   r.proj[i] <- mean(mean.r[i]+dr[prjr]+ rdev[prjr,i]-0.5*sigma2)} 
+   r.proj[i] <- mean(mean.r[i]+dr[prjr,i]+ rdev[prjr,i]-0.5*sigma2)} 
    ",append=TRUE)  
      }
     
