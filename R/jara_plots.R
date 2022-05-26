@@ -1442,7 +1442,6 @@ jrplot_jointindex <- function(jara,credibility=0.95, output.dir=getwd(),as.png=F
     lines(ji$year,ji$index)
     axis(1,labels=TRUE,cex=0.8)
     axis(2,labels=TRUE,cex=0.8)
-    box()
     arrows(x0=ji$year, y0=ji$lci,
            x1=ji$year, y1=ji$uci,
            length=0.02, angle=90, code=3)
