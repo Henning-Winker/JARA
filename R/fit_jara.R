@@ -152,21 +152,7 @@ fit_jara = function(jarainput,credibility=0.95,
   pvalues
   heidle = coda::heidel.diag(data.frame(par.dat))
   
-  # Bootstrap MCMC by resampling indices with replacement and compute median
-  if(settings$mixed.trends){
-  nmc = nrow(posteriors$K)
-  Ntot= posteriors$Ntot
-  boot.mat = split(matrix(sample(1:n.indices,n.indices*nmc,replace = TRUE),nrow=nmc),seq(nmc))
-  
-  for(y in 1:ncol(posteriors$Ntot)){
-  Ntot[,y] = do.call(c,Map(function(x,y){
-  exp(mean(log(x[y])))
-  },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
-  }
-  posteriors$Ntot  = Ntot
-  } # End of mixed-trend
-  
-  
+ 
   # Capture Results
   results = round(data.frame(cbind(apply(par.dat,2,median),t(HDInterval::hdi(par.dat,credMass=credibility)))),4)
 
@@ -234,6 +220,24 @@ fit_jara = function(jarainput,credibility=0.95,
         for (t in 1:nT){
           Nbias.correct[,t,i] = exp(log(posteriors$N.est[,t,i])-0.5*var(log(posteriors$N.est[,t,i])))
         }}
+    
+    
+    # Bootstrap MCMC by resampling indices with replacement and compute median
+    if(settings$mixed.trends){
+      nmc = nrow(posteriors$K)
+      Ntot= posteriors$Ntot
+      boot.mat = split(matrix(sample(1:n.indices,n.indices*nmc,replace = TRUE),nrow=nmc),seq(nmc))
+      
+      for(y in 1:ncol(posteriors$Ntot)){
+        Ntot[,y] = do.call(c,Map(function(x,y){
+          exp(mean(log(x[y])))
+        },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
+      }
+      posteriors$Ntot  = Ntot
+    } # End of mixed-trend
+    
+    
+    
     
     Nfit <- Nlow <- Nhigh <- as.numeric()
     pop.posterior = NULL

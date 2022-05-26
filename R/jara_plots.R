@@ -742,6 +742,8 @@ jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,wid
 #' @export
 jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab="Normalized index",xlab="Year",plot.cex=0.8,indices="all",index.label=TRUE,add=FALSE){
   
+  
+  
     cat(paste0("\n","><> jrplot_fits() - fits to abudance indices <><","\n"))
     years = jara$yr
     N = length(years)
@@ -1399,5 +1401,61 @@ jrplot_timeblock <- function(jara,type=c("change","r"),credibility=0.95,probabil
   return(out)
   }
 } # End rate of change plot  
+
+
+#' jrplot_jointindex
+#'
+#' Plots timeblock effect or change     
+#' @param jara output jara
+#' @param output.dir directory to save plots
+#' @param as.png save as png file of TRUE
+#' @param width plot width
+#' @param height plot hight
+#' @param ylab option to change y-axis label
+#' @param xlab option to change x-axis label
+#' @param xlim plotting optio
+#' @param plot.cex cex graphic option
+#' @param legend.pos Choose legend position
+#' @param legend.cex legend sizr graphic option
+#' @param add if TRUE par is not called to enable manual multiplots
+#' @export
+#' @author Henning Winker 
+
+jrplot_jointindex <- function(jara,credibility=0.95, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,ylab ="Joint-Index",show.trend=TRUE,xlab="Year",xlim=NULL,plot.cex=0.8,add=FALSE){
+  
+  Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,1,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
+  
+  ji = jointindex(jara)
+  
+  if(as.png==TRUE){png(file = paste0(output.dir,"/JointIndex_",jara$assessment,"_",jara$scenario,".png"), width = width, height = height,
+                       res = 200, units = "in")}
+  if(add==FALSE) par(Par)
+  
+    
+    if(is.null(xlim)){
+     xlim = c(min(ji$year)-1.5,max(ji$year)+1.5)
+    }
+  
+  ylim=c(0,1.05*max(ji$uci,na.rm = TRUE))
+    
+  plot(0,0,type="n",ylab=ylab,xlab=xlab,cex.main=0.9,ylim=c(0,1.05*max(ji$uci,na.rm = TRUE)),xlim=xlim,xaxs="i",yaxs="i") 
+    lines(ji$year,ji$index)
+    axis(1,labels=TRUE,cex=0.8)
+    axis(2,labels=TRUE,cex=0.8)
+    box()
+    arrows(x0=ji$year, y0=ji$lci,
+           x1=ji$year, y1=ji$uci,
+           length=0.02, angle=90, code=3)
+    points(ji$year,ji$index,pch=21,bg="white")
+    if(show.trend) lines(ji$year,ji$trend,col=2,lty=2) 
+  
+    
+    
+    
+    if(as.png==TRUE) dev.off()
+    
+} # End of joint-index plot
+
+
 
 
