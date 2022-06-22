@@ -226,14 +226,23 @@ fit_jara = function(jarainput,credibility=0.95,
     if(settings$mixed.trends){
       nmc = nrow(posteriors$K)
       Ntot= posteriors$Ntot
+      Prop1 = posteriors$Ntot
       boot.mat = split(matrix(sample(1:n.indices,n.indices*nmc,replace = TRUE),nrow=nmc),seq(nmc))
       
       for(y in 1:ncol(posteriors$Ntot)){
-        Ntot[,y] = do.call(c,Map(function(x,y){
-          exp(mean(log(x[y])))
+        Ntot[,y] = do.call(c,Map(function(x,z){
+          exp(mean(log(x[z])))
         },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
       }
       posteriors$Ntot  = Ntot
+      
+      for(y in 1:ncol(posteriors$Ntot)){
+        Prop1[,y] = do.call(c,Map(function(x,z){
+          sum(x[z]>1)/length(x[z])
+        },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
+      }
+      prop.posterior = data.frame(Prop1)
+      colnames(prop.posterior) = year
     } # End of mixed-trend
     
     
@@ -276,6 +285,7 @@ fit_jara = function(jarainput,credibility=0.95,
         hi.ppd[t,i] <- HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[2]}}
     
     
+      
       # Total population
       Nfit <- Nlow <- Nhigh <- as.numeric()
       pop.posterior = NULL
@@ -406,6 +416,8 @@ fit_jara = function(jarainput,credibility=0.95,
   
   pop.posterior = data.frame(  pop.posterior)
   colnames(pop.posterior) = Yr
+  
+
   #jara = list(settings=Settings,data=jags.data,parameters=pars,trends=trends,abundance=abundance.est,perc.risk=data.frame(CR=CR,EN=EN,VU=VU,LC=LC) ,status=status)
   
 
@@ -429,6 +441,7 @@ fit_jara = function(jarainput,credibility=0.95,
   jara$posteriors = trends
   jara$r.prj = r.prj
   jara$pop.posterior = pop.posterior
+  if(settings$mixed.trends) jara$prop.posterior = prop.posterior
   if(!jara$settings$timeblock){
   jara$timeblock = NULL} else {
   

@@ -134,3 +134,46 @@ jr_runs <- function(x,type=NULL,mixing="less") {
 }
 
 
+#' mixed.trend()
+#'
+#' Function to compile combined index
+#' @param jara fit_jara output
+#' @param run name qualifier of data.frame
+#' @param refyr sets index relative to a reference year
+#' @param type c("mu","pr"), note the probability is only available of "mixed.trends" 
+#' @return 
+#' @export
+#' @author Henning Winker (JRC-EC) 
+mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
+  df =jara$pop.posterior
+  if(type=="pr") df =jara$prop.posterior
+  
+  joint = data.frame(Year=jara$yr,Obs=exp(aggregate(log(obs)~year,jara$fit,mean)$`log(obs)`),
+                     n=aggregate(obs~year,jara$fits,length)$obs,
+                     t(apply(df,2,quantile,c(0.025,0.25,0.5,0.75,0.975)))[1:length(jara$yr),])
+  colnames(joint) = c("Year","Obs","n","5%","25%","50%","75%","95%")
+  if(refyr){
+    joint$Obs=joint$Obs/joint$`50%`[1]
+    joint[,-c(1:2)] = joint[,-c(1:2)]/joint$`50%`[1]
+  }
+  joint$run = run
+  return(joint)
+}
+
+#' dfidx()
+#'
+#' Function to compile fits into obs and fit data.frames
+#' @param jara fit_jara output
+#' @param run name qualifier of data.frame
+#' @return 
+#' @export
+#' @author Henning Winker (JRC-EC) 
+dfidx = function(jara,run="obs"){
+  dat=list()
+  dat$i = jara$trj
+  dat$i = dat$i[dat$i$name!="global" & dat$i$estimation=="fit",]
+  dat$i$run=run
+  dat$o = obs=jara$fits
+  dat$o$run=run
+  return(dat)
+}
