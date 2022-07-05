@@ -66,6 +66,12 @@ fit_jara = function(jarainput,credibility=0.95,
   # mcmc saved
   nsaved = (ni-nb)/nt*nc
   
+  if(silent) {
+    progress.bar="none"
+  } else {
+    progress.bar="text"
+  }
+  
   if(!silent) cat(paste0("\n","><> Running  JARA as ",jarainput$settings$model.type," model for ",jarainput$settings$assessment," ",jarainput$settings$scenario," <><","\n"))
   
 
@@ -109,7 +115,7 @@ fit_jara = function(jarainput,credibility=0.95,
 
   ptm <- proc.time()
 
-  jara.mod <- R2jags::jags(jd, inits,params,paste0(jagsdir,"/JARA.jags"), n.chains = nc, n.thin = nt, n.iter = ni, n.burnin = nb)  # adapt is burn-in
+  jara.mod <- R2jags::jags(jd, inits,params,paste0(jagsdir,"/JARA.jags"), n.chains = nc, n.thin = nt, n.iter = ni, n.burnin = nb, quiet=silent, progress.bar = progress.bar)  # adapt is burn-in
 
   proc.time() - ptm
   save.time = proc.time() - ptm

@@ -177,3 +177,51 @@ dfidx = function(jara,run="obs"){
   dat$o$run=run
   return(dat)
 }
+
+
+#' iucn 
+#'
+#' IUCN computes IUCN status for A1 or A2   
+#' @param jara output list from fit_jara
+#' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
+#' @return IUCN classification 
+#' @author Henning Winker, Richard Sherley and Nathan Pacoureau
+#' @export
+iucn <- function(jara, criteria=c("A2","A1")[1]){
+  
+  change= jara$posteriors$pop.change
+  A1 = ifelse(criteria=="A1",TRUE,FALSE)
+  mu.change = round(median(change),1)
+  sign=""
+  if(mu.change>0) sign="+"
+  CR = round(sum(ifelse(change< ifelse(A1,-90,-80),1,0))/length(change)*100,1)
+  EN = round(sum(ifelse(change> ifelse(A1,-90,-80) & change< ifelse(A1,-70,-50),1,0))/length(change)*100,1)
+  VU = round(sum(ifelse(change> ifelse(A1,-70,-50) & change< ifelse(A1,-50,-30),1,0))/length(change)*100,1)
+  LC = round(sum(ifelse(change> -30,1,0))/length(change)*100,1)
+  Decline = round(sum(ifelse(change< 0,1,0))/length(change)*100,1)
+  
+  categories = c("Pr.Decl","change3GL","CR","EN","VU","LC")  
+  percentages = c(CR,EN,VU,LC)
+  status= ifelse(which(percentages==max(percentages))==4 & max(percentages)<50,"NT",categories[3:6][which(percentages==max(percentages))])
+  perc.risk = data.frame(perc.risk=c(Decline,mu.change,percentages))
+  rownames(perc.risk)=categories
+  out = list()
+  out$perc.risk = t(perc.risk)
+  out$status = status
+  
+  return(out)
+}
+
+#' ROC curve Function
+#' @param x observed measure
+#' @param y true or reference measure
+#' @param rfp reference point treshold 
+jrroc <- function(x,y,rfp=NULL){
+  if(is.null(rfp)) rfp = 0
+  Y <- y[order(x, decreasing=F)]
+  curve=data.frame(x=x[order(x, decreasing=F)],
+                   fpr=cumsum(!Y)/sum(!Y), # false positives
+                   tpr=cumsum(Y)/sum(Y)) # true positives
+  pt = curve[which(abs(curve$x-rfp)==min(abs(curve$x-rfp)))[1],2:3]
+  return(list(curve=curve[,2:3],pt=pt,xo=curve[,1]))
+}
