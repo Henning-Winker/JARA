@@ -145,18 +145,19 @@ jr_runs <- function(x,type=NULL,mixing="less") {
 #' @export
 #' @author Henning Winker (JRC-EC) 
 mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
-  df =jara$pop.posterior
-  if(type=="pr") df =jara$prop.posterior
+    df = jara$pop.posterior
+    if (type == "pr") df = jara$prop.posterior
+    joint = data.frame(Year =jara$yr,Obs=NA,n=0) 
+    joint[jara$yr%in%jara$fit$year,]$Obs =exp(aggregate(log(obs) ~ year, jara$fit, mean)$`log(obs)`)
+    joint[jara$yr%in%jara$fit$year,]$n = aggregate(obs~year, jara$fits, length)$obs
+    joint=data.frame(joint,t(apply(df, 2, quantile, c(0.025, 0.25, 0.5, 0.75, 0.975)))[1:length(jara$yr),])
+    colnames(joint) = c("Year", "Obs", "n", "5%", "25%", "50%","75%", "95%")
+    if (refyr) {
+      joint$Obs = joint$Obs/joint$`50%`[1]
+      joint[, -c(1:2)] = joint[, -c(1:2)]/joint$`50%`[1]
+    }
+    joint$run = run
   
-  joint = data.frame(Year=jara$yr,Obs=exp(aggregate(log(obs)~year,jara$fit,mean)$`log(obs)`),
-                     n=aggregate(obs~year,jara$fits,length)$obs,
-                     t(apply(df,2,quantile,c(0.025,0.25,0.5,0.75,0.975)))[1:length(jara$yr),])
-  colnames(joint) = c("Year","Obs","n","5%","25%","50%","75%","95%")
-  if(refyr){
-    joint$Obs=joint$Obs/joint$`50%`[1]
-    joint[,-c(1:2)] = joint[,-c(1:2)]/joint$`50%`[1]
-  }
-  joint$run = run
   return(joint)
 }
 
@@ -212,10 +213,14 @@ iucn <- function(jara, criteria=c("A2","A1")[1]){
   return(out)
 }
 
+#' jrroc
+#'
 #' ROC curve Function
 #' @param x observed measure
 #' @param y true or reference measure
-#' @param rfp reference point treshold 
+#' @param rfp reference point threshold
+#' @return roc list
+#' @export 
 jrroc <- function(x,y,rfp=NULL){
   if(is.null(rfp)) rfp = 0
   Y <- y[order(x, decreasing=F)]
@@ -225,3 +230,10 @@ jrroc <- function(x,y,rfp=NULL){
   pt = curve[which(abs(curve$x-rfp)==min(abs(curve$x-rfp)))[1],2:3]
   return(list(curve=curve[,2:3],pt=pt,xo=curve[,1]))
 }
+
+
+dat=out[,c("bbpa","change")]
+roc=mydas:::roc(dat$bbpa>1,dat$change)
+ggplot(roc)+
+  geom_line(aes(FPR,TPR))+
+  geom_point(aes(FPR,TPR),data=roc[min(abs(roc$reference))==abs(roc$reference),c("FPR","TPR")],col="red",size=5)

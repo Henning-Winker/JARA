@@ -2,7 +2,7 @@
 % Please edit documentation in R/jara_utils.R
 \name{jrroc}
 \alias{jrroc}
-\title{ROC curve Function}
+\title{jrroc}
 \usage{
 jrroc(x, y, rfp = NULL)
 }
@@ -11,7 +11,10 @@ jrroc(x, y, rfp = NULL)
 
 \item{y}{true or reference measure}
 
-\item{rfp}{reference point treshold}
+\item{rfp}{reference point threshold}
+}
+\value{
+roc list
 }
 \description{
 ROC curve Function
