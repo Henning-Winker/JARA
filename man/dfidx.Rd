@@ -12,7 +12,7 @@ dfidx(jara, run = "obs")
 \item{run}{name qualifier of data.frame}
 }
 \value{
-
+data.frame
 }
 \description{
 Function to compile fits into obs and fit data.frames

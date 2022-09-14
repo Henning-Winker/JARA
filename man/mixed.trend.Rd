@@ -16,7 +16,7 @@ mixed.trend(jara, run = "joint", refyr = FALSE, type = c("mu", "pr")[1])
 \item{type}{c("mu","pr"), note the probability is only available of "mixed.trends"}
 }
 \value{
-
+data.frame
 }
 \description{
 Function to compile combined index
