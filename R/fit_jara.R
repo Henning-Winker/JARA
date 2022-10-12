@@ -340,11 +340,11 @@ fit_jara = function(jarainput,credibility=0.95,
       if(abundance=="relative"){
         
       mcmcfit = posteriors$Y.est[,which(is.na(settings$I[,qs[i]+1])==F)]*median(posteriors$q[,i])
-      exp.i <- median(mcmcfit)
-      expLCI.i <- HDInterval::hdi(mcmcfit ,credMass=credibility)[1]
-      expUCI.i <- HDInterval::hdi(mcmcfit,credMass=credibility)[2]
-      ppdLCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[1]
-      ppdUCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[2]
+      exp.i <- apply(mcmcfit,2,median)
+      expLCI.i <- HDInterval::hdi(mcmcfit ,credMass=credibility)[1,]
+      expUCI.i <- HDInterval::hdi(mcmcfit,credMass=credibility)[2,]
+      ppdLCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[1,]
+      ppdUCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[2,]
       if(do.ppc){ # Posterior Predictive Check
         observed = settings$I[is.na(settings$I[,qs[i]+1])==F,qs[i]+1]  
         observed = array(rep(observed,each=nmc),c(nmc,length(observed)))
@@ -355,11 +355,11 @@ fit_jara = function(jarainput,credibility=0.95,
       
       } else {
       mcmcfit = posteriors$N.est[,which(is.na(settings$I[,qs[i]+1])==F),i]
-      exp.i <- median(mcmcfit)
-      expLCI.i <- HDInterval::hdi(mcmcfit ,credMass=credibility)[1]
-      expUCI.i <- HDInterval::hdi(mcmcfit,credMass=credibility)[2]
-      ppdLCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[1]
-      ppdUCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[2]
+      exp.i <- apply(mcmcfit,2,median)
+      expLCI.i <- HDInterval::hdi(mcmcfit ,credMass=credibility)[1,]
+      expUCI.i <- HDInterval::hdi(mcmcfit,credMass=credibility)[2,]
+      ppdLCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[1,]
+      ppdUCI.i = HDInterval::hdi(mcmcppd ,credMass=credibility)[2,]
       if(do.ppc){ # Posterior Predictive Check
         observed = settings$I[is.na(settings$I[,qs[i]+1])==F,qs[i]+1]  
         observed = array(rep(observed,each=nmc),c(nmc,length(observed)))
