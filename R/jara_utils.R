@@ -212,10 +212,14 @@ iucn <- function(jara, criteria=c("A2","A1")[1]){
   return(out)
 }
 
+#' jrroc
+#'
 #' ROC curve Function
 #' @param x observed measure
 #' @param y true or reference measure
-#' @param rfp reference point treshold 
+#' @param rfp reference point threshold
+#' @return roc list
+#' @export 
 jrroc <- function(x,y,rfp=NULL){
   if(is.null(rfp)) rfp = 0
   Y <- y[order(x, decreasing=F)]
@@ -225,3 +229,10 @@ jrroc <- function(x,y,rfp=NULL){
   pt = curve[which(abs(curve$x-rfp)==min(abs(curve$x-rfp)))[1],2:3]
   return(list(curve=curve[,2:3],pt=pt,xo=curve[,1]))
 }
+
+
+dat=out[,c("bbpa","change")]
+roc=mydas:::roc(dat$bbpa>1,dat$change)
+ggplot(roc)+
+  geom_line(aes(FPR,TPR))+
+  geom_point(aes(FPR,TPR),data=roc[min(abs(roc$reference))==abs(roc$reference),c("FPR","TPR")],col="red",size=5)
