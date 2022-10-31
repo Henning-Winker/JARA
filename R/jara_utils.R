@@ -147,8 +147,12 @@ jr_runs <- function(x,type=NULL,mixing="less") {
 mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
   df =jara$pop.posterior
   if(type=="pr") df =jara$prop.posterior
+  if(jara$settings$mixed.scale=="geomean")
+      Obs = exp(aggregate(log(obs)~year,jara$fit,mean)$`log(obs)`)
+  if(jara$settings$mixed.scale=="mean")
+      Obs = (aggregate(obs~year,jara$fit,mean)$obs)
   
-  joint = data.frame(Year=jara$yr,Obs=exp(aggregate(log(obs)~year,jara$fit,mean)$`log(obs)`),
+  joint = data.frame(Year=jara$yr,Obs=Obs,
                      n=aggregate(obs~year,jara$fits,length)$obs,
                      t(apply(df,2,quantile,c(0.025,0.25,0.5,0.75,0.975)))[1:length(jara$yr),])
   colnames(joint) = c("Year","Obs","n","5%","25%","50%","75%","95%")

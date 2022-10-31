@@ -237,8 +237,9 @@ fit_jara = function(jarainput,credibility=0.95,
       
       for(y in 1:ncol(posteriors$Ntot)){
         Ntot[,y] = do.call(c,Map(function(x,z){
-          exp(mean(log(x[z])))
-        },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
+          if(settings$mixed.scale=="geomean") exp(mean(log(x[z])))
+          if(settings$mixed.scale=="mean") mean(x[z])
+          },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
       }
       posteriors$Ntot  = Ntot
       
