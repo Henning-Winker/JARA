@@ -141,7 +141,7 @@ jr_runs <- function(x,type=NULL,mixing="less") {
 #' @param run name qualifier of data.frame
 #' @param refyr sets index relative to a reference year
 #' @param type c("mu","pr"), note the probability is only available of "mixed.trends" 
-#' @return 
+#' @return data.frame
 #' @export
 #' @author Henning Winker (JRC-EC) 
 mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
@@ -169,7 +169,7 @@ mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
 #' Function to compile fits into obs and fit data.frames
 #' @param jara fit_jara output
 #' @param run name qualifier of data.frame
-#' @return 
+#' @return data.frame
 #' @export
 #' @author Henning Winker (JRC-EC) 
 dfidx = function(jara,run="obs"){
@@ -233,10 +233,3 @@ jrroc <- function(x,y,rfp=NULL){
   pt = curve[which(abs(curve$x-rfp)==min(abs(curve$x-rfp)))[1],2:3]
   return(list(curve=curve[,2:3],pt=pt,xo=curve[,1]))
 }
-
-
-dat=out[,c("bbpa","change")]
-roc=mydas:::roc(dat$bbpa>1,dat$change)
-ggplot(roc)+
-  geom_line(aes(FPR,TPR))+
-  geom_point(aes(FPR,TPR),data=roc[min(abs(roc$reference))==abs(roc$reference),c("FPR","TPR")],col="red",size=5)
