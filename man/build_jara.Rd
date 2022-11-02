@@ -10,7 +10,7 @@ build_jara(
   assessment = "Unnamed",
   scenario = "s1",
   model.type = c("relative", "census")[1],
-  mixed.scale = c("geomean", "mean"),
+  mixed.scale = c("geomean", "mean")[1],
   GL = NULL,
   start.year = NA,
   end.year = NA,
