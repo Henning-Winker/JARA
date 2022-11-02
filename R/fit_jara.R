@@ -235,12 +235,21 @@ fit_jara = function(jarainput,credibility=0.95,
       Prop1 = posteriors$Ntot
       boot.mat = split(matrix(sample(1:n.indices,n.indices*nmc,replace = TRUE),nrow=nmc),seq(nmc))
       
+      if(settings$mixed.scale=="geomean"){
       for(y in 1:ncol(posteriors$Ntot)){
         Ntot[,y] = do.call(c,Map(function(x,z){
-          if(settings$mixed.scale=="geomean") exp(mean(log(x[z])))
-          if(settings$mixed.scale=="mean") mean(x[z])
+          exp(mean((x[z])))
           },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
       }
+      }
+      if(settings$mixed.scale=="mean"){
+        for(y in 1:ncol(posteriors$Ntot)){
+          Ntot[,y] = do.call(c,Map(function(x,z){
+            mean(x[z])
+          },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
+        } 
+      }
+      
       posteriors$Ntot  = Ntot
       
       for(y in 1:ncol(posteriors$Ntot)){
