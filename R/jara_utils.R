@@ -152,9 +152,9 @@ mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
   if(jara$settings$mixed.scale=="mean")
       Obs = (aggregate(obs~year,jara$fit,mean)$obs)
   
-  joint = data.frame(Year=jara$yr,Obs=Obs,
+  joint = data.frame(Year=aggregate(obs~year,jara$fits,length)$year,Obs=Obs,
                      n=aggregate(obs~year,jara$fits,length)$obs,
-                     t(apply(df,2,quantile,c(0.025,0.25,0.5,0.75,0.975)))[1:length(jara$yr),])
+                     t(apply(df,2,quantile,c(0.025,0.25,0.5,0.75,0.975)))[1:length(aggregate(obs~year,jara$fits,length)$year),])
   colnames(joint) = c("Year","Obs","n","5%","25%","50%","75%","95%")
   if(refyr){
     joint$Obs=joint$Obs/joint$`50%`[1]
