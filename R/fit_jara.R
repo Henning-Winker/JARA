@@ -250,6 +250,15 @@ fit_jara = function(jarainput,credibility=0.95,
         } 
       }
       
+      if(settings$mixed.scale=="median"){
+        for(y in 1:ncol(posteriors$Ntot)){
+          Ntot[,y] = do.call(c,Map(function(x,z){
+            median(x[z])
+          },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
+        } 
+      }
+      
+      
       posteriors$Ntot  = Ntot
       
       for(y in 1:ncol(posteriors$Ntot)){

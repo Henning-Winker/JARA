@@ -151,7 +151,8 @@ mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
       Obs = exp(aggregate(log(obs)~year,jara$fit,mean)$`log(obs)`)
   if(jara$settings$mixed.scale=="mean")
       Obs = (aggregate(obs~year,jara$fit,mean)$obs)
-  
+  if(jara$settings$mixed.scale=="median")
+    Obs = (aggregate(obs~year,jara$fit,median)$obs)
   joint = data.frame(Year=aggregate(obs~year,jara$fits,length)$year,Obs=Obs,
                      n=aggregate(obs~year,jara$fits,length)$obs,
                      t(apply(df,2,quantile,c(0.025,0.25,0.5,0.75,0.975)))[1:length(aggregate(obs~year,jara$fits,length)$year),])

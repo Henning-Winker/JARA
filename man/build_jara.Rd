@@ -10,7 +10,7 @@ build_jara(
   assessment = "Unnamed",
   scenario = "s1",
   model.type = c("relative", "census")[1],
-  mixed.scale = c("geomean", "mean")[1],
+  mixed.scale = c("geomean", "mean", "median")[1],
   GL = NULL,
   start.year = NA,
   end.year = NA,
@@ -40,7 +40,7 @@ build_jara(
 
 \item{model.type}{abundance data type c("relative","census","mixed.trends")}
 
-\item{mixed.scale}{choice if "mixed.trends" are presented by the geomean or mean}
+\item{mixed.scale}{choice if "mixed.trends" are presented by the geomean, mean or median}
 
 \item{GL}{Generation length (default n.years/3)}
 

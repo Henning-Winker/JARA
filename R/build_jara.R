@@ -6,7 +6,7 @@
 #' @param assessment = "species.X",
 #' @param scenario = "s1",
 #' @param model.type abundance data type c("relative","census","mixed.trends")
-#' @param mixed.scale choice if "mixed.trends" are presented by the geomean or mean
+#' @param mixed.scale choice if "mixed.trends" are presented by the geomean, mean or median
 #' @param GL Generation length (default n.years/3)
 #' @param start.year subsetting option for start year
 #' @param end.year subsetting option for end year
@@ -37,7 +37,7 @@
 
 build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
               scenario = "s1",model.type = c("relative","census")[1],
-              mixed.scale = c("geomean","mean")[1], 
+              mixed.scale = c("geomean","mean","median")[1], 
               GL=NULL, 
               start.year = NA,
               end.year = NA,
