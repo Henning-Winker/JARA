@@ -76,6 +76,7 @@ if(as.png==TRUE) dev.off()
 #' @param width plot width
 #' @param height plot hight
 #' @param criteria A1 or A2 for decline
+#' @param NT plot NT or not ##NP
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @param xlim graphic option c(min,max)
 #' @param ylimadj multiplier to adjust upper ylim 
@@ -89,7 +90,10 @@ if(as.png==TRUE) dev.off()
 #' @return IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
-jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylimadj=1.1,legend.cex=0.9,criteria=c("A2","A1")[1],iucn.cols=TRUE,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
+jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylimadj=1.1,legend.cex=0.9,criteria=c("A2","A1")[1]
+                        ,NT_opt=c(T,F)[1] ##NP
+                        # ,iucn.cols=TRUE
+                        ,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
   
   #cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
   change= jara$posteriors$pop.change
@@ -100,17 +104,50 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   mu.change = round(median(change),1)
   sign=""
   if(mu.change>0) sign="+"
-  CR = round(sum(ifelse(change< ifelse(A1,-90,-80),1,0))/length(change)*100,1)
-  EN = round(sum(ifelse(change> ifelse(A1,-90,-80) & change< ifelse(A1,-70,-50),1,0))/length(change)*100,1)
-  VU = round(sum(ifelse(change> ifelse(A1,-70,-50) & change< ifelse(A1,-50,-30),1,0))/length(change)*100,1)
-  LC = round(sum(ifelse(change> -30,1,0))/length(change)*100,1)
+  ##NP
+  CR = sum(ifelse(change<= ifelse(A1,-90,-80),1,0))/length(change)*100
+  EN = sum(ifelse(change> ifelse(A1,-90,-80) & change<= ifelse(A1,-70,-50),1,0))/length(change)*100
+  VU = sum(ifelse(change> ifelse(A1,-70,-50) & change<= ifelse(A1,-50,-30),1,0))/length(change)*100
+  if(NT_opt==T){
+    NT = sum(ifelse(change> ifelse(A1,-50,-30) & change<= ifelse(A1,-40,-20),1,0))/length(change)*100
+    LC = sum(ifelse(change> ifelse(A1,-40,-20),1,0))/length(change)*100
+    old_status <- c(CR,EN,VU,NT,LC)
+  } else {
+    LC = sum(ifelse(change> -30,1,0))/length(change)*100
+    old_status <- c(CR,EN,VU,LC)
+  }
+  ##NP
+  
   Decline = round(sum(ifelse(change< 0,1,0))/length(change)*100,1)
   
-  if(iucn.cols==T){
-    cols = c("#60C659","lightgreen","#F9E814","#FC7F3F","#D81E05")[c(1,3:5)] # green to red
-  } else {
-    cols=c("green","lightgreen","yellow","orange","red")[c(1,3:5)]  
+  ##NP round with sum=real sum
+  round_realsum <- function(x, digits = 0) {
+    y <- floor(x)
+    indices <- tail(order(x-y), round(sum(x)) - sum(y))
+    y[indices] <- y[indices] + 1
+    y
   }
+  ##NP
+  
+  ##NP
+  if(sum(round(old_status,0))!=100){
+    CR = round_realsum(old_status,0)[1]
+    EN = round_realsum(old_status,0)[2]
+    VU = round_realsum(old_status,0)[3]
+    if(NT_opt==T){
+      NT = round_realsum(old_status,0)[4]
+      LC = round_realsum(old_status,0)[5]
+    } else {
+      LC = round_realsum(old_status,0)[4]
+    }
+  } else{
+    CR=round(CR,0)
+    EN=round(EN,0)
+    VU=round(VU,0)
+    if(NT_opt==T){NT=round(NT,0)}
+    LC=round(LC,0)
+  }
+  ##NP
   
   if(Plot==TRUE){
     Par = list(mfrow=c(1,1),mar = c(4, 4, 1, 1), mgp =c(2.5,0.5,0),mai = c(0.6, 0.6, 0.1, 0.1),mex=0.8, tck = -0.02,cex=plot.cex)
@@ -122,25 +159,62 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     
     plot(x1,y1,type="n",xlim=xlim,ylim=ylim,ylab=ylab,xlab=xlab,cex.main=0.9,frame=TRUE,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
     maxy = max(ylim)
-    x2 = c(ifelse(A1,-50,-30),1500); y2 = c(0,5)
-    polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col=cols[1],border=cols[1])
-    x3 = c(ifelse(A1,-70,-50),x2[1])
-    polygon(c(x3,rev(x3)),c(rep(maxy,2),rev(rep(0,2))),col=cols[2],border=cols[2])
-    x4 = c(ifelse(A1,-90,-80),x3[1])
-    polygon(c(x4,rev(x4)),c(rep(maxy,2),rep(0,2)),col=cols[3],border=cols[3])
-    x5 = c(-100,x4[1])
-    polygon(c(x5,rev(x5)),c(rep(maxy,2),rep(0,2)),col=cols[4],border=cols[4])
+    ##NP
+    if(NT_opt==T){
+      x2 = c(ifelse(A1,-40,-20),1500); y2 = c(0,5)
+      polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col="#60C659",border="#60C659") ## NP   LC
+      x3 = c(ifelse(A1,-50,-30),x2[1])
+      polygon(c(x3,rev(x3)),c(rep(maxy,2),rev(rep(0,2))),col="#CCE226",border="#CCE226") ## NP   NT
+    } else {
+      x3 = c(ifelse(A1,-50,-30),1500); y7 = c(0,5)
+      polygon(c(x3,rev(x3)),c(rep(maxy,2),rev(rep(0,2))),col="#60C659",border="#60C659") ## NP   LC
+    }
+    x4 = c(ifelse(A1,-70,-50),x3[1])
+    polygon(c(x4,rev(x4)),c(rep(maxy,2),rev(rep(0,2))),col="#F9E814",border="#F9E814")## NP   VU
+    x5 = c(ifelse(A1,-90,-80),x4[1])
+    polygon(c(x5,rev(x5)),c(rep(maxy,2),rep(0,2)),col="#FC7F3F",border="#FC7F3F")## NP   EN
+    x6 = c(-100,x5[1])
+    polygon(c(x6,rev(x6)),c(rep(maxy,2),rep(0,2)),col="#D81E05",border="#D81E05")## NP   CR
+    ##NP    
     
     polygon(c(x1,rev(x1)),c(y1,rep(0,length(y1))),col="grey")
-    axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
-    legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
-                     paste0("VU (",VU,"%)"),paste0("LC (",LC,"%)")),col=1,pt.bg=c("red","orange","yellow","green"),pt.cex=1.2,pch=22,bg="white",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
-    text(ifelse(mean(change)< -80,-80,mean(change)),max(y1*1.05),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1)
+    box()    ##NP    
     
+    
+    axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
+    if(NT_opt==T){
+      legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
+                       paste0("VU (",VU,"%)"),paste0("NT (",NT,"%)"), paste0("LC (",LC,"%)")),col=1,pt.bg=c("#D81E05","#FC7F3F","#F9E814","#CCE226","#60C659"),pt.cex=1.3,pch=22,bg="white",cex=legend.cex+.3,y.intersp = 0.8,x.intersp = 0.8)
+    } else {
+      legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
+                       paste0("VU (",VU,"%)"), paste0("LC (",LC,"%)")),col=1,pt.bg=c("#D81E05","#FC7F3F","#F9E814","#60C659"),pt.cex=1.3,pch=22,bg="white",cex=legend.cex+.3,y.intersp = 0.8,x.intersp = 0.8)
+      
+    }
+    ##NP
+    abline(v=mu.change, lty=2, col= 'grey30') 
+    usr <- par("usr")   # save old user/default/system coordinates
+    par(usr = c(0, 1, 0, 1)) # new relative user coordinates
+    mu.change.parusr <- (mu.change-xlim[1])/(xlim[2]-xlim[1])
+    if(mu.change.parusr>.87){pos.txt.change <- .87} else{
+      if(mu.change.parusr<.13){pos.txt.change <- .13
+      } else {
+        pos.txt.change <- mu.change.parusr
+      }
+    }
+    text(pos.txt.change,.97,paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1) ##NP
+    par(usr = usr) # restore original user coordinates
+    ##NP
+    
+    # text(ifelse(mu.change< -80,-80,mu.change),max(y1*1.05),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1) ##NP
     if(as.png==TRUE) dev.off()
   } # End IUCN Plot = TRUE
-  categories = c("Pr.Decl","change3GL","CR","EN","VU","LC")  
-  percentages = c(CR,EN,VU,LC)
+  if(NT_opt==T){
+    categories = c("Pr.Decl","change3GL","CR","EN","VU","NT","LC")  
+    percentages = c(CR,EN,VU,NT,LC)
+  } else {
+    categories = c("Pr.Decl","change3GL","CR","EN","VU","LC")  
+    percentages = c(CR,EN,VU,LC)
+  }
   status= ifelse(which(percentages==max(percentages))==4 & max(percentages)<50,"NT",categories[3:6][which(percentages==max(percentages))])
   perc.risk = data.frame(perc.risk=c(Decline,mu.change,percentages))
   rownames(perc.risk)=categories
@@ -150,6 +224,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   
   return(out)
 }
+
 
 
 
