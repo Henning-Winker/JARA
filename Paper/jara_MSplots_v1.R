@@ -41,7 +41,7 @@ jr2 = build_jara(I=dat$I,se=dat$SE,
 # Fit JARA
 fit2 = fit_jara(jr2,save.jara = T,ni=ni, nb=nb, nt=nt, nc=nc)   
 
-# Run Whitespotted Smoothhound 
+# Run Whitespot Smoothhound 
 i = 7
 sp = jara.examples$assessment[i]
 pars =  jara.examples[i,]
@@ -245,6 +245,50 @@ dev.print(jpeg,paste0(getwd(),"/",plname,".jpg"), width = pwidth, height = pheig
 dev.print(pdf,paste0(getwd(),"/",plname,".pdf"), width = pwidth, height = pheight)
 dev.off()
 
+#******************************************
+# Figure S1 to S3: SA Elasmobranchs Diagnostics
+#******************************************
+plname = "FigS1"
+pwidth = 6
+pheight = 6.5
+res=300
+adj=-.15
+quartz(width=pwidth,height=pheight) # use windows for PC, quartz for Mac
+jrpar(mfrow=c(3,2),labs=T,plot.cex=1)
+jrplot_fits(fit1,add=T)
+dev.print(tiff,paste0(getwd(),"/",plname,"_hires.tiff"), width = pwidth, height = pheight, res = res, units = "in")
+dev.print(jpeg,paste0(getwd(),"/",plname,".jpg"), width = pwidth, height = pheight, res = res, units = "in")
+dev.print(pdf,paste0(getwd(),"/",plname,".pdf"), width = pwidth, height = pheight)
+dev.off()
+
+plname = "FigS2"
+pwidth = 6
+pheight = 6.5
+res=300
+adj=-.15
+quartz(width=pwidth,height=pheight) # use windows for PC, quartz for Mac
+jrpar(mfrow=c(3,2),labs=T,plot.cex=1)
+jrplot_logfits(fit1,add=T)
+dev.print(tiff,paste0(getwd(),"/",plname,"_hires.tiff"), width = pwidth, height = pheight, res = res, units = "in")
+dev.print(jpeg,paste0(getwd(),"/",plname,".jpg"), width = pwidth, height = pheight, res = res, units = "in")
+dev.print(pdf,paste0(getwd(),"/",plname,".pdf"), width = pwidth, height = pheight)
+dev.off()
+
+
+fit1ppc = fit_jara(jr1,save.jara = F,ni=ni, nb=nb, nt=nt, nc=nc, do.ppc = TRUE)
+plname = "FigS3"
+pwidth = 5
+pheight = 5.5
+res=300
+adj=-.15
+quartz(width=pwidth,height=pheight) # use windows for PC, quartz for Mac
+jrpar(mfrow=c(3,2),labs=T,plot.cex=1)
+temp<- jrplot_PPC(fit1ppc)
+mtext(paste0("Combined = ",round(temp$Bayesian.p[7],3)), side=3, outer=T,line=0.3,cex=1.,c(0.5))
+dev.print(tiff,paste0(getwd(),"/",plname,"_hires.tiff"), width = pwidth, height = pheight, res = res, units = "in")
+dev.print(jpeg,paste0(getwd(),"/",plname,".jpg"), width = pwidth, height = pheight, res = res, units = "in")
+dev.print(pdf,paste0(getwd(),"/",plname,".pdf"), width = pwidth, height = pheight)
+dev.off()
 
 #******************************************
 # Figure S5: SA Elasmobranchs Retrospectives
