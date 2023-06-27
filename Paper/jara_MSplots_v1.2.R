@@ -15,7 +15,8 @@ devtools::install_github("henning-winker/jara",force=T)
 
 # load pakage
 library(JARA)
-# load data
+
+# remove comments and run these lines to view the data and parameters for each of the 7 example datasets
 # jara.examples # Inputs
 # jrdat # Indices
 
@@ -33,6 +34,7 @@ i = 8
 sp = jara.examples$assessment[i]
 pars =  jara.examples[i,]
 dat = jrdat$Yellowspot_skate
+
 # Build JARA input 
 jr2 = build_jara(I=dat$I,se=dat$SE,
                  assessment=sp,
