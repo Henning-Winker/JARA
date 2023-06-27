@@ -6,8 +6,8 @@
 # github.com/henning-winker/JARA 
 #
 # Henning Winker (henning.winker@gmail.com) 
-# Richard Sherley (r.sherley@exeter.ac.uk)
 # Nathan Pacoureau (n.pacoureau@gmail.com)
+# Richard Sherley (r.sherley@exeter.ac.uk)
 #><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
 
 # Install JARA
