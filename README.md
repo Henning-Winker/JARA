@@ -1,10 +1,3 @@
-##--
-title: "JARA: Just Another Redlist Assessment"
-author: "Henning Winker, Nathan Pacoureau & Richard Sherley 
-date: "Cape Town, 2020"
-output: html_document
-##---
-
 # JARA: Just Another Redlist Assessment
 
 ### Henning Winker, Nathan Pacoureau & Richard Sherley
