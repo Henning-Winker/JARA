@@ -1,8 +1,9 @@
-# JARA: Just Another Redlist Assessment
+# JARA: Just Another Red-list Assessment
+
 
 ### Henning Winker, Nathan Pacoureau & Richard Sherley
 
-JARA (*Just Another Redlist Assessment*) is a Bayesian state-space trend analysis tool that is designed to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. To ensure to a high degree of transparency and reproducibility, JARA has now implemented as an R package that hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). 
+JARA (*Just Another Red-list Assessment*) is a Bayesian state-space trend analysis tool that is designed to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. To ensure to a high degree of transparency and reproducibility, JARA has now implemented as an R package that hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). 
 Installing JARA requires the `librabry(devtools)`, which can be install by 'install.packages('devtools')' and a R version >= 3.5. Then simply install JARA from github with the command:
 
 `install_github("henning-winker/JARA")`
@@ -11,12 +12,12 @@ Installing JARA requires the `librabry(devtools)`, which can be install by 'inst
 
 The name ‘Just Another Red List Assessment’ is a reference to [JAGS](https://sourceforge.net/projects/mcmc-jags/) (Just Another Gibbs Sampler, Plummer, 2003), which is the software called from R to run the Bayesian state-space model application. The name reference, together with user-friendly R interface and modulated coding structure of JARA follows the example of the new open source fisheries stock assessment R Package ‘Just Another Bayesian Biomass Assessment‘ ([`JABBA`](https://github.com/jabbamodel/JABBA); [Winker et al. 2018](https://www.sciencedirect.com/science/article/pii/S0165783618300845))
   
-The fully commented R JARA functions enable to easy adjustments of the input data and parameters by conservation practitioners to apply JARA to their count or relative abundance data. We provide a detailed Technical Documentation of JARA in the form of a Preprint Draft ([Winker and Sherley, 2019](https://www.biorxiv.org/content/biorxiv/early/2019/08/19/672899.full.pdf)) available on [bioRxiv](https://www.biorxiv.org/content/10.1101/672899v2.article-info). We provide an easy "test-drive" of the JARA options [`JARApkg_TestDrive.R`](https://github.com/Henning-Winker/JARA/blob/master/JARApkg_Testdrive.R). Worked examples of the following seven datasets compiled in  [`jaradata`](https://github.com/Henning-Winker/JARA/tree/master/data) can be reproduced by running [`JARA_7examples.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_7examples.R)
+The fully commented R JARA functions enable to easy adjustments of the input data and parameters by conservation practitioners to apply JARA to their count or relative abundance data. We provide a detailed Technical Documentation of JARA in the form of a Preprint Draft ([Winker, Pacoureau & Sherley, 2020](https://www.biorxiv.org/content/biorxiv/early/2019/08/19/672899.full.pdf)) available on [bioRxiv](https://www.biorxiv.org/content/10.1101/672899v3.article-info). We provide an easy "test-drive" of the JARA options [`JARApkg_TestDrive.R`](https://github.com/Henning-Winker/JARA/blob/master/JARApkg_Testdrive.R). Worked examples of the following seven datasets compiled in  [`jaradata`](https://github.com/Henning-Winker/JARA/tree/master/data) can be reproduced by running [`JARA_7examples.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_7examples.R)
 
 - [Cape gannet](https://www.tandfonline.com/doi/abs/10.2989/00306525.2019.1684396) (Breeding pair counts from multiple colonies)  
-- African Penguin (Breeding pair counts from multiple colonies)  
+- [African Penguin](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6554) (Breeding pair counts from multiple colonies)  
 - [Mountain Zebra](https://www.researchgate.net/publication/338510670_Population_trends_and_management_strategy_tools_for_Cape_Mountain_Zebra) (Census data with Carrying Capacity option)
-- [Yellowspotted skate](https://github.com/Henning-Winker/JARA/tree/master/YellowspottedSkate) <i>Leucoraja wallacei</i> (South African demersal survey abudance indices)
+- [Yellowspotted skate](https://github.com/Henning-Winker/JARA/tree/master/YellowspottedSkate) <i>Leucoraja wallacei</i> (South African demersal survey abundance indices)
 - [Smoothhound shark](https://www.researchgate.net/publication/338491221_Assessment_of_smoothhound_shark_Mustelus_mustelus_in_South_Africa) <i>Mustelus mustelus</i> (Combining South African demersal survey indices and recreational angling survey indices from the De Hoop MPA)
 - Indian Ocean Striped Marlin (Fitting multiple fisheries Catch-Per-Unit Effort (CPUE) from the [2018 IOTC Striped Marlin Assessment](https://www.iotc.org/documents/WPB/16/16-MLS_JABBA))  
 - [2018 ICCAT Atlantic Blue Marlin stock assessment](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) (Comparing estimated Biomass trends and fitted CPUE indices) 
@@ -25,7 +26,7 @@ The JARA framework provides the option to simultaniously fit multiple relative a
 
 <img src="https://github.com/Henning-Winker/JARA/blob/master/JARAplotting/Indices2x1.png" width = "800" >
 
-<i> <b> Figure 1.</b> (a) Relative abudance abundance indices with 95% CIs for smoothhound shark <i>Mustelus mustelus</i>, depecting for abudance indices from demersal trawl surveys along the South African South Coast and one from research angling surveys conducted in the De Hoop MPA and (b) Standardized Catch-Per-Unit-Effort indices for Indian Striped marlin.
+<i> <b> Figure 1.</b> (a) Relative abundance indices with 95% CIs for smoothhound shark <i>Mustelus mustelus</i>, depecting for abundance indices from demersal trawl surveys along the South African South Coast and one from research angling surveys conducted in the De Hoop MPA and (b) Standardized Catch-Per-Unit-Effort indices for Indian Striped marlin.
 </i>.
 <br />
 <br />
