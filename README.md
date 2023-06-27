@@ -1,5 +1,6 @@
 # JARA: Just Another Red-list Assessment
 
+
 ### Henning Winker, Nathan Pacoureau & Richard Sherley
 
 JARA (*Just Another Red-list Assessment*) is a Bayesian state-space trend analysis tool that is designed to objectively incorporate uncertainty into the IUCN Red Listing evaluation process. To ensure to a high degree of transparency and reproducibility, JARA has now implemented as an R package that hosted online on the global open-source platform GitHub (https://github.com/henning-winker/JARA). 
