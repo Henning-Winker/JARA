@@ -14,13 +14,13 @@ The name ‘Just Another Red List Assessment’ is a reference to [JAGS](https:/
   
 The fully commented R JARA functions enable to easy adjustments of the input data and parameters by conservation practitioners to apply JARA to their count or relative abundance data. We provide a detailed Technical Documentation of the JARA R package in the form of a preprint draft ([Winker, Pacoureau & Sherley, 2020](https://www.biorxiv.org/content/biorxiv/early/2019/08/19/672899.full.pdf)) available on [bioRxiv](https://www.biorxiv.org/content/10.1101/672899v3.article-info). Code to reproduce the main figures in the preprint is available as ['jara_MSplots_v1.2.R'](https://github.com/Henning-Winker/JARA/blob/master/Paper/jara_MSplots_v1.2.R). The following seven datasets are made available with the JARA library and upon loading the library can be accessed via the 'jrdat' command.  They are also compiled in  [`jaradata`](https://github.com/Henning-Winker/JARA/tree/master/data) and worked examples of each can be reproduced by running [`JARA_7examples.R`](https://github.com/Henning-Winker/JARA/blob/master/JARA_7examples.R)
 
-- [Cape gannet](https://www.tandfonline.com/doi/abs/10.2989/00306525.2019.1684396) (Breeding pair counts from multiple colonies)  
-- [African Penguin](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6554) (Breeding pair counts from multiple colonies)  
-- [Mountain Zebra](https://www.researchgate.net/publication/338510670_Population_trends_and_management_strategy_tools_for_Cape_Mountain_Zebra) (Census data with Carrying Capacity option)
+- [Cape gannet](https://www.tandfonline.com/doi/abs/10.2989/00306525.2019.1684396) <i>Morus capensis</i> (Breeding counts, in thousands of pairs, from the species' six breeding colonies)
+- [African Penguin](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6554) <i>Spheniscus demersus</i> (Breeding pair counts from 11 major colonies in South Africa and Namibia)
+- [Cape Mountain Zebra](https://www.researchgate.net/publication/338510670_Population_trends_and_management_strategy_tools_for_Cape_Mountain_Zebra) <i>Equus zebra zebra</i> (Census data with Carrying Capacity option. Counts of individuals from 9 protected areas in South Africa)
 - [Yellowspotted skate](https://github.com/Henning-Winker/JARA/tree/master/YellowspottedSkate) <i>Leucoraja wallacei</i> (South African demersal survey abundance indices)
 - [Smoothhound shark](https://www.researchgate.net/publication/338491221_Assessment_of_smoothhound_shark_Mustelus_mustelus_in_South_Africa) <i>Mustelus mustelus</i> (Combining South African demersal survey indices and recreational angling survey indices from the De Hoop MPA)
-- Indian Ocean Striped Marlin (Fitting multiple fisheries Catch-Per-Unit Effort (CPUE) from the [2018 IOTC Striped Marlin Assessment](https://www.iotc.org/documents/WPB/16/16-MLS_JABBA))  
-- [2018 ICCAT Atlantic Blue Marlin stock assessment](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) (Comparing estimated Biomass trends and fitted CPUE indices) 
+- [Striped Marlin](https://www.iotc.org/documents/WPB/16/16-MLS_JABBA) <i>Tetrapturus audax</i> (Fitting multiple fisheries Catch-Per-Unit Effort (CPUE) dataset from the Indian Ocean from the 2018 IOTC Striped Marlin Assessment)
+- [Atlantic Blue Marlin](https://www.iccat.int/Documents/SCRS/DetRep/BUM_SA_ENG.pdf) <i>Makaira nigricans</i> (Comparing estimated Biomass trends and fitted CPUE indices from the 2018 ICCAT stock assessment) 
 
 The JARA framework provides the option to simultaniously fit multiple relative abundance indices and estimate the underlying mean trend (Figure 1). 
 
