@@ -448,7 +448,7 @@ fit_jara = function(jarainput,credibility=0.95,
     if(n.years>3*GL) rs = cbind(rs,apply(posteriors$r[,(n.years-round(GL*3,0)+1):(n.years)],1,median))
   }
   
-  change = (apply(posteriors$Ntot[,(settings$mp.assess[2]-1):(settings$mp.assess[2]+1)],1,median)/apply(posteriors$Ntot[,(settings$mp.assess[1]-1):(settings$mp.assess[1]+1)],1,median)-1)*100
+  change = (apply(pop.posterior[,(settings$mp.assess[2]-1):(settings$mp.assess[2]+1)],1,median)/apply(pop.posterior[,(settings$mp.assess[1]-1):(settings$mp.assess[1]+1)],1,median)-1)*100
   cnam = c("All.yrs","1GL","2GL","3GL")  
   trends =  data.frame(change,rs)
   colnames(trends ) = c("pop.change",paste0("r.",cnam[1:ncol(rs)]))
