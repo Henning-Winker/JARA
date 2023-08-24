@@ -76,7 +76,7 @@ if(as.png==TRUE) dev.off()
 #' @param width plot width
 #' @param height plot hight
 #' @param criteria A1 or A2 for decline
-#' @param NT plot NT or not ##NP
+#' @param NT_opt plot NT or not ##NP
 #' @param add if TRUE par is not called to enable manual multiplots
 #' @param xlim graphic option c(min,max)
 #' @param ylimadj multiplier to adjust upper ylim 
@@ -91,7 +91,7 @@ if(as.png==TRUE) dev.off()
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
 jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylimadj=1.1,legend.cex=0.9,criteria=c("A2","A1")[1]
-                        ,NT_opt=c(T,F)[1] ##NP
+                        ,NT_opt=c(TRUE,FALSE)[1] ##NP
                         # ,iucn.cols=TRUE
                         ,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
   
@@ -108,7 +108,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   CR = sum(ifelse(change<= ifelse(A1,-90,-80),1,0))/length(change)*100
   EN = sum(ifelse(change> ifelse(A1,-90,-80) & change<= ifelse(A1,-70,-50),1,0))/length(change)*100
   VU = sum(ifelse(change> ifelse(A1,-70,-50) & change<= ifelse(A1,-50,-30),1,0))/length(change)*100
-  if(NT_opt==T){
+  if(NT_opt==TRUE){
     NT = sum(ifelse(change> ifelse(A1,-50,-30) & change<= ifelse(A1,-40,-20),1,0))/length(change)*100
     LC = sum(ifelse(change> ifelse(A1,-40,-20),1,0))/length(change)*100
     old_status <- c(CR,EN,VU,NT,LC)
@@ -134,7 +134,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     CR = round_realsum(old_status,0)[1]
     EN = round_realsum(old_status,0)[2]
     VU = round_realsum(old_status,0)[3]
-    if(NT_opt==T){
+    if(NT_opt==TRUE){
       NT = round_realsum(old_status,0)[4]
       LC = round_realsum(old_status,0)[5]
     } else {
@@ -144,7 +144,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     CR=round(CR,0)
     EN=round(EN,0)
     VU=round(VU,0)
-    if(NT_opt==T){NT=round(NT,0)}
+    if(NT_opt==TRUE){NT=round(NT,0)}
     LC=round(LC,0)
   }
   ##NP
@@ -160,7 +160,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     plot(x1,y1,type="n",xlim=xlim,ylim=ylim,ylab=ylab,xlab=xlab,cex.main=0.9,frame=TRUE,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
     maxy = max(ylim)
     ##NP
-    if(NT_opt==T){
+    if(NT_opt==TRUE){
       x2 = c(ifelse(A1,-40,-20),1500); y2 = c(0,5)
       polygon(c(x2,rev(x2)),c(rep(maxy,2),rev(rep(0,2))),col="#60C659",border="#60C659") ## NP   LC
       x3 = c(ifelse(A1,-50,-30),x2[1])
@@ -182,7 +182,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     
     
     axis(1,at=seq(-100,max(x1,30)+50,ifelse(max(x1,30)>150,50,25)),tick=seq(-100,max(x1,30),ifelse(max(x1,30)>150,50,25)))
-    if(NT_opt==T){
+    if(NT_opt==TRUE){
       legend("right",c(paste0("CR (",CR,"%)"),paste0("EN (",EN,"%)"),
                        paste0("VU (",VU,"%)"),paste0("NT (",NT,"%)"), paste0("LC (",LC,"%)")),col=1,pt.bg=c("#D81E05","#FC7F3F","#F9E814","#CCE226","#60C659"),pt.cex=1.3,pch=22,bg="white",cex=legend.cex+.3,y.intersp = 0.8,x.intersp = 0.8)
     } else {
@@ -208,7 +208,7 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
     # text(ifelse(mu.change< -80,-80,mu.change),max(y1*1.05),paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1) ##NP
     if(as.png==TRUE) dev.off()
   } # End IUCN Plot = TRUE
-  if(NT_opt==T){
+  if(NT_opt==TRUE){
     categories = c("Pr.Decl","change3GL","CR","EN","VU","NT","LC")  
     percentages = c(CR,EN,VU,NT,LC)
   } else {
