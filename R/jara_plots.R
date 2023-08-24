@@ -211,11 +211,12 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
   if(NT_opt==TRUE){
     categories = c("Pr.Decl","change3GL","CR","EN","VU","NT","LC")  
     percentages = c(CR,EN,VU,NT,LC)
+    status= ifelse(which(percentages==max(percentages))==5 & max(percentages)<50,"NT",categories[3:7][which(percentages==max(percentages))])
   } else {
     categories = c("Pr.Decl","change3GL","CR","EN","VU","LC")  
     percentages = c(CR,EN,VU,LC)
+    status= ifelse(which(percentages==max(percentages))==4 & max(percentages)<50,"NT",categories[3:6][which(percentages==max(percentages))])
   }
-  status= ifelse(which(percentages==max(percentages))==4 & max(percentages)<50,"NT",categories[3:6][which(percentages==max(percentages))])
   perc.risk = data.frame(perc.risk=c(Decline,mu.change,percentages))
   rownames(perc.risk)=categories
   out = list()
