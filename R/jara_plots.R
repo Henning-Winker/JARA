@@ -82,7 +82,6 @@ if(as.png==TRUE) dev.off()
 #' @param ylimadj multiplier to adjust upper ylim 
 #' @param plot.cex cex graphic option
 #' @param legend.cex lengend size cex graphic option
-#' @param iucn.cols to use iucn color recommendation or a brighter version if FALSE
 #' @param criteria option to choose between IUCN A1 or A2 thresholds (A2 is default)  
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
