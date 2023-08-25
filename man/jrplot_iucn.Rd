@@ -15,7 +15,7 @@ jrplot_iucn(
   ylimadj = 1.1,
   legend.cex = 0.9,
   criteria = c("A2", "A1")[1],
-  iucn.cols = TRUE,
+  NT_opt = FALSE,
   ylab = "Density",
   xlab = "Change (\%)",
   add = FALSE,
@@ -43,7 +43,7 @@ jrplot_iucn(
 
 \item{criteria}{option to choose between IUCN A1 or A2 thresholds (A2 is default)}
 
-\item{iucn.cols}{to use iucn color recommendation or a brighter version if FALSE}
+\item{NT_opt}{plot NT or not ##NP}
 
 \item{ylab}{option to change y-axis label}
 
@@ -52,6 +52,8 @@ jrplot_iucn(
 \item{add}{if TRUE par is not called to enable manual multiplots}
 
 \item{Plot}{if FALSE then only threat status stats are returned}
+
+\item{iucn.cols}{to use iucn color recommendation or a brighter version if FALSE}
 }
 \value{
 IUCN classification
