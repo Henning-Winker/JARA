@@ -62,6 +62,7 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 if(is.null(GL)&is.null(proj.yrs.user)){GL = floor((nrow(I)-3)/3)} else {GL=GL[1]}
                 # If proj.yrs.user is provided it overwrites GL 
                 if(is.null(proj.yrs.user)==FALSE){GL = floor((nrow(I)+proj.yrs.user-1)/3)} else {GL=GL[1]}
+                if(GL==0){warning("GL = 0. If you have not specified GL, then you may have given JARA too few years of data")}
   
                 GL1 = round(GL,0) # rounded for r.recent
                 GL3 = round(3*GL,0) # 3 x GL rounded for year steps
