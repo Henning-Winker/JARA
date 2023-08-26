@@ -42,7 +42,7 @@ build_jara(
 
 \item{mixed.scale}{choice if "mixed.trends" are presented by the geomean, mean or median}
 
-\item{GL}{Generation length (default n.years/3)}
+\item{GL}{Generation length. If not specified by the user (recommended) then the default is GL = floor((n.years-3)/3)}
 
 \item{start.year}{subsetting option for start year}
 
