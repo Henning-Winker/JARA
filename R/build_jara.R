@@ -7,7 +7,7 @@
 #' @param scenario = "s1",
 #' @param model.type abundance data type c("relative","census","mixed.trends")
 #' @param mixed.scale choice if "mixed.trends" are presented by the geomean, mean or median
-#' @param GL Generation length (default n.years/3)
+#' @param GL Generation length. If not specified by the user (recommended) then the default is GL = floor((n.years-3)/3)
 #' @param start.year subsetting option for start year
 #' @param end.year subsetting option for end year
 # Variance settings
