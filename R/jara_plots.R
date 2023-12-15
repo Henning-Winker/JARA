@@ -782,10 +782,10 @@ jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,wid
   lines(year[end.yr:nT],Nt$mu[end.yr:nT], type = "l",col=2, lwd=2,lty=5)
   lines(years,Nt$mu[1:end.yr], type = "l",col=1,lwd=2)
   if(plotGL){
-  if(n.years-3*GL-1>0) lines(rep(year[n.years]-3*GL,2),c(0,m2*.93),lty=2,col=2,lwd=2)
+  if(n.years-3*GL-1>0) lines(rep(year[n.years]-(3*GL)+1,2),c(0,m2*.93),lty=2,col=2,lwd=2)
   lines(rep(year[n.years]-1*GL,2),c(0,m2*.93),lty=2,col=4,lwd=2)
   lines(rep(year[n.years]-2*GL,2),c(0,m2*.93),lty=2,col=3,lwd=2)
-  if(n.years-3*GL-1>0) text(year[n.years]-3*GL,m2*.96,"3G",lwd=2)
+  if(n.years-3*GL-1>0) text(year[n.years]-(3*GL)+1,m2*.96,"3G",lwd=2)
   text(year[n.years]-2*GL,m2*.96,"2G")
   text(year[n.years]-GL,m2*.96,"1G")
   } else {
