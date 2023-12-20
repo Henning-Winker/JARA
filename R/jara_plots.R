@@ -86,13 +86,14 @@ if(as.png==TRUE) dev.off()
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
 #' @param Plot if FALSE then only threat status stats are returned 
+#' @param print_change if FALSE, the change % value is not printed on the plot (default is TRUE)
 #' @return IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
 jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylimadj=1.1,legend.cex=0.9,criteria=c("A2","A1")[1]
                         ,NT_opt=FALSE #c(FALSE,TRUE)[1] ##NP
                         # ,iucn.cols=TRUE
-                        ,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE){
+                        ,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE,print_change=TRUE){
   
   #cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
   change= jara$posteriors$pop.change
@@ -200,7 +201,9 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
         pos.txt.change <- mu.change.parusr
       }
     }
+    if(print_change==TRUE){
     text(pos.txt.change,.97,paste0("Change = ",sign,mu.change,"%"),bg="white",cex=legend.cex+0.1) ##NP
+      }
     par(usr = usr) # restore original user coordinates
     ##NP
     
