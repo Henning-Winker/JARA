@@ -519,7 +519,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
   prj.yr = max(jara$pyr)
   pop.ref = apply(pdyn[,which(yr%in%ref.yr)],1,mean)
   states =  cbind(pdyn[,which(yr%in%end.yr)]/pop.ref,pdyn[,which(yr%in%prj.yr)]/pop.ref)
-  
+  states[is.nan(states)] <- 0  ### this is necessary if a population goes extinct to prevent an error in the following loop (missing values)
   if(is.null(type)){
     type=ifelse(prj.yr-end.yr<3,"current","both") 
   }
