@@ -430,13 +430,16 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
                        res = 200, units = "in")}
   if(add==FALSE) par(Par)
   
-  rs = jara$posteriors[,-1]
+  rs = jara$posteriors #[,-1] - removing the first column converts rs to a vector and results in an error message to the ncol() call below
   
-  lamdas = (exp(rs)-1)*100
+  lamdas = (exp(rs[,-1])-1)*100  ## removed column 1 to ensure this calls the r values and not the pop size
   
   lymax=rymax = lxrange = rxrange =NULL # maximum and range for plotting
-  for(i in 1:ncol(rs)){
-    den = stats::density(lamdas[,i],adjust=2)
+  for(i in 2:ncol(rs)){  # offset from 1 to 2 to account for non-removal of first column
+    if(dim(rs)[2]==2){   # for the case of only one r column take the lamdas vector
+      den = stats::density(lamdas,adjust=2)
+    }else{              # for the case of several r columns take the respective column
+      den = stats::density(lamdas[,i-1],adjust=2)}
     assign(paste0("xl",i),den$x)
     assign(paste0("yl",i),den$y)
     lymax=c(lymax,max(den$y))
@@ -451,19 +454,25 @@ jrplot_changes <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=
   xlim = quantile(as.matrix(lamdas),c(0.001,0.999))
   jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
   plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=xlim,xaxs="i",yaxs="i") 
-  for(i in 1:ncol(rs)){
+  for(i in 2:ncol(rs)){  # offset from 1 to 2 to account for non-removal of first column
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
     xp = x[x>xlim[1] & x<xlim[2]]
     yp = y[x>xlim[1] & x<xlim[2]]
     polygon(c(xp,rev(xp)),c(yp,rep(0,length(yp))),col=jcol[i],border=NA)
-    mu.lamda = round(median(lamdas[,i]),10)
+    if(dim(rs)[2]==2){   # for the case of only one r column take the lamdas vector
+      mu.lamda = round(median(lamdas),10)
+    }else{              # for the case of several r columns take the respective column
+      mu.lamda = round(median(lamdas[,i-1]),10)}
     lines(rep(mu.lamda,2),c(0,max(y)),col=c(1,4,3,2)[i],lwd=1,lty=1)
-    
   }
   axis(1,at=seq(floor(min(lamdas)),ceiling(max(lamdas)),1),tick=seq(min(x),max(x),5),cex.axis=0.9)
   abline(v=0,lty=2)
-  legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(lamdas,2,median),2)>0,"+",""),round(apply(lamdas,2,median),2),"%"),pch=15,col=c(jcol),bty="n",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
+  if(dim(rs)[2]==2){   # for the case of only one r column take the lamdas vector
+    legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(median(lamdas),2)>0,"+",""),round(median(lamdas),2),"%"),pch=15,col=c(jcol),bty="n",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)
+  }else{              # for the case of several r columns take the respective column
+    legend("topright", paste0(cnam[1:ncol(rs)]," = ",ifelse(round(apply(lamdas,2,median),2)>0,"+",""),round(apply(lamdas,2,median),2),"%"),pch=15,col=c(jcol),bty="n",cex=legend.cex,y.intersp = 0.8,x.intersp = 0.8)}
+  
   if(as.png==TRUE) dev.off()
 } # End rate of change plot  
 
@@ -510,7 +519,7 @@ jrplot_state <- function(jara, type=NULL,ref.yr=NULL,
   prj.yr = max(jara$pyr)
   pop.ref = apply(pdyn[,which(yr%in%ref.yr)],1,mean)
   states =  cbind(pdyn[,which(yr%in%end.yr)]/pop.ref,pdyn[,which(yr%in%prj.yr)]/pop.ref)
-  
+  states[is.nan(states)] <- 0  ### this is necessary if a population goes extinct to prevent an error in the following loop (missing values)
   if(is.null(type)){
     type=ifelse(prj.yr-end.yr<3,"current","both") 
   }
@@ -590,12 +599,12 @@ jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xl
                        res = 200, units = "in")}
   if(add==FALSE) par(Par)
   
-  rs = jara$posteriors[,-1]
+  rs = jara$posteriors #[,-1] - removing the first column converts rs to a vector and results in an error message to the ncol() call below
   
   lamdas = rs
   
   lymax=rymax = lxrange = rxrange =NULL # maximum and range for plotting
-  for(i in 1:ncol(rs)){
+  for(i in 2:ncol(rs)){  # offset from 1 to 2 to account for non-removal of first column
     den = stats::density(lamdas[,i],adjust=2)
     assign(paste0("xl",i),den$x)
     assign(paste0("yl",i),den$y)
@@ -608,16 +617,16 @@ jrplot_r <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,xl
     rxrange = c(rxrange,range(den$x))
   }
   cnam = c("All.yrs","1G","2G","3G")  
-  if(is.null(xlim)) xlim=quantile(as.matrix(lamdas),c(0.001,0.999))
+  if(is.null(xlim)) xlim=quantile(as.matrix(lamdas),probs=c(0.001,0.999), na.rm=TRUE)
   jcol = c(grey(0.5,0.6),rgb(0,0,1,0.3),rgb(0,1,0,0.3),rgb(1,0,0,0.3))
   plot(0,0,type="n",ylab=ylab,xlab=xlab,xaxt="n",cex.main=0.9,ylim=c(0,1.1*max(lymax)),xlim=xlim,xaxs="i",yaxs="i") 
-  for(i in 1:ncol(rs)){
+  for(i in 2:ncol(rs)){ # offset from 1 to 2 to account for non-removal of first column
     x = get(paste0("xl",i))
     y = get(paste0("yl",i))
     xp = x[x>xlim[1] & x<xlim[2]]
     yp = y[x>xlim[1] & x<xlim[2]]
     polygon(c(xp,rev(xp)),c(yp,rep(0,length(yp))),col=jcol[i],border=NA)
-    mu.lamda = round(median(lamdas[,i]),10)
+    mu.lamda = round(median(lamdas[,i-1]),10)
     lines(rep(mu.lamda,2),c(0,max(y)),col=c(1,4,3,2)[i],lwd=1,lty=1)
     
   }
