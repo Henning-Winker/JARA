@@ -26,6 +26,7 @@
 #' @param proj.stoch allows for projections with process error c(TRUE, FALSE), FALSE is default
 #' @param proj.yrs.user option to overwrite GL and costomize projections for forecasting  
 #' @param silent option to put notifications on siltent
+#' @param backcast.na option to remove NAs bootstrap when backcasting by specifying NA
 #' @return List to be used as data input to JARA JAGS model
 #' @export
 #' @author Henning Winker
@@ -52,7 +53,8 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
               pk.i = NULL,
               proj.r = c("all","GL1","year")[1],
               proj.yrs.user = NULL,
-              proj.stoch = FALSE,silent=FALSE){
+              proj.stoch = FALSE,
+              backcast.na=NULL,silent=FALSE){
   
   
   #-------------------------
@@ -356,6 +358,16 @@ build_jara <- function(I = NULL, se = NULL,assessment = "Unnamed",
                 jarainput$settings$proj.yrs.user = proj.yrs.user
                 jarainput$settings$Ninit = Ninit
                 jarainput$settings$qs = qs
+                # JARA settings backcasting
+                
+                
+                  bc = jarainput$jagsdata$y
+                  bc[] = 0
+                  if(!is.null(backcast.na)){
+                  bc[which(jarainput$data$yr<backcast.na),] = 1 
+                  bc[which(jarainput$data$yr<backcast.na),][!is.na(jarainput$jagsdata$y[which(jarainput$data$yr<backcast.na),])]=0
+                  }
+                  jarainput$settings$bc = bc
                 
                 if(model.type!="census") {jarainput$settings$q.init = q.init} else {
                   jarainput$settings$q.init = "Not available for census model"

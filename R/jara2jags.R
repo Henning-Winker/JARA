@@ -95,6 +95,7 @@ jara2jags = function(jarainput,jagsdir){
     penSig  ~ dnorm(pen.sigma,pow(0.2,-2))
     
     
+    
     # Likelihood
     # State process
     for (t in 1:(T-1)){
@@ -106,6 +107,7 @@ jara2jags = function(jarainput,jagsdir){
     for(t in 1:(EY-1)){
     rdev[t,i] ~ dnorm(0, isigma2) #T(proc.pen[2],proc.pen[3])
     # Theta-Logistic
+    #mean.ri[i,t] <-ifelse(bc[t,i]<1,mean.r[i],mean(mean.r[]))
     r[t,i] <- mean.r[i]+dr[t,i]+ rdev[t,i]- 0.5*sigma2
     }}
     
@@ -121,7 +123,7 @@ jara2jags = function(jarainput,jagsdir){
     
     if(jarainput$settings$prjr.type=="mean"){
       cat("  
-    for (i in 1:nI){
+    .for (i in 1:nI){
     r.proj[i] <- mean.r[i]+mean.dr[i]
     } 
       

@@ -18,6 +18,7 @@
 #' @param do.ppc option TRUE/FALSE to add posterior predictive checkes by index
 #' @param jagsdir directory to save jags model, default is temp.dir()
 #' @param silent option to put notifications on siltent
+#' @param treshold option for mixed-effect bootstrap threshold propabilities
 #' @return A result list containing estimates of JARA model input, settings and results
 #' @export
 #' @author Henning Winker and Richard Sherley 
@@ -45,12 +46,12 @@ fit_jara = function(jarainput,credibility=0.95,
                      save.csvs = FALSE,
                      save.jarafile = FALSE,
                      peels = NULL, 
-                    output.dir = getwd(),
-                    quickmcmc = FALSE,
-                    do.ppc = FALSE,
-                    jagsdir = NULL,
-                    silent=FALSE
-                    
+                     output.dir = getwd(),
+                     quickmcmc = FALSE,
+                     do.ppc = FALSE,
+                     jagsdir = NULL,
+                     silent=FALSE,
+                     threshold = 1
                     ){
   #write jara model
   if(is.null(jagsdir)) jagsdir = tempdir()
@@ -245,14 +246,30 @@ fit_jara = function(jarainput,credibility=0.95,
       if(settings$mixed.scale=="geomean"){
       for(y in 1:ncol(posteriors$Ntot)){
         Ntot[,y] = do.call(c,Map(function(x,z){
-          exp(mean(log(x[z])))
+          # Option exclude NAs
+          x[jarainput$settings$bc[y,]>0] = NA
+          # Make sure there are some positives
+          if(length(x[z][is.na(x[z])])<length(x[z])){
+                exp(mean(log(x[z]),na.rm=T))
+          } else {
+            exp(mean(log(x),na.rm=T))
+          }
           },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
       }
       }
       if(settings$mixed.scale=="mean"){
         for(y in 1:ncol(posteriors$Ntot)){
+          
           Ntot[,y] = do.call(c,Map(function(x,z){
-            mean(x[z])
+            # Option exclude NAs
+            x[jarainput$settings$bc[y,]>0] = NA
+            if(length(x[z][is.na(x[z])])<length(x[z])){
+              mean(x[z],na.rm=T)
+            } else {
+              mean(x,na.rm=T)  
+            }
+            
+            
           },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
         } 
       }
@@ -260,7 +277,14 @@ fit_jara = function(jarainput,credibility=0.95,
       if(settings$mixed.scale=="median"){
         for(y in 1:ncol(posteriors$Ntot)){
           Ntot[,y] = do.call(c,Map(function(x,z){
-            median(x[z])
+            # Option exclude NAs
+            x[jarainput$settings$bc[y,]>0] = NA
+            
+            if(length(x[z][is.na(x[z])])<length(x[z])){
+              median(x[z],na.rm=T)
+            } else {
+              median(x,na.rm=T)  
+            }
           },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
         } 
       }
@@ -268,13 +292,32 @@ fit_jara = function(jarainput,credibility=0.95,
       
       posteriors$Ntot  = Ntot
       
+      prop.posterior = NULL
+      for(j in 1:length(threshold)){
       for(y in 1:ncol(posteriors$Ntot)){
+        
         Prop1[,y] = do.call(c,Map(function(x,z){
-          sum(x[z]>1)/length(x[z])
+          # Option exclude NAs
+          x[jarainput$settings$bc[y,]>0] = NA
+          if(length(x[z][is.na(x[z])])<length(x[z])){
+          sum(x[z]>threshold[j],na.rm=T)/length(x[z][!is.na(x[z])])
+          } else {
+            sum(x>threshold[j],na.rm=T)/length(x[!is.na(x)])
+          } 
         },split(posteriors$N.est[,y,],seq(nmc)),boot.mat))
       }
-      prop.posterior = data.frame(Prop1)
-      colnames(prop.posterior) = year
+      dfp = data.frame(Prop1)
+      colnames(dfp) = year
+      if(length(threshold)==1){  
+      prop.posterior = dfp
+      } else {
+        prop.posterior[[j]] = dfp
+      }
+      }
+      
+      if(length(threshold)>1){
+        names(prop.posterior) = paste0("t",threshold)
+      }
     } # End of mixed-trend
     
     

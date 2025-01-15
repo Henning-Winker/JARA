@@ -141,12 +141,22 @@ jr_runs <- function(x,type=NULL,mixing="less") {
 #' @param run name qualifier of data.frame
 #' @param refyr sets index relative to a reference year
 #' @param type c("mu","pr"), note the probability is only available of "mixed.trends" 
+#' @param threshold.id option to select threshold location from list if multiple were specified 
 #' @return data.frame
 #' @export
 #' @author Henning Winker (JRC-EC) 
-mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
+mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1],threshold.id =1){
+ 
   df =jara$pop.posterior
-  if(type=="pr") df =jara$prop.posterior
+  
+  if(type=="pr"){
+    df =jara$prop.posterior
+    if(!is.data.frame(df)){
+      df =jara$prop.posterior[[threshold.id]]
+    }
+    
+  }
+    
   if(jara$settings$mixed.scale=="geomean")
       Obs = exp(aggregate(log(obs)~year,jara$fit,mean)$`log(obs)`)
   if(jara$settings$mixed.scale=="mean")
@@ -170,16 +180,20 @@ mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1]){
 #' Function to compile fits into obs and fit data.frames
 #' @param jara fit_jara output
 #' @param run name qualifier of data.frame
+#' @param backcast.na option to remove backcast prediction prior to a year
 #' @return data.frame
 #' @export
 #' @author Henning Winker (JRC-EC) 
-dfidx = function(jara,run="obs"){
+dfidx = function(jara,run="obs",backcast.na=NULL){
   dat=list()
   dat$i = jara$trj
   dat$i = dat$i[dat$i$name!="global" & dat$i$estimation=="fit",]
   dat$i$run=run
   dat$o = obs=jara$fits
   dat$o$run=run
+  if(!is.null(backcast.na)){
+    dat$i[dat$i$yr<backcast.na,][!paste0(dat$i[dat$i$yr<backcast.na,c("name")],".",dat$i[dat$i$yr<backcast.na,c("yr")])%in%paste0(dat$o[dat$o$year<backcast.na,c("name")],".",dat$o[dat$o$year<backcast.na,c("year")]),][,7:11] = NA
+  }  
   return(dat)
 }
 
