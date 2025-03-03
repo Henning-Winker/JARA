@@ -226,7 +226,7 @@ fit_jara = function(jarainput,credibility=0.95,
     if(n.indices < 2){
       Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT)) #,n.indices
       for (t in 1:nT){
-        Nbias.correct[,t] = exp(log(posteriors$N.est[,t,1])-0.5*var(log(posteriors$N.est[,t])))
+        Nbias.correct[,t] = exp(log(posteriors$N.est[,t])-0.5*var(log(posteriors$N.est[,t])))
       }
     } else {
       Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT,n.indices))
