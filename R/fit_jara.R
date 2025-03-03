@@ -223,10 +223,10 @@ fit_jara = function(jarainput,credibility=0.95,
     
     # log-normal bias correction from Sherley et al. (2020)
     
-    if(n.indices < 2){
-      Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT)) #,n.indices
+    if(n.indices == 1){
+      Nbias.correct.one <- array(0, dim=c((((ni-nb)*nc)/nt),nT)) #,n.indices
       for (t in 1:nT){
-        Nbias.correct[,t] = exp(log(posteriors$N.est[,t])-0.5*var(log(posteriors$N.est[,t])))
+        Nbias.correct.one[,t] = exp(log(posteriors$N.est[,t])-0.5*var(log(posteriors$N.est[,t])))
       }
     } else {
       Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT,n.indices))
@@ -330,10 +330,10 @@ fit_jara = function(jarainput,credibility=0.95,
     #for (t in 1:nT){ 
       if(n.indices == 1){
       for (t in 1:nT){ 
-      pop.posterior = cbind(pop.posterior,Nbias.correct[,t])
-      Nfit[t] = mean(Nbias.correct[,t])# o<
-      Nlow[t] = HDInterval::hdi(Nbias.correct[,t],credMass=credibility)[1]# o<
-      Nhigh[t] = HDInterval::hdi(Nbias.correct[,t],credMass=credibility)[2]# o<
+      pop.posterior = cbind(pop.posterior,Nbias.correct.one[,t])
+      Nfit[t] = mean(Nbias.correct.one[,t])# o<
+      Nlow[t] = HDInterval::hdi(Nbias.correct.one[,t],credMass=credibility)[1]# o<
+      Nhigh[t] = HDInterval::hdi(Nbias.correct.one[,t],credMass=credibility)[2]# o<
       }} else {
       for (t in 1:nT){ 
       pop.posterior = cbind(pop.posterior,rowSums(Nbias.correct[,t,]))
