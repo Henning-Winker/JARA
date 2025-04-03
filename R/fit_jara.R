@@ -222,7 +222,6 @@ fit_jara = function(jarainput,credibility=0.95,
         hi.ppd[t,i] <-HDInterval::hdi(posteriors$ppd[,t,i],credMass=credibility)[2]}}
     
     # log-normal bias correction from Sherley et al. (2020)
-    
     if(n.indices < 2){
       Nbias.correct <- array(0, dim=c((((ni-nb)*nc)/nt),nT,n.indices))
       for (t in 1:nT){
