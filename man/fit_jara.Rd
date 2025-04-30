@@ -20,7 +20,8 @@ fit_jara(
   quickmcmc = FALSE,
   do.ppc = FALSE,
   jagsdir = NULL,
-  silent = FALSE
+  silent = FALSE,
+  threshold = 1
 )
 }
 \arguments{
@@ -56,6 +57,8 @@ MCMC settings}
 \item{jagsdir}{directory to save jags model, default is temp.dir()}
 
 \item{silent}{option to put notifications on siltent}
+
+\item{treshold}{option for mixed-effect bootstrap threshold propabilities}
 }
 \value{
 A result list containing estimates of JARA model input, settings and results

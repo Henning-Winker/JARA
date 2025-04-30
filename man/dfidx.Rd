@@ -4,12 +4,14 @@
 \alias{dfidx}
 \title{dfidx()}
 \usage{
-dfidx(jara, run = "obs")
+dfidx(jara, run = "obs", backcast.na = NULL, scale.q = FALSE)
 }
 \arguments{
 \item{jara}{fit_jara output}
 
 \item{run}{name qualifier of data.frame}
+
+\item{backcast.na}{option to remove backcast prediction prior to a year}
 }
 \value{
 data.frame

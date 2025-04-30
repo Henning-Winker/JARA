@@ -26,6 +26,7 @@ build_jara(
   proj.r = c("all", "GL1", "year")[1],
   proj.yrs.user = NULL,
   proj.stoch = FALSE,
+  backcast.na = NULL,
   silent = FALSE
 )
 }
@@ -72,6 +73,8 @@ New break point settings}
 \item{proj.yrs.user}{option to overwrite GL and costomize projections for forecasting}
 
 \item{proj.stoch}{allows for projections with process error c(TRUE, FALSE), FALSE is default}
+
+\item{backcast.na}{option to remove NAs bootstrap when backcasting by specifying NA}
 
 \item{silent}{option to put notifications on siltent}
 }

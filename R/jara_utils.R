@@ -184,13 +184,20 @@ mixed.trend <- function(jara,run="joint",refyr=FALSE,type=c("mu","pr")[1],thresh
 #' @return data.frame
 #' @export
 #' @author Henning Winker (JRC-EC) 
-dfidx = function(jara,run="obs",backcast.na=NULL){
+dfidx = function(jara,run="obs",backcast.na=NULL,scale.q=FALSE){
   dat=list()
   dat$i = jara$trj
   dat$i = dat$i[dat$i$name!="global" & dat$i$estimation=="fit",]
   dat$i$run=run
   dat$o = obs=jara$fits
   dat$o$run=run
+  if(scale.q){
+    q.adj = jara$pars$median[-c(1:2)]
+    
+    dat$i[,c("mu","lci","uci","lpp","upp")] = dat$i[,c("mu","lci","uci","lpp","upp")]/ q.adj[unclass(as.factor(dat$i$name))]
+    dat$o[,c("obs","hat","lci","uci","lpp","upp")] = dat$o[,c("obs","hat","lci","uci","lpp","upp")]/q.adj[unclass(as.factor(dat$o$name))]
+    
+  }
   if(!is.null(backcast.na)){
     dat$i[dat$i$yr<backcast.na,][!paste0(dat$i[dat$i$yr<backcast.na,c("name")],".",dat$i[dat$i$yr<backcast.na,c("yr")])%in%paste0(dat$o[dat$o$year<backcast.na,c("name")],".",dat$o[dat$o$year<backcast.na,c("year")]),][,7:11] = NA
   }  

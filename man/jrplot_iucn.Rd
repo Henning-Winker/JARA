@@ -19,7 +19,8 @@ jrplot_iucn(
   ylab = "Density",
   xlab = "Change (\%)",
   add = FALSE,
-  Plot = TRUE
+  Plot = TRUE,
+  print_change = TRUE
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ jrplot_iucn(
 \item{add}{if TRUE par is not called to enable manual multiplots}
 
 \item{Plot}{if FALSE then only threat status stats are returned}
+
+\item{print_change}{if FALSE, the change % value is not printed on the plot (default is TRUE)}
 }
 \value{
 IUCN classification
