@@ -18,7 +18,8 @@ jrplot_PPC(
   plot.cex = 0.8,
   indices = "all",
   index.label = TRUE,
-  add = FALSE
+  add = FALSE,
+  silent = FALSE
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ jrplot_PPC(
 \item{index.label}{show index name in plot}
 
 \item{add}{if TRUE par is not called to enable manual multiplots}
+
+\item{silent}{do not show messages}
 }
 \value{
 Bayesin p values and n observation per index

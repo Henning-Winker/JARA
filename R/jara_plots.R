@@ -87,6 +87,7 @@ if(as.png==TRUE) dev.off()
 #' @param xlab option to change x-axis label
 #' @param Plot if FALSE then only threat status stats are returned 
 #' @param print_change if FALSE, the change % value is not printed on the plot (default is TRUE)
+#' @param silent do not show messages 
 #' @return IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
@@ -95,7 +96,11 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
                         # ,iucn.cols=TRUE
                         ,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE,print_change=TRUE){
   
-  #cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
+  if(!silent){
+    
+  
+  cat(paste0("\n","><> jrplot_iucn() - return % threat classification <><","\n"))
+  }
   change= jara$posteriors$pop.change
   den = stats::density(change,adjust=2)
   x1 = den$x
@@ -248,12 +253,15 @@ jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5
 #' @param xlab option to change x-axis label
 #' @param Plot if FALSE then only threat status stats are returned 
 #' @param add.legend option add legend
+#' @param silent do not show messages 
 #' @return Retrospectice IUCN classification 
 #' @author Henning Winker, Richard Sherley and Nathan Pacoureau
 #' @export
-jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,ylab="Change (%)",xlab="Year",add=FALSE,Plot=TRUE,add.legend=TRUE){
+jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,criteria=c("A2","A1")[1],iucn.cols=TRUE,ylab="Change (%)",xlab="Year",add=FALSE,Plot=TRUE,add.legend=TRUE,silent=FALSE){
   
+  if(!silent){
   cat(paste0("\n","><> jrplot_retroiucn() - returns retrospective analysis of threat classification <><","\n"))
+  }
   A1 = ifelse(criteria=="A1",TRUE,FALSE)
   # settings
   runs = hc$peels
@@ -340,12 +348,16 @@ jrplot_retroiucn <- function(hc, output.dir=getwd(),as.png=FALSE,width=5,height=
 #' @param legend.loc location of legend
 #' @param add.legend option to add legend
 #' @param show.rho shows rho statistic in plot
+#' @param silent do not show messages 
 #' @return Mohn's rho statistic for several quantaties
 #' @export
-jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4.5,add=FALSE,xlab="Year",ylab="Abundance",plot.cex=1,Xlim=NULL,cols=NULL,legend.loc="topright",add.legend=TRUE,show.rho = TRUE){
+jrplot_retrobias <- function(hc,output.dir=getwd(),as.png=FALSE,width=5,height=4.5,add=FALSE,xlab="Year",ylab="Abundance",plot.cex=1,Xlim=NULL,cols=NULL,legend.loc="topright",add.legend=TRUE,show.rho = TRUE,silent=FALSE){
   
+  if(!silent){
   cat(paste0("\n","><> jrplot_retrobias() - retrospective analysis <><","\n"))
-  if(is.null(cols)) cols=hc$settings$cols
+  }
+    if(is.null(cols)) cols=hc$settings$cols
+  
   Nt = hc$trj[hc$trj$name=="global",]
   Nt0 = Nt[Nt$level==0,]
   year = hc$y
@@ -817,12 +829,14 @@ jrplot_poptrj <- function(jara,plotGL =NULL, output.dir=getwd(),as.png=FALSE,wid
 #' @param indices names of indices to plot (default = "all")
 #' @param index.label show index name in plot
 #' @param add if TRUE par is not called to enable manual multiplots
+#' @param silent do not show messages 
 #' @export
-jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab="Normalized index",xlab="Year",plot.cex=0.8,indices="all",index.label=TRUE,add=FALSE){
+jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab="Normalized index",xlab="Year",plot.cex=0.8,indices="all",index.label=TRUE,add=FALSE,silent=FALSE){
   
   
-  
+    if(!silent){
     cat(paste0("\n","><> jrplot_fits() - fits to abudance indices <><","\n"))
+    }
     years = jara$yr
     N = length(years)
     if(indices[1]=="all"){
@@ -965,11 +979,13 @@ jrplot_fits <- function(jara,ppd=TRUE, output.dir=getwd(),as.png=FALSE,single.pl
 #' @param indices names of indices to plot (default = "all")
 #' @param index.label show index name in plot
 #' @param add if TRUE par is not called to enable manual multiplots
+#' @param silent do not show messages 
 #' @return Bayesin p values and n observation per index
 #' @export
-jrplot_PPC <- function(jara,joint.ppc=FALSE,thin.plot = TRUE ,output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab=expression(paste("Predicted D(",chi^2,")")),xlab=expression(paste("Realized D(",chi^2,")")),plot.cex=0.8,indices="all",index.label=TRUE,add=FALSE){
-  
+jrplot_PPC <- function(jara,joint.ppc=FALSE,thin.plot = TRUE ,output.dir=getwd(),as.png=FALSE,single.plots=FALSE,width=NULL,height=NULL,ylab=expression(paste("Predicted D(",chi^2,")")),xlab=expression(paste("Realized D(",chi^2,")")),plot.cex=0.8,indices="all",index.label=TRUE,add=FALSE,silent=FALSE){
+  if(!silent){
   cat(paste0("\n","><> jrplot_PPC() - Posterior Predictive Checks <><","\n"))
+  }
   if(is.null(jara$PPC)) stop("To enable PPCs please use option fit_jara(jarainput,do.ppc=TRUE)") 
   PPC = jara$PPC
   Bp = NULL # Bayesian p-value
@@ -1207,10 +1223,12 @@ jrplot_logfits <- function(jara, output.dir=getwd(),as.png=FALSE,single.plots=FA
 #' @param width plot width
 #' @param height plot hight
 #' @param cols option to add colour palette 
+#' @param silent do not show messages 
 #' @export
-jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,ylab="log Residuals",xlab="Year",legend =TRUE,legend.pos = "bottomright",legend.cex=0.75,width = 5, height = 3.5,cols=NULL){
-  
+jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,ylab="log Residuals",xlab="Year",legend =TRUE,legend.pos = "bottomright",legend.cex=0.75,width = 5, height = 3.5,cols=NULL,silent=FALSE){
+   if(!silent){
     cat(paste0("\n","><> jrplot_residuals() - Joint residual plot  <><","\n"))
+   }
     if(is.null(cols)) cols = jara$settings$cols 
     years = jara$yr
     check.yrs = abs(apply(jara$residuals,2,sum,na.rm=TRUE))
@@ -1265,13 +1283,14 @@ jrplot_residuals <- function(jara,output.dir=getwd(),as.png = FALSE,add=FALSE,yl
 #' @param ylab option to change y-axis label
 #' @param xlab option to change x-axis label
 #' @param width plot width
-#' @param height plot hight
+#' @param height plot height
+#' @param silent do not show messages 
 #' @return Runs Test p-values and sig3 limits
 #' @export
 
-jrplot_runstest <- function(jara,indices="all",mixing="less", output.dir=getwd(),add=FALSE,as.png=FALSE,single.plots=FALSE,ylab="Residuals",xlab="Year",width=NULL,height=NULL){
+jrplot_runstest <- function(jara,indices="all",mixing="less", output.dir=getwd(),add=FALSE,as.png=FALSE,single.plots=FALSE,ylab="Residuals",xlab="Year",width=NULL,height=NULL,silent=FALSE){
   
-    cat(paste0("\n","><> jrplot_runstest()   <><","\n"))
+  if(!silent) cat(paste0("\n","><> jrplot_runstest()   <><","\n"))
     
   
   years = jara$yr
@@ -1360,7 +1379,7 @@ jrplot_runstest <- function(jara,indices="all",mixing="less", output.dir=getwd()
     
   runstable = data.frame(Index=indices,runs.p=as.matrix(runs)[,1],Test=ifelse(as.matrix(runs)[,1]<0.05,"Failed","Passed"),sigma3.lo=as.matrix(runs)[,2],sigma3.hi=as.matrix(runs)[,3]) 
   colnames(runstable) = c("Index","runs.p","test","sigma3.lo","sigma3.hi")
-  cat(paste0("\n","Runs Test stats:","\n"))
+  if(!silent) cat(paste0("\n","Runs Test stats:","\n"))
   return(runstable)
 
   

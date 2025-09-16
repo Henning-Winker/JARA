@@ -15,7 +15,8 @@ jrplot_runstest(
   ylab = "Residuals",
   xlab = "Year",
   width = NULL,
-  height = NULL
+  height = NULL,
+  silent = FALSE
 )
 }
 \arguments{
@@ -39,7 +40,9 @@ jrplot_runstest(
 
 \item{width}{plot width}
 
-\item{height}{plot hight}
+\item{height}{plot height}
+
+\item{silent}{do not show messages}
 }
 \value{
 Runs Test p-values and sig3 limits

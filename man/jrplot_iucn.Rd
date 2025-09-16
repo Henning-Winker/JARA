@@ -55,6 +55,8 @@ jrplot_iucn(
 \item{Plot}{if FALSE then only threat status stats are returned}
 
 \item{print_change}{if FALSE, the change % value is not printed on the plot (default is TRUE)}
+
+\item{silent}{do not show messages}
 }
 \value{
 IUCN classification

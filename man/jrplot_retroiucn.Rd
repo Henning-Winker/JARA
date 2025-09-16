@@ -17,7 +17,8 @@ jrplot_retroiucn(
   xlab = "Year",
   add = FALSE,
   Plot = TRUE,
-  add.legend = TRUE
+  add.legend = TRUE,
+  silent = FALSE
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ jrplot_retroiucn(
 \item{Plot}{if FALSE then only threat status stats are returned}
 
 \item{add.legend}{option add legend}
+
+\item{silent}{do not show messages}
 }
 \value{
 Retrospectice IUCN classification

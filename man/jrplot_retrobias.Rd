@@ -18,7 +18,8 @@ jrplot_retrobias(
   cols = NULL,
   legend.loc = "topright",
   add.legend = TRUE,
-  show.rho = TRUE
+  show.rho = TRUE,
+  silent = FALSE
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ jrplot_retrobias(
 \item{add.legend}{option to add legend}
 
 \item{show.rho}{shows rho statistic in plot}
+
+\item{silent}{do not show messages}
 }
 \value{
 Mohn's rho statistic for several quantaties

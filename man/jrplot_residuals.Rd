@@ -16,7 +16,8 @@ jrplot_residuals(
   legend.cex = 0.75,
   width = 5,
   height = 3.5,
-  cols = NULL
+  cols = NULL,
+  silent = FALSE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ jrplot_residuals(
 \item{height}{plot hight}
 
 \item{cols}{option to add colour palette}
+
+\item{silent}{do not show messages}
 }
 \description{
 plots residuals for all indices as boxplot with a loess showing systematic trends
