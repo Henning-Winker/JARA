@@ -94,7 +94,7 @@ if(as.png==TRUE) dev.off()
 jrplot_iucn <- function(jara, output.dir=getwd(),as.png=FALSE,width=5,height=4.5,plot.cex=1,xlim=NULL,ylimadj=1.1,legend.cex=0.9,criteria=c("A2","A1")[1]
                         ,NT_opt=FALSE #c(FALSE,TRUE)[1] ##NP
                         # ,iucn.cols=TRUE
-                        ,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE,print_change=TRUE){
+                        ,ylab="Density",xlab="Change (%)",add=FALSE,Plot=TRUE,print_change=TRUE,silent=FALSE){
   
   if(!silent){
     
